@@ -1,6 +1,8 @@
 import random
 from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -11,6 +13,20 @@ from .forms import SurveyForm, QuestionForm, AnswerForm
 def survey_list(request):
     surveys = Survey.objects.filter(deleted=False)
     return render(request, 'survey/survey_list.html', {'surveys': surveys})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, _('Registration successful'))
+            next_url = request.GET.get('next', '/')
+            return redirect(next_url)
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 
 @login_required

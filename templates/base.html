@@ -14,8 +14,10 @@
     <a class="navbar-brand" href="{% url 'survey:survey_list' %}">WikiKysely</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto">
+        {% if request.user.is_authenticated %}
         <li class="nav-item"><a class="nav-link" href="{% url 'survey:survey_create' %}">{% translate 'Create survey' %}</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'survey:answer_list' %}">{% translate 'My answers' %}</a></li>
+        {% endif %}
       </ul>
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}
@@ -33,6 +35,7 @@
         <a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a>
       {% else %}
         <a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a>
+        <a class="nav-link ms-3" href="{% url 'survey:register' %}?next={{ request.path }}">{% translate 'Register' %}</a>
       {% endif %}
     </div>
   </div>

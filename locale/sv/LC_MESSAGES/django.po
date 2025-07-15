@@ -93,3 +93,9 @@ msgstr "Inga fler frågor"
 
 msgid "Answer saved"
 msgstr "Svar sparat"
+
+msgid "Register"
+msgstr "Registrera"
+
+msgid "Registration successful"
+msgstr "Registreringen lyckades"
