@@ -8,7 +8,6 @@ from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
 
-@login_required
 def survey_list(request):
     surveys = Survey.objects.filter(deleted=False)
     return render(request, 'survey/survey_list.html', {'surveys': surveys})
@@ -29,7 +28,6 @@ def survey_create(request):
     return render(request, 'survey/survey_form.html', {'form': form})
 
 
-@login_required
 def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     questions = survey.questions.filter(deleted=False)
@@ -92,7 +90,6 @@ def answer_list(request):
     return render(request, 'survey/answer_list.html', {'answers': answers})
 
 
-@login_required
 def survey_results(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     questions = survey.questions.filter(deleted=False)
