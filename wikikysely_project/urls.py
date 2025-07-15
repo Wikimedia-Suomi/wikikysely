@@ -10,7 +10,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path('', include('survey.urls')),
+    path('', include('wikikysely_project.survey.urls')),
 )
 
 if settings.DEBUG:
