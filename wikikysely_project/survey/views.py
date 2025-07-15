@@ -35,11 +35,19 @@ def survey_detail(request, pk):
     if request.user.is_authenticated:
         user_answers = Answer.objects.filter(user=request.user, question__survey=survey)
     can_edit = request.user == survey.creator or request.user.is_superuser
+
+    unanswered_count = 0
+    if request.user.is_authenticated:
+        total_questions = questions.count()
+        answered_count = user_answers.count()
+        unanswered_count = max(total_questions - answered_count, 0)
+
     return render(request, 'survey/survey_detail.html', {
         'survey': survey,
         'questions': questions,
         'can_edit': can_edit,
         'user_answers': user_answers,
+        'unanswered_count': unanswered_count,
     })
 
 
