@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ survey.title }}{% endblock %}
+{% block content %}
+<h1>{{ survey.title }}</h1>
+<h2>{{ question.text }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
+</form>
+{% endblock %}
