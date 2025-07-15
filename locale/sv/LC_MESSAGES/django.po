@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+"Language: sv\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+# UI strings
+msgid "Create survey"
+msgstr "Skapa enkät"
+
+msgid "My answers"
+msgstr "Mina svar"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Add question"
+msgstr "Lägg till fråga"
+
+msgid "State"
+msgstr "Status"
+
+msgid "Start date"
+msgstr "Startdatum"
+
+msgid "End date"
+msgstr "Slutdatum"
+
+msgid "Answer survey"
+msgstr "Svara på enkäten"
+
+msgid "Results"
+msgstr "Resultat"
+
+msgid "Submit"
+msgstr "Skicka"
+
+msgid "Question"
+msgstr "Fråga"
+
+msgid "Answer"
+msgstr "Svar"
+
+msgid "No answers"
+msgstr "Inga svar"
+
+msgid "Total respondents"
+msgstr "Antal svarande"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "Total"
+msgstr "Totalt"
+
+msgid "Surveys"
+msgstr "Enkäter"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "No surveys"
+msgstr "Inga enkäter"
+
+msgid "Skip"
+msgstr "Hoppa över"
+
+msgid "Running"
+msgstr "Pågår"
+
+msgid "Paused"
+msgstr "Pausad"
+
+msgid "Closed"
+msgstr "Stängd"
+
+msgid "Survey created"
+msgstr "Enkät skapad"
+
+msgid "No permission"
+msgstr "Ingen behörighet"
+
+msgid "Question added"
+msgstr "Fråga tillagd"
+
+msgid "Survey not active"
+msgstr "Enkäten är inte aktiv"
+
+msgid "No more questions"
+msgstr "Inga fler frågor"
+
+msgid "Answer saved"
+msgstr "Svar sparat"

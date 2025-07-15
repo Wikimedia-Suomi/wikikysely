@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+"Language: fi\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+# UI strings
+msgid "Create survey"
+msgstr "Luo kysely"
+
+msgid "My answers"
+msgstr "Vastaukseni"
+
+msgid "Save"
+msgstr "Tallenna"
+
+msgid "Add question"
+msgstr "Lisää kysymys"
+
+msgid "State"
+msgstr "Tila"
+
+msgid "Start date"
+msgstr "Aloituspäivä"
+
+msgid "End date"
+msgstr "Päättymispäivä"
+
+msgid "Answer survey"
+msgstr "Vastaa kyselyyn"
+
+msgid "Results"
+msgstr "Tulokset"
+
+msgid "Submit"
+msgstr "Lähetä"
+
+msgid "Question"
+msgstr "Kysymys"
+
+msgid "Answer"
+msgstr "Vastaus"
+
+msgid "No answers"
+msgstr "Ei vastauksia"
+
+msgid "Total respondents"
+msgstr "Vastaajien määrä"
+
+msgid "Yes"
+msgstr "Kyllä"
+
+msgid "No"
+msgstr "Ei"
+
+msgid "Total"
+msgstr "Yhteensä"
+
+msgid "Surveys"
+msgstr "Kyselyt"
+
+msgid "Title"
+msgstr "Otsikko"
+
+msgid "No surveys"
+msgstr "Ei kyselyitä"
+
+msgid "Skip"
+msgstr "Ohita"
+
+msgid "Running"
+msgstr "Käynnissä"
+
+msgid "Paused"
+msgstr "Tauolla"
+
+msgid "Closed"
+msgstr "Suljettu"
+
+msgid "Survey created"
+msgstr "Kysely luotu"
+
+msgid "No permission"
+msgstr "Ei oikeuksia"
+
+msgid "Question added"
+msgstr "Kysymys lisätty"
+
+msgid "Survey not active"
+msgstr "Kysely ei ole aktiivinen"
+
+msgid "No more questions"
+msgstr "Ei enempää kysymyksiä"
+
+msgid "Answer saved"
+msgstr "Vastaus tallennettu"
