@@ -93,3 +93,9 @@ msgstr "Ei enempää kysymyksiä"
 
 msgid "Answer saved"
 msgstr "Vastaus tallennettu"
+
+msgid "Register"
+msgstr "Rekisteröidy"
+
+msgid "Registration successful"
+msgstr "Rekisteröinti onnistui"
