@@ -8,4 +8,28 @@
   {{ form.as_p }}
   <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
 </form>
+{% if is_edit %}
+  <h2 class="mt-4">{% translate 'Questions' %}</h2>
+  <ul class="list-group mb-3">
+    {% for q in active_questions %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ q.text }}</span>
+        <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
+      </li>
+    {% empty %}
+      <li class="list-group-item">{% translate 'No questions' %}</li>
+    {% endfor %}
+  </ul>
+  {% if deleted_questions %}
+    <h3>{% translate 'Deleted questions' %}</h3>
+    <ul class="list-group">
+      {% for q in deleted_questions %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="text-muted">{{ q.text }}</span>
+          <a href="{% url 'survey:question_restore' q.pk %}" class="btn btn-sm btn-secondary">{% translate 'Restore' %}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
 {% endblock %}

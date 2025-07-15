@@ -31,11 +31,15 @@ def survey_create(request):
 def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     questions = survey.questions.filter(deleted=False)
+    user_answers = Answer.objects.none()
+    if request.user.is_authenticated:
+        user_answers = Answer.objects.filter(user=request.user, question__survey=survey)
     can_edit = request.user == survey.creator or request.user.is_superuser
     return render(request, 'survey/survey_detail.html', {
         'survey': survey,
         'questions': questions,
         'can_edit': can_edit,
+        'user_answers': user_answers,
     })
 
 
@@ -50,10 +54,18 @@ def survey_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, _('Survey updated'))
-            return redirect('survey:survey_detail', pk=survey.pk)
+            return redirect('survey:survey_edit', pk=survey.pk)
     else:
         form = SurveyForm(instance=survey)
-    return render(request, 'survey/survey_form.html', {'form': form, 'survey': survey, 'is_edit': True})
+    active_questions = survey.questions.filter(deleted=False)
+    deleted_questions = survey.questions.filter(deleted=True)
+    return render(request, 'survey/survey_form.html', {
+        'form': form,
+        'survey': survey,
+        'is_edit': True,
+        'active_questions': active_questions,
+        'deleted_questions': deleted_questions,
+    })
 
 
 @login_required
@@ -82,11 +94,24 @@ def question_delete(request, pk):
     survey = question.survey
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_edit', pk=survey.pk)
     question.deleted = True
     question.save()
     messages.success(request, _('Question removed'))
-    return redirect('survey:survey_detail', pk=survey.pk)
+    return redirect('survey:survey_edit', pk=survey.pk)
+
+
+@login_required
+def question_restore(request, pk):
+    question = get_object_or_404(Question, pk=pk, deleted=True)
+    survey = question.survey
+    if request.user != survey.creator and not request.user.is_superuser:
+        messages.error(request, _('No permission'))
+        return redirect('survey:survey_edit', pk=survey.pk)
+    question.deleted = False
+    question.save()
+    messages.success(request, _('Question restored'))
+    return redirect('survey:survey_edit', pk=survey.pk)
 
 
 @login_required
@@ -118,6 +143,35 @@ def answer_survey(request, pk):
 def answer_list(request):
     answers = Answer.objects.filter(user=request.user, question__deleted=False, question__survey__deleted=False)
     return render(request, 'survey/answer_list.html', {'answers': answers})
+
+
+@login_required
+def answer_edit(request, pk):
+    answer = get_object_or_404(Answer, pk=pk, user=request.user, question__survey__deleted=False, question__deleted=False)
+    survey = answer.question.survey
+    if request.method == 'POST':
+        form = AnswerForm(request.POST, instance=answer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Answer updated'))
+            return redirect('survey:survey_detail', pk=survey.pk)
+    else:
+        form = AnswerForm(instance=answer)
+    return render(request, 'survey/answer_form.html', {
+        'survey': survey,
+        'question': answer.question,
+        'form': form,
+        'is_edit': True,
+    })
+
+
+@login_required
+def answer_delete(request, pk):
+    answer = get_object_or_404(Answer, pk=pk, user=request.user)
+    survey_pk = answer.question.survey.pk
+    answer.delete()
+    messages.success(request, _('Answer removed'))
+    return redirect('survey:survey_detail', pk=survey_pk)
 
 
 def survey_results(request, pk):

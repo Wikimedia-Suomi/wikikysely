@@ -16,10 +16,25 @@
 {% for q in questions %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
     <span>{{ q.text }}</span>
-    {% if can_edit %}
-      <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
-    {% endif %}
   </li>
 {% endfor %}
 </ul>
+{% if user_answers %}
+<h2 class="mt-4">{% translate 'My answers' %}</h2>
+<table class="table">
+  <thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Answer' %}</th><th></th></tr></thead>
+  <tbody>
+    {% for a in user_answers %}
+    <tr>
+      <td>{{ a.question.text }}</td>
+      <td>{{ a.get_answer_display }}</td>
+      <td>
+        <a href="{% url 'survey:answer_edit' a.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 {% endblock %}
