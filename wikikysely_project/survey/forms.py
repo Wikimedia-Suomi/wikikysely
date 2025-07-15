@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class SurveyForm(forms.ModelForm):
     class Meta:
         model = Survey
-        fields = ['title', 'description', 'start_date', 'end_date']
+        fields = ['title', 'description', 'start_date', 'end_date', 'state']
 
     def clean(self):
         cleaned_data = super().clean()

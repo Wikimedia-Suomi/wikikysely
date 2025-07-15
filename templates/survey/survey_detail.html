@@ -7,13 +7,19 @@
 <p>{% translate 'State' %}: {{ survey.get_state_display }}</p>
 <p>{% translate 'Start date' %}: {{ survey.start_date }} | {% translate 'End date' %}: {{ survey.end_date }}</p>
 {% if can_edit %}
+  <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
   <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
 {% endif %}
 <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
 <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info">{% translate 'Results' %}</a>
 <ul class="list-group mt-3">
 {% for q in questions %}
-  <li class="list-group-item">{{ q.text }}</li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <span>{{ q.text }}</span>
+    {% if can_edit %}
+      <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
+    {% endif %}
+  </li>
 {% endfor %}
 </ul>
 {% endblock %}
