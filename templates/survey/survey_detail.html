@@ -9,7 +9,6 @@
 {% if request.user.is_authenticated %}
   {% if can_edit %}
     <div class="mb-2">
-      <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
       <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
     </div>
   {% endif %}
@@ -21,7 +20,16 @@
       {% endfor %}
     </ul>
   {% endif %}
-  <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary mb-3">{% translate 'Answer survey' %}</a>
+  <div class="mb-3">
+    {% if unanswered_questions %}
+      <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
+    {% else %}
+      <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
+    {% endif %}
+    {% if can_edit %}
+      <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+    {% endif %}
+  </div>
 {% elif can_edit %}
   <div class="mb-2">
     <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
