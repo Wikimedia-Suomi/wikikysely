@@ -43,8 +43,8 @@
       <td>{{ a.question.text }}</td>
       <td>{{ a.get_answer_display }}</td>
       <td>
-        <a href="{% url 'survey:answer_edit' a.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
         {% if survey.state == 'running' %}
+        <a href="{% url 'survey:answer_edit' a.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
         <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
         {% endif %}
       </td>
