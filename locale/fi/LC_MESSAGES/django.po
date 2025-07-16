@@ -247,5 +247,9 @@ msgstr "Suljetusta kyselystä ei voi poistaa kysymyksiä"
 msgid "Cannot restore questions in a closed survey"
 msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 
+#: wikikysely_project/survey/views.py:110
+msgid "This question already exists (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
+msgstr "Tämä kysymys on jo olemassa (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Muotoile kysymys toisin."
+
 #~ msgid "Submit"
 #~ msgstr "Lähetä"

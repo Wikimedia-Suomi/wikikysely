@@ -247,5 +247,9 @@ msgstr "Det går inte att ta bort frågor från en stängd enkät"
 msgid "Cannot restore questions in a closed survey"
 msgstr "Det går inte att återställa frågor i en stängd enkät"
 
+#: wikikysely_project/survey/views.py:110
+msgid "This question already exists (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
+msgstr "Denna fråga finns redan (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Formulera frågan annorlunda."
+
 #~ msgid "Submit"
 #~ msgstr "Skicka"
