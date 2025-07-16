@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, gettext
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
@@ -222,4 +222,12 @@ def survey_results(request, pk):
         yes_count = q.answers.filter(answer='yes').count()
         no_count = q.answers.filter(answer='no').count()
         data.append({'question': q, 'yes': yes_count, 'no': no_count, 'total': yes_count+no_count})
-    return render(request, 'survey/results.html', {'survey': survey, 'data': data, 'total_users': total_users})
+    yes_label = gettext('Yes')
+    no_label = gettext('No')
+    return render(request, 'survey/results.html', {
+        'survey': survey,
+        'data': data,
+        'total_users': total_users,
+        'yes_label': yes_label,
+        'no_label': no_label,
+    })

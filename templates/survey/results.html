@@ -19,8 +19,8 @@
 const data = {
     labels: [{% for row in data %}'{{ row.question.text|escapejs }}',{% endfor %}],
     datasets: [
-        {label: gettext('Yes'), data: [{% for row in data %}{{ row.yes }},{% endfor %}], backgroundColor: 'green'},
-        {label: gettext('No'), data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
+        {label: '{{ yes_label|escapejs }}', data: [{% for row in data %}{{ row.yes }},{% endfor %}], backgroundColor: 'green'},
+        {label: '{{ no_label|escapejs }}', data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
     ]
 };
 new Chart(document.getElementById('resultsChart'), {
