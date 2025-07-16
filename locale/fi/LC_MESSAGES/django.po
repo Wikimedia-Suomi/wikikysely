@@ -105,6 +105,10 @@ msgstr "Vastaamattomat kysymykset"
 msgid "Answer survey"
 msgstr "Vastaa kyselyyn"
 
+#: templates/survey/survey_detail.html:36
+msgid "You must be logged in to answer questions"
+msgstr "Sinun tulee olla kirjautunut sisään vastataksesi kysymyksiin"
+
 #: templates/survey/survey_detail.html:44
 msgid "Edit"
 msgstr "Muokkaa"

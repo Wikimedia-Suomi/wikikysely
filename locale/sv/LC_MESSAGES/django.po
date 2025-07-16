@@ -105,6 +105,10 @@ msgstr "Obesvarade frågor"
 msgid "Answer survey"
 msgstr "Svara på enkäten"
 
+#: templates/survey/survey_detail.html:36
+msgid "You must be logged in to answer questions"
+msgstr "Du måste vara inloggad för att kunna svara på frågorna"
+
 #: templates/survey/survey_detail.html:44
 msgid "Edit"
 msgstr "Redigera"
