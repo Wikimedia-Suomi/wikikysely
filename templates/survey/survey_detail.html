@@ -6,6 +6,9 @@
 <p>{{ survey.description }}</p>
 <p>{% translate 'State' %}: {{ survey.get_state_display }}</p>
 <p>{% translate 'Start date' %}: {{ survey.start_date }} | {% translate 'End date' %}: {{ survey.end_date }}</p>
+{% if not questions %}
+  <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
+{% endif %}
 {% if request.user.is_authenticated %}
     {# Edit survey button moved next to the Results button at the bottom #}
     {% if unanswered_questions %}
@@ -19,7 +22,7 @@
   <div class="mb-3">
       {% if unanswered_questions %}
         <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
-      {% else %}
+      {% elif questions %}
         <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
       {% endif %}
       {% if survey.state == 'running' or can_edit and survey.state != 'closed' %}
@@ -61,7 +64,9 @@
   </tbody>
 </table>
 {% endif %}
+{% if questions %}
 <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info mt-3 me-2">{% translate 'Results' %}</a>
+{% endif %}
 {% if can_edit %}
 <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning mt-3">{% translate 'Edit survey' %}</a>
 {% endif %}
