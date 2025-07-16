@@ -26,7 +26,17 @@ const data = {
 new Chart(document.getElementById('resultsChart'), {
     type: 'bar',
     data: data,
-    options: { responsive: true, indexAxis: 'y', scales: { x: { stacked: true }, y: { stacked: true } } }
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        scales: {
+            x: { stacked: true, max: {{ total_users }} },
+            y: { stacked: true }
+        },
+        plugins: {
+            legend: { display: true }
+        }
+    }
 });
 </script>
 {% endblock %}
