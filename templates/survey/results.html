@@ -4,6 +4,14 @@
 {% block content %}
 <h1>{{ survey.title }} - {% translate 'Results' %}</h1>
 <canvas id="resultsChart"></canvas>
+<div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
+{% for row in data %}
+  <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
+    <canvas></canvas>
+    <p class="mt-2">{{ row.question.text }}</p>
+  </div>
+{% endfor %}
+</div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <table class="table">
 <thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Yes' %}</th><th>{% translate 'No' %}</th><th>{% translate 'Total' %}</th></tr></thead>
@@ -23,6 +31,12 @@ const data = {
         {label: '{{ no_label|escapejs }}', data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
     ]
 };
+
+const pieData = [
+    {% for row in data %}{ yes: {{ row.yes }}, no: {{ row.no }}, total: {{ row.total }} },{% endfor %}
+];
+const yesLabel = '{{ yes_label|escapejs }}';
+const noLabel = '{{ no_label|escapejs }}';
 
 // Calculate appropriate height based on number of questions
 const chartEl = document.getElementById('resultsChart');
@@ -81,6 +95,38 @@ new Chart(chartEl, {
             }
         }
     }
+});
+
+// Pie charts
+const pieContainers = document.querySelectorAll('#pieCharts .pie-chart');
+const totals = Array.from(pieContainers, el => parseInt(el.dataset.total));
+const maxTotal = Math.max(...totals, 1);
+const maxSize = 200;
+pieContainers.forEach((el, idx) => {
+    const yes = parseInt(el.dataset.yes);
+    const no = parseInt(el.dataset.no);
+    const total = parseInt(el.dataset.total);
+    const size = maxSize * Math.sqrt(total / maxTotal);
+    const canvas = el.querySelector('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    new Chart(canvas, {
+        type: 'pie',
+        data: {
+            labels: [yesLabel, noLabel],
+            datasets: [{
+                data: [yes, no],
+                backgroundColor: ['green', 'red']
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
 });
 </script>
 {% endblock %}
