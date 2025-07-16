@@ -80,3 +80,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # After logging in, redirect users to the Finnish index page instead of the
 # nonexistent ``/accounts/profile/`` path provided by Django's defaults.
 LOGIN_REDIRECT_URL = '/fi/'
+
+from django.contrib.messages import constants as message_constants
+
+# Map the ``ERROR`` level to Bootstrap's ``danger`` style so error
+# notifications render correctly.
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
