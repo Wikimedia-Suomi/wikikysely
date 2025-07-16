@@ -17,15 +17,15 @@
       </ul>
     {% endif %}
   <div class="mb-3">
-    {% if unanswered_questions %}
-      <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
-    {% else %}
-      <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
-    {% endif %}
-    {% if can_edit and survey.state != 'closed' %}
-      <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+      {% if unanswered_questions %}
+        <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
+      {% else %}
+        <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
       {% endif %}
-    </div>
+      {% if survey.state == 'running' or can_edit and survey.state != 'closed' %}
+        <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+      {% endif %}
+      </div>
 {% elif can_edit %}
     <div class="mb-2">
       {% if survey.state != 'closed' %}
