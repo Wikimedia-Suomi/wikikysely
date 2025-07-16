@@ -98,6 +98,9 @@ def question_add(request, survey_pk):
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
         return redirect('survey:survey_detail', pk=survey.pk)
+    if survey.state == 'closed':
+        messages.error(request, _('Cannot add questions to a closed survey'))
+        return redirect('survey:survey_detail', pk=survey.pk)
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
@@ -119,6 +122,9 @@ def question_delete(request, pk):
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
         return redirect('survey:survey_edit', pk=survey.pk)
+    if survey.state == 'closed':
+        messages.error(request, _('Cannot remove questions from a closed survey'))
+        return redirect('survey:survey_edit', pk=survey.pk)
     question.deleted = True
     question.save()
     messages.success(request, _('Question removed'))
@@ -131,6 +137,9 @@ def question_restore(request, pk):
     survey = question.survey
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
+        return redirect('survey:survey_edit', pk=survey.pk)
+    if survey.state == 'closed':
+        messages.error(request, _('Cannot restore questions in a closed survey'))
         return redirect('survey:survey_edit', pk=survey.pk)
     question.deleted = False
     question.save()
@@ -173,6 +182,9 @@ def answer_list(request):
 def answer_edit(request, pk):
     answer = get_object_or_404(Answer, pk=pk, user=request.user, question__survey__deleted=False, question__deleted=False)
     survey = answer.question.survey
+    if survey.state != 'running':
+        messages.error(request, _('Answer can only be edited while the survey is running'))
+        return redirect('survey:survey_detail', pk=survey.pk)
     if request.method == 'POST':
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():

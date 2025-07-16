@@ -223,5 +223,21 @@ msgstr "Vastaus poistettu"
 msgid "Answer can only be removed while the survey is running"
 msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
 
+#: wikikysely_project/survey/views.py:185
+msgid "Answer can only be edited while the survey is running"
+msgstr "Vastauksen voi muokata vain, kun kysely on käynnissä"
+
+#: wikikysely_project/survey/views.py:101
+msgid "Cannot add questions to a closed survey"
+msgstr "Suljettuun kyselyyn ei voi lisätä kysymyksiä"
+
+#: wikikysely_project/survey/views.py:125
+msgid "Cannot remove questions from a closed survey"
+msgstr "Suljetusta kyselystä ei voi poistaa kysymyksiä"
+
+#: wikikysely_project/survey/views.py:141
+msgid "Cannot restore questions in a closed survey"
+msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
+
 #~ msgid "Submit"
 #~ msgstr "Lähetä"

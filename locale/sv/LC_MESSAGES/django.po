@@ -223,5 +223,21 @@ msgstr "Svar borttaget"
 msgid "Answer can only be removed while the survey is running"
 msgstr "Svar kan tas bort endast när enkäten är igång"
 
+#: wikikysely_project/survey/views.py:185
+msgid "Answer can only be edited while the survey is running"
+msgstr "Svar kan redigeras endast när enkäten är igång"
+
+#: wikikysely_project/survey/views.py:101
+msgid "Cannot add questions to a closed survey"
+msgstr "Det går inte att lägga till frågor i en stängd enkät"
+
+#: wikikysely_project/survey/views.py:125
+msgid "Cannot remove questions from a closed survey"
+msgstr "Det går inte att ta bort frågor från en stängd enkät"
+
+#: wikikysely_project/survey/views.py:141
+msgid "Cannot restore questions in a closed survey"
+msgstr "Det går inte att återställa frågor i en stängd enkät"
+
 #~ msgid "Submit"
 #~ msgstr "Skicka"
