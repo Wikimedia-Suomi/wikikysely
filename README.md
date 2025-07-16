@@ -19,10 +19,15 @@ Prototype implementation of a multilingual wiki survey tool built with Django.
    ```bash
    python manage.py createsuperuser
    ```
-4. Run the development server:
+4. Compile translation messages:
+   ```bash
+   python manage.py compilemessages
+   ```
+5. Run the development server:
    ```bash
    python manage.py runserver
    ```
-5. Access the site at `http://localhost:8000/`.
+6. Access the site at `http://localhost:8000/`.
 
 The UI supports Finnish, Swedish and English. You can change the language from the menu.
+If the selected language does not apply, ensure translation files have been compiled using `python manage.py compilemessages`.
