@@ -6,7 +6,10 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">{% translate 'Save' %}</button>
+  <button type="submit" class="btn btn-primary me-2">{% translate 'Save' %}</button>
+  {% if is_edit %}
+  <a href="{% url 'survey:survey_detail' survey.pk %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
+  {% endif %}
 </form>
 {% if is_edit %}
   <h2 class="mt-4">{% translate 'Questions' %}</h2>
