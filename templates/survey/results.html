@@ -23,25 +23,62 @@ const data = {
         {label: '{{ no_label|escapejs }}', data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
     ]
 };
-// Adjust bar height to be slightly larger than the line height of the text
+
+// Calculate appropriate height based on number of questions
 const chartEl = document.getElementById('resultsChart');
 const lineHeight = parseFloat(getComputedStyle(document.body).lineHeight);
 const barHeight = Math.ceil(lineHeight * 1.2);
-chartEl.style.height = `${barHeight * data.labels.length}px`;
-data.datasets.forEach(ds => ds.barThickness = barHeight);
+const chartHeight = barHeight * data.labels.length + 100; // +100 for padding, legend, etc.
+
+// Set container height and disable responsive behavior
+chartEl.style.height = `${chartHeight}px`;
+chartEl.style.width = '100%';
+
 new Chart(chartEl, {
     type: 'bar',
     data: data,
     options: {
-        responsive: true,
+        responsive: false, // Disable responsive behavior
         maintainAspectRatio: false,
         indexAxis: 'y',
         scales: {
-            x: { stacked: true, max: {{ total_users }} },
-            y: { stacked: true }
+            x: { 
+                stacked: true, 
+                max: {{ total_users }},
+                grid: {
+                    display: true
+                },
+                ticks: {
+                    stepSize: 1,
+                    precision: 0
+                }
+            },
+            y: { 
+                stacked: true,
+                grid: {
+                    display: false
+                }
+            }
         },
         plugins: {
-            legend: { display: true }
+            legend: { 
+                display: true,
+                position: 'top'
+            }
+        },
+        // Control bar thickness more precisely
+        elements: {
+            bar: {
+                borderWidth: 0
+            }
+        },
+        layout: {
+            padding: {
+                top: 20,
+                bottom: 20,
+                left: 10,
+                right: 10
+            }
         }
     }
 });
