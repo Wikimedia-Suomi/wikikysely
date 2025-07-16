@@ -1,65 +1,59 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-15 20:42+0000\n"
+"POT-Creation-Date: 2025-07-16 04:41+0000\n"
 "Language: fi\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-# UI strings
-#: templates/base.html:20 templates/survey/survey_form.html:3
-#: templates/survey/survey_form.html:5
-msgid "Create survey"
-msgstr "Luo kysely"
-
-#: templates/base.html:21 templates/survey/answer_list.html:3
-#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:21
+#: templates/base.html:20 templates/survey/answer_list.html:3
+#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:35
 msgid "My answers"
 msgstr "Vastaukseni"
 
-#: templates/base.html:37
+#: templates/base.html:36
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
-#: templates/base.html:39 templates/registration/login.html:3
+#: templates/base.html:38 templates/registration/login.html:3
 #: templates/registration/login.html:5 templates/registration/login.html:10
 msgid "Login"
 msgstr "Kirjaudu sisään"
 
-#: templates/base.html:40 templates/registration/register.html:3
+#: templates/base.html:39 templates/registration/register.html:3
 #: templates/registration/register.html:5
 #: templates/registration/register.html:10
 msgid "Register"
 msgstr "Rekisteröidy"
 
-#: templates/survey/answer_form.html:11 templates/survey/question_form.html:9
-#: templates/survey/survey_form.html:9
-msgid "Save"
-msgstr "Tallenna"
-
-#: templates/survey/answer_form.html:19 templates/survey/results.html:9
+#: templates/survey/answer_form.html:15 templates/survey/results.html:9
 #: wikikysely_project/survey/models.py:42
 msgid "Yes"
 msgstr "Kyllä"
 
-#: templates/survey/answer_form.html:20 templates/survey/results.html:9
+#: templates/survey/answer_form.html:16 templates/survey/results.html:9
 #: wikikysely_project/survey/models.py:43
 msgid "No"
 msgstr "Ei"
+
+#: templates/survey/answer_form.html:18
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: templates/survey/answer_form.html:19 templates/survey/survey_detail.html:45
+#: templates/survey/survey_form.html:17
+msgid "Remove"
+msgstr "Poista"
 
 #: templates/survey/answer_form.html:21 wikikysely_project/survey/forms.py:42
 msgid "Skip"
 msgstr "Ohita"
 
-#: templates/survey/answer_form.html:21
-msgid "Cancel"
-msgstr "Peruuta"
-
 #: templates/survey/answer_list.html:7 templates/survey/results.html:9
-#: templates/survey/survey_detail.html:23
+#: templates/survey/survey_detail.html:37
 msgid "Question"
 msgstr "Kysymys"
 
-#: templates/survey/answer_list.html:7 templates/survey/survey_detail.html:23
+#: templates/survey/answer_list.html:7 templates/survey/survey_detail.html:37
 msgid "Answer"
 msgstr "Vastaus"
 
@@ -68,11 +62,17 @@ msgid "No answers"
 msgstr "Ei vastauksia"
 
 #: templates/survey/question_form.html:3 templates/survey/question_form.html:5
-#: templates/survey/survey_detail.html:11
+#: templates/survey/survey_detail.html:26
+#: templates/survey/survey_detail.html:31
 msgid "Add question"
 msgstr "Lisää kysymys"
 
-#: templates/survey/results.html:5 templates/survey/survey_detail.html:19
+#: templates/survey/question_form.html:9 templates/survey/survey_form.html:9
+msgid "Save"
+msgstr "Tallenna"
+
+#: templates/survey/results.html:5 templates/survey/survey_detail.html:23
+#: templates/survey/survey_detail.html:52
 msgid "Results"
 msgstr "Tulokset"
 
@@ -85,38 +85,41 @@ msgid "Total"
 msgstr "Yhteensä"
 
 #: templates/survey/survey_detail.html:7 templates/survey/survey_list.html:7
+#: wikikysely_project/survey/models.py:18
 msgid "State"
 msgstr "Tila"
 
-#: templates/survey/survey_detail.html:8
+#: templates/survey/survey_detail.html:8 wikikysely_project/survey/models.py:16
 msgid "Start date"
 msgstr "Aloituspäivä"
 
-#: templates/survey/survey_detail.html:8
+#: templates/survey/survey_detail.html:8 wikikysely_project/survey/models.py:17
 msgid "End date"
 msgstr "Päättymispäivä"
 
+#: templates/survey/survey_detail.html:12
+msgid "Unanswered questions"
+msgstr "Vastaamattomat kysymykset"
+
+#: templates/survey/survey_detail.html:21
+msgid "Answer survey"
+msgstr "Vastaa kyselyyn"
+
+#: templates/survey/survey_detail.html:44
+msgid "Edit"
+msgstr "Muokkaa"
+
 # UI strings
-#: templates/survey/survey_detail.html:10 templates/survey/survey_form.html:3
+#: templates/survey/survey_detail.html:54 templates/survey/survey_form.html:3
 #: templates/survey/survey_form.html:5
 msgid "Edit survey"
 msgstr "Muokkaa kyselyä"
 
-#: templates/survey/survey_detail.html:15
-msgid "Unanswered questions"
-msgstr "Vastaamattomat kysymykset"
-
-#: templates/survey/survey_detail.html:16
-msgid "Answer survey"
-msgstr "Vastaa kyselyyn"
-
-#: templates/survey/survey_detail.html:30
-msgid "Edit"
-msgstr "Muokkaa"
-
-#: templates/survey/survey_detail.html:31 templates/survey/survey_form.html:17
-msgid "Remove"
-msgstr "Poista"
+# UI strings
+#: templates/survey/survey_form.html:3 templates/survey/survey_form.html:5
+#: templates/survey/survey_list.html:17
+msgid "Create survey"
+msgstr "Luo kysely"
 
 #: templates/survey/survey_form.html:12
 msgid "Questions"
@@ -125,17 +128,20 @@ msgstr "Kysymykset"
 #: templates/survey/survey_form.html:20
 msgid "No questions"
 msgstr "Ei kysymyksiä"
+
+#: templates/survey/survey_form.html:24
 msgid "Deleted questions"
 msgstr "Poistetut kysymykset"
 
 #: templates/survey/survey_form.html:29
 msgid "Restore"
 msgstr "Palauta"
+
 #: templates/survey/survey_list.html:3 templates/survey/survey_list.html:5
 msgid "Surveys"
 msgstr "Kyselyt"
 
-#: templates/survey/survey_list.html:7
+#: templates/survey/survey_list.html:7 wikikysely_project/survey/models.py:13
 msgid "Title"
 msgstr "Otsikko"
 
@@ -146,6 +152,7 @@ msgstr "Ei kyselyitä"
 #: wikikysely_project/survey/forms.py:30
 msgid "End date must be after start date."
 msgstr "Päättymispäivän on oltava aloituspäivän jälkeen."
+
 #: wikikysely_project/survey/models.py:9
 msgid "Running"
 msgstr "Käynnissä"
@@ -157,6 +164,10 @@ msgstr "Tauolla"
 #: wikikysely_project/survey/models.py:11
 msgid "Closed"
 msgstr "Suljettu"
+
+#: wikikysely_project/survey/models.py:14
+msgid "Description"
+msgstr "Kuvaus"
 
 #: wikikysely_project/survey/views.py:24
 msgid "Registration successful"
@@ -175,6 +186,7 @@ msgstr "Ei oikeuksia"
 #: wikikysely_project/survey/views.py:80
 msgid "Survey updated"
 msgstr "Kysely päivitetty"
+
 #: wikikysely_project/survey/views.py:108
 msgid "Question added"
 msgstr "Kysymys lisätty"
@@ -182,6 +194,8 @@ msgstr "Kysymys lisätty"
 #: wikikysely_project/survey/views.py:124
 msgid "Question removed"
 msgstr "Kysymys poistettu"
+
+#: wikikysely_project/survey/views.py:137
 msgid "Question restored"
 msgstr "Kysymys palautettu"
 
@@ -200,6 +214,8 @@ msgstr "Vastaus tallennettu"
 #: wikikysely_project/survey/views.py:180
 msgid "Answer updated"
 msgstr "Vastaus päivitetty"
+
+#: wikikysely_project/survey/views.py:197
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 

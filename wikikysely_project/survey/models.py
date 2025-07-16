@@ -10,12 +10,12 @@ class Survey(models.Model):
         ('paused', _('Paused')),
         ('closed', _('Closed')),
     ]
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    title = models.CharField(_('Title'), max_length=255)
+    description = models.TextField(_('Description'), blank=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    state = models.CharField(max_length=7, choices=STATE_CHOICES, default='paused')
+    start_date = models.DateField(_('Start date'))
+    end_date = models.DateField(_('End date'))
+    state = models.CharField(_('State'), max_length=7, choices=STATE_CHOICES, default='paused')
     deleted = models.BooleanField(default=False)
 
     def is_active(self):
