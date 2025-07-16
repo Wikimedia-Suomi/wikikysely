@@ -27,7 +27,7 @@ const data = {
 const chartEl = document.getElementById('resultsChart');
 const lineHeight = parseFloat(getComputedStyle(document.body).lineHeight);
 const barHeight = Math.ceil(lineHeight * 1.2);
-chartEl.height = barHeight * data.labels.length;
+chartEl.style.height = `${barHeight * data.labels.length}px`;
 data.datasets.forEach(ds => ds.barThickness = barHeight);
 new Chart(chartEl, {
     type: 'bar',
