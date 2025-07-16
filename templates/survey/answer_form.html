@@ -14,9 +14,11 @@
   {% endfor %}
   <button type="submit" name="answer" value="yes" class="btn btn-success me-2">{% translate 'Yes' %}</button>
   <button type="submit" name="answer" value="no" class="btn btn-danger me-2">{% translate 'No' %}</button>
-  <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
   {% if is_edit %}
+    <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Cancel' %}</button>
     <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger ms-2">{% translate 'Remove' %}</a>
+  {% else %}
+    <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
   {% endif %}
 </form>
 {% endblock %}

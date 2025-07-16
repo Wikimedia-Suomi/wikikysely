@@ -50,6 +50,10 @@ msgstr "Nej"
 msgid "Skip"
 msgstr "Hoppa över"
 
+#: templates/survey/answer_form.html:21
+msgid "Cancel"
+msgstr "Avbryt"
+
 #: templates/survey/answer_list.html:7 templates/survey/results.html:9
 #: templates/survey/survey_detail.html:23
 msgid "Question"
