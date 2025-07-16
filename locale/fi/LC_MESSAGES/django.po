@@ -249,7 +249,7 @@ msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 
 #: templates/survey/survey_detail.html:10
 msgid "This survey has no questions yet. Please add questions."
-msgstr "Kyselyssä ei ole yhtään kysymystä vielä. Lisää kysymyksiä."
+msgstr "Kyselyssä ei ole yhtään kysymystä vielä."
 
 #: wikikysely_project/survey/views.py:110
 msgid "The question \"%(text)s\" already exists and has %(count)d answers (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."

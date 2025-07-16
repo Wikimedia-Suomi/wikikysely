@@ -36,7 +36,9 @@
       {% endif %}
     </div>
 {% else %}
+  {% if questions %}
   <p class="alert alert-info">{% translate 'You must be logged in to answer questions' %}</p>
+  {% endif %}
   <h2 class="mt-3">{% translate 'Questions' %}</h2>
   <ul class="list-group mb-3">
     {% for q in questions %}
