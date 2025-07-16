@@ -13,4 +13,7 @@
 {% endfor %}
 </tbody>
 </table>
+{% if request.user.is_authenticated %}
+<a href="{% url 'survey:survey_create' %}" class="btn btn-primary mt-3">{% translate 'Create survey' %}</a>
+{% endif %}
 {% endblock %}
