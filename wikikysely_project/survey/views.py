@@ -95,11 +95,11 @@ def survey_edit(request, pk):
 @login_required
 def question_add(request, survey_pk):
     survey = get_object_or_404(Survey, pk=survey_pk, deleted=False)
-    if request.user != survey.creator and not request.user.is_superuser:
-        messages.error(request, _('No permission'))
-        return redirect('survey:survey_detail', pk=survey.pk)
     if survey.state == 'closed':
         messages.error(request, _('Cannot add questions to a closed survey'))
+        return redirect('survey:survey_detail', pk=survey.pk)
+    if survey.state != 'running' and request.user != survey.creator and not request.user.is_superuser:
+        messages.error(request, _('No permission'))
         return redirect('survey:survey_detail', pk=survey.pk)
     if request.method == 'POST':
         form = QuestionForm(request.POST)
