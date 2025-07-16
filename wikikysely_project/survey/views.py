@@ -48,15 +48,14 @@ def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     questions = survey.questions.filter(deleted=False)
     user_answers = Answer.objects.none()
+    unanswered_questions = questions
     if request.user.is_authenticated:
         user_answers = Answer.objects.filter(user=request.user, question__survey=survey)
+        answered_ids = user_answers.values_list('question_id', flat=True)
+        unanswered_questions = questions.exclude(id__in=answered_ids)
     can_edit = request.user == survey.creator or request.user.is_superuser
 
-    unanswered_count = 0
-    if request.user.is_authenticated:
-        total_questions = questions.count()
-        answered_count = user_answers.count()
-        unanswered_count = max(total_questions - answered_count, 0)
+    unanswered_count = unanswered_questions.count() if request.user.is_authenticated else 0
 
     return render(request, 'survey/survey_detail.html', {
         'survey': survey,
@@ -64,6 +63,7 @@ def survey_detail(request, pk):
         'can_edit': can_edit,
         'user_answers': user_answers,
         'unanswered_count': unanswered_count,
+        'unanswered_questions': unanswered_questions,
     })
 
 
