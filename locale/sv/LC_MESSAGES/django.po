@@ -247,6 +247,10 @@ msgstr "Det går inte att ta bort frågor från en stängd enkät"
 msgid "Cannot restore questions in a closed survey"
 msgstr "Det går inte att återställa frågor i en stängd enkät"
 
+#: templates/survey/survey_detail.html:10
+msgid "This survey has no questions yet. Please add questions."
+msgstr "Enkäten har inga frågor ännu. Lägg till frågor."
+
 #: wikikysely_project/survey/views.py:110
 msgid "The question \"%(text)s\" already exists and has %(count)d answers (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
 msgstr "Frågan \"%(text)s\" finns redan och har %(count)d svar (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Formulera frågan annorlunda."
