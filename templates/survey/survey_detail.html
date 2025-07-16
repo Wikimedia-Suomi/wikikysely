@@ -22,13 +22,15 @@
     {% else %}
       <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
     {% endif %}
-    {% if can_edit %}
+    {% if can_edit and survey.state != 'closed' %}
       <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
     {% endif %}
   </div>
 {% elif can_edit %}
   <div class="mb-2">
+    {% if survey.state != 'closed' %}
     <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
+    {% endif %}
   </div>
 {% endif %}
 {% if user_answers %}
