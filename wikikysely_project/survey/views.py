@@ -78,7 +78,7 @@ def survey_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, _('Survey updated'))
-            return redirect('survey:survey_edit', pk=survey.pk)
+            return redirect('survey:survey_detail', pk=survey.pk)
     else:
         form = SurveyForm(instance=survey)
     active_questions = survey.questions.filter(deleted=False)
