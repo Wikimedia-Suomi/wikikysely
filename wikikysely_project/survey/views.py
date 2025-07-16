@@ -192,10 +192,13 @@ def answer_edit(request, pk):
 @login_required
 def answer_delete(request, pk):
     answer = get_object_or_404(Answer, pk=pk, user=request.user)
-    survey_pk = answer.question.survey.pk
+    survey = answer.question.survey
+    if survey.state != 'running':
+        messages.error(request, _('Answer can only be removed while the survey is running'))
+        return redirect('survey:survey_detail', pk=survey.pk)
     answer.delete()
     messages.success(request, _('Answer removed'))
-    return redirect('survey:survey_detail', pk=survey_pk)
+    return redirect('survey:survey_detail', pk=survey.pk)
 
 
 def survey_results(request, pk):
