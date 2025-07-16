@@ -1,65 +1,59 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-15 20:42+0000\n"
+"POT-Creation-Date: 2025-07-16 04:41+0000\n"
 "Language: sv\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-# UI strings
-#: templates/base.html:20 templates/survey/survey_form.html:3
-#: templates/survey/survey_form.html:5
-msgid "Create survey"
-msgstr "Skapa enkät"
-
-#: templates/base.html:21 templates/survey/answer_list.html:3
-#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:21
+#: templates/base.html:20 templates/survey/answer_list.html:3
+#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:35
 msgid "My answers"
 msgstr "Mina svar"
 
-#: templates/base.html:37
+#: templates/base.html:36
 msgid "Logout"
 msgstr "Logga ut"
 
-#: templates/base.html:39 templates/registration/login.html:3
+#: templates/base.html:38 templates/registration/login.html:3
 #: templates/registration/login.html:5 templates/registration/login.html:10
 msgid "Login"
 msgstr "Logga in"
 
-#: templates/base.html:40 templates/registration/register.html:3
+#: templates/base.html:39 templates/registration/register.html:3
 #: templates/registration/register.html:5
 #: templates/registration/register.html:10
 msgid "Register"
 msgstr "Registrera"
 
-#: templates/survey/answer_form.html:11 templates/survey/question_form.html:9
-#: templates/survey/survey_form.html:9
-msgid "Save"
-msgstr "Spara"
-
-#: templates/survey/answer_form.html:19 templates/survey/results.html:9
+#: templates/survey/answer_form.html:15 templates/survey/results.html:9
 #: wikikysely_project/survey/models.py:42
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/survey/answer_form.html:20 templates/survey/results.html:9
+#: templates/survey/answer_form.html:16 templates/survey/results.html:9
 #: wikikysely_project/survey/models.py:43
 msgid "No"
 msgstr "Nej"
+
+#: templates/survey/answer_form.html:18
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: templates/survey/answer_form.html:19 templates/survey/survey_detail.html:45
+#: templates/survey/survey_form.html:17
+msgid "Remove"
+msgstr "Ta bort"
 
 #: templates/survey/answer_form.html:21 wikikysely_project/survey/forms.py:42
 msgid "Skip"
 msgstr "Hoppa över"
 
-#: templates/survey/answer_form.html:21
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: templates/survey/answer_list.html:7 templates/survey/results.html:9
-#: templates/survey/survey_detail.html:23
+#: templates/survey/survey_detail.html:37
 msgid "Question"
 msgstr "Fråga"
 
-#: templates/survey/answer_list.html:7 templates/survey/survey_detail.html:23
+#: templates/survey/answer_list.html:7 templates/survey/survey_detail.html:37
 msgid "Answer"
 msgstr "Svar"
 
@@ -68,11 +62,17 @@ msgid "No answers"
 msgstr "Inga svar"
 
 #: templates/survey/question_form.html:3 templates/survey/question_form.html:5
-#: templates/survey/survey_detail.html:11
+#: templates/survey/survey_detail.html:26
+#: templates/survey/survey_detail.html:31
 msgid "Add question"
 msgstr "Lägg till fråga"
 
-#: templates/survey/results.html:5 templates/survey/survey_detail.html:19
+#: templates/survey/question_form.html:9 templates/survey/survey_form.html:9
+msgid "Save"
+msgstr "Spara"
+
+#: templates/survey/results.html:5 templates/survey/survey_detail.html:23
+#: templates/survey/survey_detail.html:52
 msgid "Results"
 msgstr "Resultat"
 
@@ -85,54 +85,63 @@ msgid "Total"
 msgstr "Totalt"
 
 #: templates/survey/survey_detail.html:7 templates/survey/survey_list.html:7
+#: wikikysely_project/survey/models.py:18
 msgid "State"
 msgstr "Status"
 
-#: templates/survey/survey_detail.html:8
+#: templates/survey/survey_detail.html:8 wikikysely_project/survey/models.py:16
 msgid "Start date"
 msgstr "Startdatum"
 
-#: templates/survey/survey_detail.html:8
+#: templates/survey/survey_detail.html:8 wikikysely_project/survey/models.py:17
 msgid "End date"
 msgstr "Slutdatum"
 
+#: templates/survey/survey_detail.html:12
+msgid "Unanswered questions"
+msgstr "Obesvarade frågor"
+
+#: templates/survey/survey_detail.html:21
+msgid "Answer survey"
+msgstr "Svara på enkäten"
+
+#: templates/survey/survey_detail.html:44
+msgid "Edit"
+msgstr "Redigera"
+
 # UI strings
-#: templates/survey/survey_detail.html:10 templates/survey/survey_form.html:3
+#: templates/survey/survey_detail.html:54 templates/survey/survey_form.html:3
 #: templates/survey/survey_form.html:5
 msgid "Edit survey"
 msgstr "Redigera enkät"
 
-#: templates/survey/survey_detail.html:15
-msgid "Unanswered questions"
-msgstr "Obesvarade frågor"
-#: templates/survey/survey_detail.html:16
-msgid "Answer survey"
-msgstr "Svara på enkäten"
-
-#: templates/survey/survey_detail.html:30
-msgid "Edit"
-msgstr "Redigera"
-
-#: templates/survey/survey_detail.html:31 templates/survey/survey_form.html:17
-msgid "Remove"
-msgstr "Ta bort"
+# UI strings
+#: templates/survey/survey_form.html:3 templates/survey/survey_form.html:5
+#: templates/survey/survey_list.html:17
+msgid "Create survey"
+msgstr "Skapa enkät"
 
 #: templates/survey/survey_form.html:12
 msgid "Questions"
 msgstr "Frågor"
+
 #: templates/survey/survey_form.html:20
 msgid "No questions"
 msgstr "Inga frågor"
+
+#: templates/survey/survey_form.html:24
 msgid "Deleted questions"
 msgstr "Borttagna frågor"
+
 #: templates/survey/survey_form.html:29
 msgid "Restore"
 msgstr "Återställ"
+
 #: templates/survey/survey_list.html:3 templates/survey/survey_list.html:5
 msgid "Surveys"
 msgstr "Enkäter"
 
-#: templates/survey/survey_list.html:7
+#: templates/survey/survey_list.html:7 wikikysely_project/survey/models.py:13
 msgid "Title"
 msgstr "Titel"
 
@@ -143,6 +152,8 @@ msgstr "Inga enkäter"
 #: wikikysely_project/survey/forms.py:30
 msgid "End date must be after start date."
 msgstr "Slutdatum måste vara efter startdatum."
+
+#: wikikysely_project/survey/models.py:9
 msgid "Running"
 msgstr "Pågår"
 
@@ -153,6 +164,10 @@ msgstr "Pausad"
 #: wikikysely_project/survey/models.py:11
 msgid "Closed"
 msgstr "Stängd"
+
+#: wikikysely_project/survey/models.py:14
+msgid "Description"
+msgstr "Beskrivning"
 
 #: wikikysely_project/survey/views.py:24
 msgid "Registration successful"
@@ -171,22 +186,36 @@ msgstr "Ingen behörighet"
 #: wikikysely_project/survey/views.py:80
 msgid "Survey updated"
 msgstr "Enkät uppdaterad"
+
+#: wikikysely_project/survey/views.py:108
 msgid "Question added"
 msgstr "Fråga tillagd"
 
 #: wikikysely_project/survey/views.py:124
 msgid "Question removed"
 msgstr "Fråga borttagen"
+
+#: wikikysely_project/survey/views.py:137
 msgid "Question restored"
 msgstr "Fråga återställd"
+
+#: wikikysely_project/survey/views.py:145
 msgid "Survey not active"
 msgstr "Enkäten är inte aktiv"
+
+#: wikikysely_project/survey/views.py:151
 msgid "No more questions"
 msgstr "Inga fler frågor"
+
+#: wikikysely_project/survey/views.py:159
 msgid "Answer saved"
 msgstr "Svar sparat"
+
+#: wikikysely_project/survey/views.py:180
 msgid "Answer updated"
 msgstr "Svar uppdaterat"
+
+#: wikikysely_project/survey/views.py:197
 msgid "Answer removed"
 msgstr "Svar borttaget"
 
