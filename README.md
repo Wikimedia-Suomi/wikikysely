@@ -7,27 +7,39 @@ Prototype implementation of a multilingual wiki survey tool built with Django.
 - Django 4.x
 
 ## Setup
-1. Install dependencies (requires internet access):
+Guide is for Linux and OS X. With Windows you need to create and activate virtualenv differently
+
+1. Get source code
+   ```bash
+   git clone https://github.com/Wikimedia-Suomi/wikikysely.git
+   ```
+2. Create virtualenv and initialize it
+   ```bash
+   cd wikikysely
+   python3 -m venv venv
+   source venv/bin/activate
+   ```   
+3. Install dependencies (requires internet access):
    ```bash
    pip install django==4.2
    ```
-2. Apply migrations:
+4. Apply migrations:
    ```bash
    python manage.py migrate
    ```
-3. Create a superuser:
+5. Create a superuser:
    ```bash
    python manage.py createsuperuser
    ```
-4. Compile translation messages:
+6. Compile translation messages:
    ```bash
    python manage.py compilemessages
    ```
-5. Run the development server:
+7. Run the development server:
    ```bash
    python manage.py runserver
    ```
-6. Access the site at `http://localhost:8000/`.
+8. Access the site at `http://localhost:8000/`.
 
 The UI supports Finnish, Swedish and English. You can change the language from the menu.
 If the selected language does not apply, ensure translation files have been compiled using `python manage.py compilemessages`.
