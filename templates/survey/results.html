@@ -24,14 +24,17 @@ const data = {
     ]
 };
 // Adjust bar height to be slightly larger than the line height of the text
+const chartEl = document.getElementById('resultsChart');
 const lineHeight = parseFloat(getComputedStyle(document.body).lineHeight);
 const barHeight = Math.ceil(lineHeight * 1.2);
+chartEl.height = barHeight * data.labels.length;
 data.datasets.forEach(ds => ds.barThickness = barHeight);
-new Chart(document.getElementById('resultsChart'), {
+new Chart(chartEl, {
     type: 'bar',
     data: data,
     options: {
         responsive: true,
+        maintainAspectRatio: false,
         indexAxis: 'y',
         scales: {
             x: { stacked: true, max: {{ total_users }} },
