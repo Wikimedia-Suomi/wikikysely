@@ -109,13 +109,15 @@ def question_add(request, survey_pk):
             if existing:
                 yes_count = existing.answers.filter(answer='yes').count()
                 no_count = existing.answers.filter(answer='no').count()
+                answer_count = yes_count + no_count
                 yes_label = gettext('Yes')
                 no_label = gettext('No')
                 messages.error(
                     request,
-                    _('This question already exists (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question.')
+                    _('The question "%(text)s" already exists and has %(count)d answers (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question.')
                     % {
-                        'num': existing.pk,
+                        'text': existing.text,
+                        'count': answer_count,
                         'yes_label': yes_label,
                         'yes': yes_count,
                         'no_label': no_label,

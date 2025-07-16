@@ -248,8 +248,8 @@ msgid "Cannot restore questions in a closed survey"
 msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 
 #: wikikysely_project/survey/views.py:110
-msgid "This question already exists (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
-msgstr "Tämä kysymys on jo olemassa (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Muotoile kysymys toisin."
+msgid "The question \"%(text)s\" already exists and has %(count)d answers (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
+msgstr "Kysymys \"%(text)s\" on jo olemassa ja sille on %(count)d vastausta (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Muotoile kysymys toisin."
 
 #~ msgid "Submit"
 #~ msgstr "Lähetä"
