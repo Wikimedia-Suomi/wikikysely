@@ -20,6 +20,10 @@ class SurveyForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         model = Survey
         fields = ['title', 'description', 'start_date', 'end_date', 'state']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date', 'placeholder': '2024-01-01'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'placeholder': '2024-12-31'}),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
