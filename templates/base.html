@@ -17,7 +17,6 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto">
         {% if request.user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'survey:survey_create' %}">{% translate 'Create survey' %}</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'survey:answer_list' %}">{% translate 'My answers' %}</a></li>
         {% endif %}
       </ul>
