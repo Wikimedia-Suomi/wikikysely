@@ -1,5 +1,6 @@
 import random
 from django.contrib import messages
+from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -191,13 +192,21 @@ def answer_survey(request, pk):
                     defaults={'answer': answer_value},
                 )
                 messages.success(request, _('Answer saved'))
-            return redirect('survey:answer_survey', pk=survey.pk)
+                return redirect('survey:answer_survey', pk=survey.pk)
+            else:
+                next_url = (
+                    f"{reverse('survey:answer_survey', kwargs={'pk': survey.pk})}?skip={question.pk}"
+                )
+                return redirect(next_url)
     else:
         answered_questions = Answer.objects.filter(
             user=request.user,
             question__survey=survey,
         ).values_list('question_id', flat=True)
         remaining = survey.questions.filter(deleted=False).exclude(id__in=answered_questions)
+        skip_id = request.GET.get('skip')
+        if skip_id:
+            remaining = remaining.exclude(id=skip_id)
         question = random.choice(list(remaining)) if remaining else None
         if not question:
             messages.info(request, _('No more questions'))
