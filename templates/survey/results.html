@@ -23,6 +23,10 @@ const data = {
         {label: '{{ no_label|escapejs }}', data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
     ]
 };
+// Adjust bar height to be slightly larger than the line height of the text
+const lineHeight = parseFloat(getComputedStyle(document.body).lineHeight);
+const barHeight = Math.ceil(lineHeight * 1.2);
+data.datasets.forEach(ds => ds.barThickness = barHeight);
 new Chart(document.getElementById('resultsChart'), {
     type: 'bar',
     data: data,
