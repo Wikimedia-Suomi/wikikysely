@@ -174,23 +174,40 @@ def answer_survey(request, pk):
     if not survey.is_active():
         messages.error(request, _('Survey not active'))
         return redirect('survey:survey_detail', pk=survey.pk)
-    answered_questions = Answer.objects.filter(user=request.user, question__survey=survey).values_list('question_id', flat=True)
-    remaining = survey.questions.filter(deleted=False).exclude(id__in=answered_questions)
-    question = random.choice(list(remaining)) if remaining else None
-    if not question:
-        messages.info(request, _('No more questions'))
-        return redirect('survey:survey_detail', pk=survey.pk)
     if request.method == 'POST':
         form = AnswerForm(request.POST)
+        question = get_object_or_404(
+            Question,
+            pk=form.data.get('question_id'),
+            survey=survey,
+            deleted=False,
+        )
         if form.is_valid():
             answer_value = form.cleaned_data['answer']
             if answer_value:
-                Answer.objects.update_or_create(user=request.user, question=question, defaults={'answer': answer_value})
+                Answer.objects.update_or_create(
+                    user=request.user,
+                    question=question,
+                    defaults={'answer': answer_value},
+                )
                 messages.success(request, _('Answer saved'))
             return redirect('survey:answer_survey', pk=survey.pk)
     else:
-        form = AnswerForm()
-    return render(request, 'survey/answer_form.html', {'survey': survey, 'question': question, 'form': form})
+        answered_questions = Answer.objects.filter(
+            user=request.user,
+            question__survey=survey,
+        ).values_list('question_id', flat=True)
+        remaining = survey.questions.filter(deleted=False).exclude(id__in=answered_questions)
+        question = random.choice(list(remaining)) if remaining else None
+        if not question:
+            messages.info(request, _('No more questions'))
+            return redirect('survey:survey_detail', pk=survey.pk)
+        form = AnswerForm(initial={'question_id': question.pk})
+    return render(
+        request,
+        'survey/answer_form.html',
+        {'survey': survey, 'question': question, 'form': form},
+    )
 
 
 @login_required
@@ -213,7 +230,7 @@ def answer_edit(request, pk):
             messages.success(request, _('Answer updated'))
             return redirect('survey:survey_detail', pk=survey.pk)
     else:
-        form = AnswerForm(instance=answer)
+        form = AnswerForm(instance=answer, initial={'question_id': answer.question_id})
     return render(request, 'survey/answer_form.html', {
         'survey': survey,
         'question': answer.question,
