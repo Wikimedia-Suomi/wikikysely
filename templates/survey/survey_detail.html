@@ -6,17 +6,28 @@
 <p>{{ survey.description }}</p>
 <p>{% translate 'State' %}: {{ survey.get_state_display }}</p>
 <p>{% translate 'Start date' %}: {{ survey.start_date }} | {% translate 'End date' %}: {{ survey.end_date }}</p>
-{% if can_edit %}
-  <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
-  <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
-{% endif %}
 {% if request.user.is_authenticated %}
-<p class="mt-3">
-  {% translate 'Unanswered questions' %}: {{ unanswered_count }}
-  <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary ms-2">{% translate 'Answer survey' %}</a>
-</p>
+  {% if can_edit %}
+    <div class="mb-2">
+      <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
+      <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
+    </div>
+  {% endif %}
+  {% if unanswered_questions %}
+    <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
+    <ul class="list-group mb-3">
+      {% for q in unanswered_questions %}
+      <li class="list-group-item">{{ q.text }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary mb-3">{% translate 'Answer survey' %}</a>
+{% elif can_edit %}
+  <div class="mb-2">
+    <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
+    <a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
+  </div>
 {% endif %}
-<a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info">{% translate 'Results' %}</a>
 {% if user_answers %}
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
 <table class="table">
@@ -35,4 +46,5 @@
   </tbody>
 </table>
 {% endif %}
+<a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info mt-3">{% translate 'Results' %}</a>
 {% endblock %}
