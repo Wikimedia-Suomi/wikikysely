@@ -1,101 +1,190 @@
 msgid ""
 msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-15 20:42+0000\n"
 "Language: sv\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
 # UI strings
+#: templates/base.html:20 templates/survey/survey_form.html:3
+#: templates/survey/survey_form.html:5
 msgid "Create survey"
 msgstr "Skapa enkät"
 
+#: templates/base.html:21 templates/survey/answer_list.html:3
+#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:21
 msgid "My answers"
 msgstr "Mina svar"
 
-msgid "Save"
-msgstr "Spara"
+#: templates/base.html:37
+msgid "Logout"
+msgstr "Logga ut"
 
-msgid "Add question"
-msgstr "Lägg till fråga"
+#: templates/base.html:39 templates/registration/login.html:3
+#: templates/registration/login.html:5 templates/registration/login.html:10
+msgid "Login"
+msgstr "Logga in"
 
-msgid "State"
-msgstr "Status"
-
-msgid "Start date"
-msgstr "Startdatum"
-
-msgid "End date"
-msgstr "Slutdatum"
-
-msgid "Answer survey"
-msgstr "Svara på enkäten"
-
-msgid "Results"
-msgstr "Resultat"
-
-msgid "Submit"
-msgstr "Skicka"
-
-msgid "Question"
-msgstr "Fråga"
-
-msgid "Answer"
-msgstr "Svar"
-
-msgid "No answers"
-msgstr "Inga svar"
-
-msgid "Total respondents"
-msgstr "Antal svarande"
-
-msgid "Yes"
-msgstr "Ja"
-
-msgid "No"
-msgstr "Nej"
-
-msgid "Total"
-msgstr "Totalt"
-
-msgid "Surveys"
-msgstr "Enkäter"
-
-msgid "Title"
-msgstr "Titel"
-
-msgid "No surveys"
-msgstr "Inga enkäter"
-
-msgid "Skip"
-msgstr "Hoppa över"
-
-msgid "Running"
-msgstr "Pågår"
-
-msgid "Paused"
-msgstr "Pausad"
-
-msgid "Closed"
-msgstr "Stängd"
-
-msgid "Survey created"
-msgstr "Enkät skapad"
-
-msgid "No permission"
-msgstr "Ingen behörighet"
-
-msgid "Question added"
-msgstr "Fråga tillagd"
-
-msgid "Survey not active"
-msgstr "Enkäten är inte aktiv"
-
-msgid "No more questions"
-msgstr "Inga fler frågor"
-
-msgid "Answer saved"
-msgstr "Svar sparat"
-
+#: templates/base.html:40 templates/registration/register.html:3
+#: templates/registration/register.html:5
+#: templates/registration/register.html:10
 msgid "Register"
 msgstr "Registrera"
 
+#: templates/survey/answer_form.html:11 templates/survey/question_form.html:9
+#: templates/survey/survey_form.html:9
+msgid "Save"
+msgstr "Spara"
+
+#: templates/survey/answer_form.html:19 templates/survey/results.html:9
+#: wikikysely_project/survey/models.py:42
+msgid "Yes"
+msgstr "Ja"
+
+#: templates/survey/answer_form.html:20 templates/survey/results.html:9
+#: wikikysely_project/survey/models.py:43
+msgid "No"
+msgstr "Nej"
+
+#: templates/survey/answer_form.html:21 wikikysely_project/survey/forms.py:42
+msgid "Skip"
+msgstr "Hoppa över"
+
+#: templates/survey/answer_list.html:7 templates/survey/results.html:9
+#: templates/survey/survey_detail.html:23
+msgid "Question"
+msgstr "Fråga"
+
+#: templates/survey/answer_list.html:7 templates/survey/survey_detail.html:23
+msgid "Answer"
+msgstr "Svar"
+
+#: templates/survey/answer_list.html:12
+msgid "No answers"
+msgstr "Inga svar"
+
+#: templates/survey/question_form.html:3 templates/survey/question_form.html:5
+#: templates/survey/survey_detail.html:11
+msgid "Add question"
+msgstr "Lägg till fråga"
+
+#: templates/survey/results.html:5 templates/survey/survey_detail.html:19
+msgid "Results"
+msgstr "Resultat"
+
+#: templates/survey/results.html:7
+msgid "Total respondents"
+msgstr "Antal svarande"
+
+#: templates/survey/results.html:9
+msgid "Total"
+msgstr "Totalt"
+
+#: templates/survey/survey_detail.html:7 templates/survey/survey_list.html:7
+msgid "State"
+msgstr "Status"
+
+#: templates/survey/survey_detail.html:8
+msgid "Start date"
+msgstr "Startdatum"
+
+#: templates/survey/survey_detail.html:8
+msgid "End date"
+msgstr "Slutdatum"
+
+# UI strings
+#: templates/survey/survey_detail.html:10 templates/survey/survey_form.html:3
+#: templates/survey/survey_form.html:5
+msgid "Edit survey"
+msgstr "Redigera enkät"
+
+#: templates/survey/survey_detail.html:15
+msgid "Unanswered questions"
+msgstr "Obesvarade frågor"
+#: templates/survey/survey_detail.html:16
+msgid "Answer survey"
+msgstr "Svara på enkäten"
+
+#: templates/survey/survey_detail.html:30
+msgid "Edit"
+msgstr "Redigera"
+
+#: templates/survey/survey_detail.html:31 templates/survey/survey_form.html:17
+msgid "Remove"
+msgstr "Ta bort"
+
+#: templates/survey/survey_form.html:12
+msgid "Questions"
+msgstr "Frågor"
+#: templates/survey/survey_form.html:20
+msgid "No questions"
+msgstr "Inga frågor"
+msgid "Deleted questions"
+msgstr "Borttagna frågor"
+#: templates/survey/survey_form.html:29
+msgid "Restore"
+msgstr "Återställ"
+#: templates/survey/survey_list.html:3 templates/survey/survey_list.html:5
+msgid "Surveys"
+msgstr "Enkäter"
+
+#: templates/survey/survey_list.html:7
+msgid "Title"
+msgstr "Titel"
+
+#: templates/survey/survey_list.html:12
+msgid "No surveys"
+msgstr "Inga enkäter"
+
+#: wikikysely_project/survey/forms.py:30
+msgid "End date must be after start date."
+msgstr "Slutdatum måste vara efter startdatum."
+msgid "Running"
+msgstr "Pågår"
+
+#: wikikysely_project/survey/models.py:10
+msgid "Paused"
+msgstr "Pausad"
+
+#: wikikysely_project/survey/models.py:11
+msgid "Closed"
+msgstr "Stängd"
+
+#: wikikysely_project/survey/views.py:24
 msgid "Registration successful"
 msgstr "Registreringen lyckades"
+
+#: wikikysely_project/survey/views.py:40
+msgid "Survey created"
+msgstr "Enkät skapad"
+
+#: wikikysely_project/survey/views.py:74 wikikysely_project/survey/views.py:99
+#: wikikysely_project/survey/views.py:120
+#: wikikysely_project/survey/views.py:133
+msgid "No permission"
+msgstr "Ingen behörighet"
+
+#: wikikysely_project/survey/views.py:80
+msgid "Survey updated"
+msgstr "Enkät uppdaterad"
+msgid "Question added"
+msgstr "Fråga tillagd"
+
+#: wikikysely_project/survey/views.py:124
+msgid "Question removed"
+msgstr "Fråga borttagen"
+msgid "Question restored"
+msgstr "Fråga återställd"
+msgid "Survey not active"
+msgstr "Enkäten är inte aktiv"
+msgid "No more questions"
+msgstr "Inga fler frågor"
+msgid "Answer saved"
+msgstr "Svar sparat"
+msgid "Answer updated"
+msgstr "Svar uppdaterat"
+msgid "Answer removed"
+msgstr "Svar borttaget"
+
+#~ msgid "Submit"
+#~ msgstr "Skicka"
