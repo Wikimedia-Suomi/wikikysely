@@ -49,6 +49,7 @@ class AnswerForm(BootstrapMixin, forms.ModelForm):
     answer = forms.ChoiceField(
         choices=Answer.ANSWER_CHOICES + [('', _('Skip'))],
         widget=forms.RadioSelect,
+        required=False,
     )
     question_id = forms.IntegerField(widget=forms.HiddenInput)
 
