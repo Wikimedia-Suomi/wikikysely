@@ -104,12 +104,31 @@ def question_add(request, survey_pk):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
-            question = form.save(commit=False)
-            question.survey = survey
-            question.creator = request.user
-            question.save()
-            messages.success(request, _('Question added'))
-            return redirect('survey:survey_detail', pk=survey.pk)
+            text = form.cleaned_data['text'].strip()
+            existing = survey.questions.filter(text__iexact=text, deleted=False).first()
+            if existing:
+                yes_count = existing.answers.filter(answer='yes').count()
+                no_count = existing.answers.filter(answer='no').count()
+                yes_label = gettext('Yes')
+                no_label = gettext('No')
+                messages.error(
+                    request,
+                    _('This question already exists (%(num)d: %(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question.')
+                    % {
+                        'num': existing.pk,
+                        'yes_label': yes_label,
+                        'yes': yes_count,
+                        'no_label': no_label,
+                        'no': no_count,
+                    },
+                )
+            else:
+                question = form.save(commit=False)
+                question.survey = survey
+                question.creator = request.user
+                question.save()
+                messages.success(request, _('Question added'))
+                return redirect('survey:survey_detail', pk=survey.pk)
     else:
         form = QuestionForm()
     return render(request, 'survey/question_form.html', {'form': form, 'survey': survey})
