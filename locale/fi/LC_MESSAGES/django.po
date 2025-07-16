@@ -219,5 +219,9 @@ msgstr "Vastaus päivitetty"
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 
+#: wikikysely_project/survey/views.py:196
+msgid "Answer can only be removed while the survey is running"
+msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
+
 #~ msgid "Submit"
 #~ msgstr "Lähetä"

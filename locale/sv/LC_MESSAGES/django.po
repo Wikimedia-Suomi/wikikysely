@@ -219,5 +219,9 @@ msgstr "Svar uppdaterat"
 msgid "Answer removed"
 msgstr "Svar borttaget"
 
+#: wikikysely_project/survey/views.py:196
+msgid "Answer can only be removed while the survey is running"
+msgstr "Svar kan tas bort endast när enkäten är igång"
+
 #~ msgid "Submit"
 #~ msgstr "Skicka"
