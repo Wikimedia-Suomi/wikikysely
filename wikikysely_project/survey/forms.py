@@ -36,6 +36,9 @@ class QuestionForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         model = Question
         fields = ['text']
+        labels = {
+            'text': _('Text'),
+        }
 
 
 class AnswerForm(BootstrapMixin, forms.ModelForm):

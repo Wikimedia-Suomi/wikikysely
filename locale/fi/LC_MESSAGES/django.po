@@ -169,6 +169,10 @@ msgstr "Suljettu"
 msgid "Description"
 msgstr "Kuvaus"
 
+#: wikikysely_project/survey/forms.py:37
+msgid "Text"
+msgstr "Teksti"
+
 #: wikikysely_project/survey/views.py:24
 msgid "Registration successful"
 msgstr "Rekisteröinti onnistui"

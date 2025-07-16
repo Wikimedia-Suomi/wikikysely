@@ -169,6 +169,10 @@ msgstr "Stängd"
 msgid "Description"
 msgstr "Beskrivning"
 
+#: wikikysely_project/survey/forms.py:37
+msgid "Text"
+msgstr "Text"
+
 #: wikikysely_project/survey/views.py:24
 msgid "Registration successful"
 msgstr "Registreringen lyckades"
