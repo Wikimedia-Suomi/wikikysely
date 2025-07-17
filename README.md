@@ -25,6 +25,7 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```
 4. Apply migrations:
    ```bash
+   python manage.py makemigrations
    python manage.py migrate
    ```
 5. Create a superuser:
