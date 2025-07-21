@@ -175,3 +175,17 @@ class SurveyFlowTests(TransactionTestCase):
             self.assertEqual(ans.answer, 'yes')
         self.assertEqual(Answer.objects.count(), 3)
 
+    def test_cannot_answer_when_paused(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        survey.state = 'paused'
+        survey.save()
+
+        response = self.client.get(reverse('survey:answer_survey', kwargs={'pk': survey.pk}))
+        self.assertRedirects(response, reverse('survey:survey_detail', kwargs={'pk': survey.pk}))
+
+        data = {'question_id': question.pk, 'answer': 'yes'}
+        response = self.client.post(reverse('survey:answer_survey', kwargs={'pk': survey.pk}), data)
+        self.assertEqual(Answer.objects.count(), 0)
+        self.assertRedirects(response, reverse('survey:survey_detail', kwargs={'pk': survey.pk}))
+

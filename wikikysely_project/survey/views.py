@@ -172,6 +172,9 @@ def question_restore(request, pk):
 @login_required
 def answer_survey(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
+    if survey.state == 'paused':
+        messages.error(request, _('Survey not active'))
+        return redirect('survey:survey_detail', pk=survey.pk)
     if not survey.is_active():
         messages.error(request, _('Survey not active'))
         return redirect('survey:survey_detail', pk=survey.pk)
