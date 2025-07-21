@@ -44,3 +44,14 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
 
 The UI supports Finnish, Swedish and English. You can change the language from the menu.
 If the selected language does not apply, ensure translation files have been compiled using `python manage.py compilemessages`.
+
+## Running tests
+
+Unit tests use Django's built-in test runner. After installing the dependencies
+and setting up the virtual environment, run:
+
+```bash
+python manage.py test -v 2
+```
+
+The command will create a temporary database and execute the test suite.
