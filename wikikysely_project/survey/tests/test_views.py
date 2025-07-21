@@ -189,3 +189,11 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(Answer.objects.count(), 0)
         self.assertRedirects(response, reverse('survey:survey_detail', kwargs={'pk': survey.pk}))
 
+    def test_detail_shows_paused_alert(self):
+        survey = self._create_survey()
+        survey.state = 'paused'
+        survey.save()
+
+        response = self.client.get(reverse('survey:survey_detail', kwargs={'pk': survey.pk}))
+        self.assertContains(response, 'This survey is currently paused.')
+

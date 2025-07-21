@@ -6,6 +6,9 @@
 <p>{{ survey.description }}</p>
 <p>{% translate 'State' %}: {{ survey.get_state_display }}</p>
 <p>{% translate 'Start date' %}: {{ survey.start_date }} | {% translate 'End date' %}: {{ survey.end_date }}</p>
+{% if survey.state == 'paused' %}
+  <div class="alert alert-info">{% translate 'This survey is currently paused.' %}</div>
+{% endif %}
 {% if not questions %}
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
 {% endif %}
