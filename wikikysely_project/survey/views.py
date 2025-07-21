@@ -251,6 +251,50 @@ def answer_survey(request, pk):
 
 
 @login_required
+def answer_question(request, pk):
+    question = get_object_or_404(
+        Question,
+        pk=pk,
+        deleted=False,
+        survey__deleted=False,
+    )
+    survey = question.survey
+    if survey.state == 'paused':
+        messages.error(request, _('Survey not active'))
+        return redirect('survey:survey_detail', pk=survey.pk)
+    if not survey.is_active():
+        messages.error(request, _('Survey not active'))
+        return redirect('survey:survey_detail', pk=survey.pk)
+
+    answer = Answer.objects.filter(question=question, user=request.user).first()
+
+    if request.method == 'POST':
+        form = AnswerForm(request.POST, instance=answer)
+        if form.is_valid():
+            answer_value = form.cleaned_data['answer']
+            if answer_value:
+                Answer.objects.update_or_create(
+                    user=request.user,
+                    question=question,
+                    defaults={'answer': answer_value},
+                )
+                messages.success(request, _('Answer saved'))
+                return redirect('survey:survey_detail', pk=survey.pk)
+    else:
+        form = AnswerForm(instance=answer, initial={'question_id': question.pk})
+    return render(
+        request,
+        'survey/answer_form.html',
+        {
+            'survey': survey,
+            'question': question,
+            'form': form,
+            'is_edit': answer is not None,
+        },
+    )
+
+
+@login_required
 def answer_list(request):
     answers = Answer.objects.filter(user=request.user, question__deleted=False, question__survey__deleted=False)
     return render(request, 'survey/answer_list.html', {'answers': answers})

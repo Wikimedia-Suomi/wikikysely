@@ -19,7 +19,7 @@
       <ul class="list-group mb-3">
         {% for q in unanswered_questions %}
         <li class="list-group-item">
-          <div><strong>{{ q.text }}</strong></div>
+          <div><a href="{% url 'survey:answer_question' q.pk %}"><strong>{{ q.text }}</strong></a></div>
           <small class="text-muted">
             {% translate 'Published' %}: {{ q.created_at }} |
             {% translate 'Answers' %}: {{ q.total_answers }} |
@@ -70,7 +70,7 @@
   <tbody>
     {% for a in user_answers %}
     <tr>
-      <td>{{ a.question.text }}</td>
+      <td><a href="{% url 'survey:answer_edit' a.pk %}">{{ a.question.text }}</a></td>
       <td>{{ a.get_answer_display }}</td>
       <td>
         {% if survey.state == 'running' %}
