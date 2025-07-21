@@ -7,7 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, gettext
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
+from django.db.models.functions import NullIf
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
@@ -49,6 +50,7 @@ def survey_create(request):
 def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     base_qs = survey.questions.filter(deleted=False)
+    sort = request.GET.get('sort', 'text')
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
     if request.user.is_authenticated:
@@ -63,6 +65,30 @@ def survey_detail(request, pk):
         yes_count=Count('answers', filter=Q(answers__answer='yes')),
         total_answers=Count('answers'),
     )
+
+    questions = questions.annotate(
+        agree_ratio=ExpressionWrapper(
+            F('yes_count') * 1.0 / NullIf(F('total_answers'), 0),
+            output_field=FloatField(),
+        )
+    )
+    unanswered_questions = unanswered_questions.annotate(
+        agree_ratio=ExpressionWrapper(
+            F('yes_count') * 1.0 / NullIf(F('total_answers'), 0),
+            output_field=FloatField(),
+        )
+    )
+
+    if sort == 'created':
+        order = '-created_at'
+    elif sort == 'answers':
+        order = '-total_answers'
+    elif sort == 'agreement':
+        order = '-agree_ratio'
+    else:
+        order = 'text'
+    questions = questions.order_by(order)
+    unanswered_questions = unanswered_questions.order_by(order)
 
     can_edit = request.user == survey.creator or request.user.is_superuser
 
