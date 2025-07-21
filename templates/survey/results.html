@@ -17,7 +17,7 @@
   <tbody>
   {% for row in data %}
   <tr>
-    <td>{{ row.question.text }}</td>
+    <td class="bar-chart-question">{{ row.question.text }}</td>
     <td class="w-100">
       <div class="progress" style="height: 1rem;">
         <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio row.yes row.total 100 %}%"></div>
@@ -52,6 +52,8 @@
 <script>
 const yesLabel = '{{ yes_label|escapejs }}';
 const noLabel = '{{ no_label|escapejs }}';
+const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
+const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
 
 // Pie charts
 const pieContainers = document.querySelectorAll('#pieCharts .pie-chart');
@@ -72,7 +74,7 @@ pieContainers.forEach(el => {
             labels: [yesLabel, noLabel],
             datasets: [{
                 data: [yes, no],
-                backgroundColor: ['green', 'red']
+                backgroundColor: [successColor, dangerColor]
             }]
         },
         options: {

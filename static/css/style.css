@@ -8,3 +8,8 @@ body {
   vertical-align: middle;
 }
 
+/* Ensure bar chart titles have some room */
+.bar-chart-question {
+  min-width: 15rem;
+}
+
