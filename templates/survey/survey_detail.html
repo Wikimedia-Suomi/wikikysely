@@ -13,13 +13,23 @@
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
 {% endif %}
 <form method="get" class="mb-3">
-  <label for="sort" class="form-label">Sort by</label>
-  <select id="sort" name="sort" class="form-select" onchange="this.form.submit()">
-    <option value="text"{% if request.GET.sort == 'text' or not request.GET.sort %} selected{% endif %}>Text</option>
-    <option value="created"{% if request.GET.sort == 'created' %} selected{% endif %}>Published</option>
-    <option value="answers"{% if request.GET.sort == 'answers' %} selected{% endif %}>Answers</option>
-    <option value="agreement"{% if request.GET.sort == 'agreement' %} selected{% endif %}>Agree</option>
-  </select>
+  <span class="form-label me-2">Sort by</span>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort" id="sort-text" value="text"{% if request.GET.sort == 'text' or not request.GET.sort %} checked{% endif %} onchange="this.form.submit()">
+    <label class="form-check-label" for="sort-text">Text</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort" id="sort-created" value="created"{% if request.GET.sort == 'created' %} checked{% endif %} onchange="this.form.submit()">
+    <label class="form-check-label" for="sort-created">Published</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort" id="sort-answers" value="answers"{% if request.GET.sort == 'answers' %} checked{% endif %} onchange="this.form.submit()">
+    <label class="form-check-label" for="sort-answers">Answers</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort" id="sort-agreement" value="agreement"{% if request.GET.sort == 'agreement' %} checked{% endif %} onchange="this.form.submit()">
+    <label class="form-check-label" for="sort-agreement">Agree</label>
+  </div>
 </form>
 {% if request.user.is_authenticated %}
     {# Edit survey button moved next to the Results button at the bottom #}
