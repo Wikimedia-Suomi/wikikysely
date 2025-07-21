@@ -162,6 +162,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data['yes'], 1)
         self.assertEqual(data['no'], 0)
         self.assertEqual(response.context['total_users'], 1)
+        self.assertContains(response, 'Answer table')
 
     def test_answer_saved_to_correct_question_and_user(self):
         survey = self._create_survey()
