@@ -15,11 +15,6 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'survey:survey_list' %}">WikiKysely</a>
     <div class="collapse navbar-collapse">
-      <ul class="navbar-nav me-auto">
-        {% if request.user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'survey:answer_list' %}">{% translate 'My answers' %}</a></li>
-        {% endif %}
-      </ul>
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}
         <select id="language-select" name="language" class="form-select">
@@ -31,13 +26,18 @@
         </select>
         <input id="language-next" type="hidden" name="next" value="{{ request.path }}" />
       </form>
-      <span class="navbar-text ms-3">{{ request.user.username }}</span>
+      <ul id="userbar" class="navbar-nav me-auto" style="float:right">
+
       {% if request.user.is_authenticated %}
-        <a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a>
+        <li class="nav-item"><span class="nav-link  ms-3">{{ request.user.username }}</span></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:answer_list' %}">{% translate 'My answers' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
       {% else %}
-        <a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a>
-        <a class="nav-link ms-3" href="{% url 'survey:register' %}?next={{ request.path }}">{% translate 'Register' %}</a>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:register' %}?next={{ request.path }}">{% translate 'Register' %}</a></li>
       {% endif %}
+      </ul>
+
     </div>
   </div>
 </nav>
