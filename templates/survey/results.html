@@ -20,8 +20,8 @@
     <td class="bar-chart-question">{{ row.question.text }}</td>
     <td class="w-100">
       <div class="progress" style="height: 1rem;">
-        <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%"></div>
-        <div class="progress-bar bg-danger" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%"></div>
+        <div class="progress-bar bg-success text-dark" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
+        <div class="progress-bar bg-danger text-dark" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%">{{ row.no }}</div>
       </div>
     </td>
   </tr>
