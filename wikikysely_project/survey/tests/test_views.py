@@ -21,6 +21,19 @@ class SurveyFlowTests(TransactionTestCase):
                 schema_editor.create_model(Answer)
         finally:
             connection.enable_constraint_checking()
+
+    @classmethod
+    def tearDownClass(cls):
+        from django.db import connection
+        connection.disable_constraint_checking()
+        try:
+            with connection.schema_editor(atomic=False) as schema_editor:
+                schema_editor.delete_model(Answer)
+                schema_editor.delete_model(Question)
+                schema_editor.delete_model(Survey)
+        finally:
+            connection.enable_constraint_checking()
+        super().tearDownClass()
     def setUp(self):
         activate('en')
         User = get_user_model()
