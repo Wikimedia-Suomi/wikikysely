@@ -50,7 +50,6 @@ def survey_create(request):
 def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     base_qs = survey.questions.filter(deleted=False)
-    sort = request.GET.get('sort', 'text')
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
     if request.user.is_authenticated:
@@ -79,16 +78,9 @@ def survey_detail(request, pk):
         )
     )
 
-    if sort == 'created':
-        order = '-created_at'
-    elif sort == 'answers':
-        order = '-total_answers'
-    elif sort == 'agreement':
-        order = '-agree_ratio'
-    else:
-        order = 'text'
-    questions = questions.order_by(order)
-    unanswered_questions = unanswered_questions.order_by(order)
+    # Preserve original insertion order without exposing sorting options
+    questions = questions.order_by('pk')
+    unanswered_questions = unanswered_questions.order_by('pk')
 
     can_edit = request.user == survey.creator or request.user.is_superuser
 
