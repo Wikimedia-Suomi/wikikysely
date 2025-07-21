@@ -76,6 +76,14 @@ msgstr "Tallenna"
 msgid "Results"
 msgstr "Tulokset"
 
+#: templates/survey/results.html:9
+msgid "Bar chart"
+msgstr "Pylväsdiagrammi"
+
+#: templates/survey/results.html:13
+msgid "Pie chart"
+msgstr "Piirakkadiagrammi"
+
 #: templates/survey/results.html:7
 msgid "Total respondents"
 msgstr "Vastaajien määrä"

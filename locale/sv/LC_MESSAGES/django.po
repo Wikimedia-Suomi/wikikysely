@@ -76,6 +76,14 @@ msgstr "Spara"
 msgid "Results"
 msgstr "Resultat"
 
+#: templates/survey/results.html:9
+msgid "Bar chart"
+msgstr "Stapeldiagram"
+
+#: templates/survey/results.html:13
+msgid "Pie chart"
+msgstr "Cirkeldiagram"
+
 #: templates/survey/results.html:7
 msgid "Total respondents"
 msgstr "Antal svarande"
