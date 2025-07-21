@@ -18,7 +18,14 @@
       <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
       <ul class="list-group mb-3">
         {% for q in unanswered_questions %}
-        <li class="list-group-item">{{ q.text }}</li>
+        <li class="list-group-item">
+          <div><strong>{{ q.text }}</strong></div>
+          <small class="text-muted">
+            {% translate 'Published' %}: {{ q.created_at }} |
+            {% translate 'Answers' %}: {{ q.total_answers }} |
+            {% translate 'Agree' %}: {% widthratio q.yes_count q.total_answers 100 %}%
+          </small>
+        </li>
         {% endfor %}
       </ul>
     {% endif %}
@@ -45,7 +52,14 @@
   <h2 class="mt-3">{% translate 'Questions' %}</h2>
   <ul class="list-group mb-3">
     {% for q in questions %}
-    <li class="list-group-item">{{ q.text }}</li>
+    <li class="list-group-item">
+      <div><strong>{{ q.text }}</strong></div>
+      <small class="text-muted">
+        {% translate 'Published' %}: {{ q.created_at }} |
+        {% translate 'Answers' %}: {{ q.total_answers }} |
+        {% translate 'Agree' %}: {% widthratio q.yes_count q.total_answers 100 %}%
+      </small>
+    </li>
     {% endfor %}
   </ul>
 {% endif %}

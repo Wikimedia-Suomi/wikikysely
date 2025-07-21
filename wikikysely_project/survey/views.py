@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, gettext
+from django.db.models import Count, Q
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
@@ -47,13 +48,22 @@ def survey_create(request):
 
 def survey_detail(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
-    questions = survey.questions.filter(deleted=False)
+    base_qs = survey.questions.filter(deleted=False)
     user_answers = Answer.objects.none()
-    unanswered_questions = questions
+    unanswered_questions_qs = base_qs
     if request.user.is_authenticated:
         user_answers = Answer.objects.filter(user=request.user, question__survey=survey)
         answered_ids = user_answers.values_list('question_id', flat=True)
-        unanswered_questions = questions.exclude(id__in=answered_ids)
+        unanswered_questions_qs = base_qs.exclude(id__in=answered_ids)
+    questions = base_qs.annotate(
+        yes_count=Count('answers', filter=Q(answers__answer='yes')),
+        total_answers=Count('answers'),
+    )
+    unanswered_questions = unanswered_questions_qs.annotate(
+        yes_count=Count('answers', filter=Q(answers__answer='yes')),
+        total_answers=Count('answers'),
+    )
+
     can_edit = request.user == survey.creator or request.user.is_superuser
 
     unanswered_count = unanswered_questions.count() if request.user.is_authenticated else 0
