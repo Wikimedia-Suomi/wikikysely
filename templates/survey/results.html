@@ -44,7 +44,22 @@
 <thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Yes' %}</th><th>{% translate 'No' %}</th><th>{% translate 'Total' %}</th></tr></thead>
 <tbody>
 {% for row in data %}
-<tr><td>{{ row.question.text }}</td><td>{{ row.yes }}</td><td>{{ row.no }}</td><td>{{ row.total }}</td></tr>
+<tr>
+  <td>
+    {% if request.user.is_authenticated %}
+      {% if row.answer_pk %}
+        <a href="{% url 'survey:answer_edit' row.answer_pk %}">{{ row.question.text }}</a>
+      {% else %}
+        <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+      {% endif %}
+    {% else %}
+      {{ row.question.text }}
+    {% endif %}
+  </td>
+  <td>{{ row.yes }}</td>
+  <td>{{ row.no }}</td>
+  <td>{{ row.total }}</td>
+</tr>
 {% endfor %}
 </tbody>
 </table>
