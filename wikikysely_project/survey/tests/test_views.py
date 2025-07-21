@@ -142,7 +142,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.client.login(username=self.user.username, password='pass')
         edit_data = {'question_id': questions[0].pk, 'answer': 'no'}
         response = self.client.post(
-            reverse('survey:answer_edit', kwargs={'pk': answer.pk}),
+            reverse('survey:answer_question', kwargs={'pk': questions[0].pk}),
             edit_data,
         )
         answer.refresh_from_db()
