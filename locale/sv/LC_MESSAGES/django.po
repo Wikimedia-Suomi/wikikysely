@@ -44,6 +44,10 @@ msgstr "Avbryt"
 msgid "Remove"
 msgstr "Ta bort"
 
+#: templates/survey/answer_form.html:19 templates/survey/survey_detail.html:78
+msgid "Remove answer"
+msgstr "Ta bort svar"
+
 #: templates/survey/answer_form.html:21 wikikysely_project/survey/forms.py:42
 msgid "Skip"
 msgstr "Hoppa över"

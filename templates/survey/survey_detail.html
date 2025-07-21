@@ -75,7 +75,7 @@
       <td>
         {% if survey.state == 'running' %}
         <a href="{% url 'survey:answer_question' a.question.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove answer' %}</a>
         {% endif %}
       </td>
     </tr>
