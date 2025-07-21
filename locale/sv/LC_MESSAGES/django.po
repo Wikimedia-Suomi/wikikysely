@@ -88,6 +88,10 @@ msgstr "Cirkeldiagram"
 msgid "Total respondents"
 msgstr "Antal svarande"
 
+#: templates/survey/results.html:42
+msgid "Answer table"
+msgstr "Svarstabell"
+
 #: templates/survey/results.html:9
 msgid "Total"
 msgstr "Totalt"
