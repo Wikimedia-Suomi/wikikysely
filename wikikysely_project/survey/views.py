@@ -339,11 +339,32 @@ def survey_results(request, pk):
     survey = get_object_or_404(Survey, pk=pk, deleted=False)
     questions = survey.questions.filter(deleted=False)
     data = []
-    total_users = Answer.objects.filter(question__survey=survey).values('user').distinct().count()
+    total_users = (
+        Answer.objects.filter(question__survey=survey)
+        .values('user')
+        .distinct()
+        .count()
+    )
+
+    user_answers = {}
+    if request.user.is_authenticated:
+        user_answers = {
+            a.question_id: a.pk
+            for a in Answer.objects.filter(user=request.user, question__survey=survey)
+        }
+
     for q in questions:
         yes_count = q.answers.filter(answer='yes').count()
         no_count = q.answers.filter(answer='no').count()
-        data.append({'question': q, 'yes': yes_count, 'no': no_count, 'total': yes_count+no_count})
+        row = {
+            'question': q,
+            'yes': yes_count,
+            'no': no_count,
+            'total': yes_count + no_count,
+        }
+        if request.user.is_authenticated:
+            row['answer_pk'] = user_answers.get(q.pk)
+        data.append(row)
     yes_label = gettext('Yes')
     no_label = gettext('No')
     return render(request, 'survey/results.html', {
