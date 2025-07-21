@@ -13,10 +13,21 @@
     <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
   </div>
 </div>
-<div id="resultsChartContainer" style="display:none" class="position-relative">
-  <div id="barChartLabels"></div>
-  <canvas id="resultsChart"></canvas>
-</div>
+<table id="barChartTable" class="table" style="display:none">
+  <tbody>
+  {% for row in data %}
+  <tr>
+    <td>{{ row.question.text }}</td>
+    <td class="w-100">
+      <div class="progress" style="height: 1rem;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio row.yes row.total 100 %}%"></div>
+        <div class="progress-bar bg-danger" role="progressbar" style="width: {% widthratio row.no row.total 100 %}%"></div>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
 <div id="pieChartsContainer" style="display:none">
   <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
 {% for row in data %}
@@ -39,103 +50,15 @@
 {% endblock %}
 {% block scripts %}
 <script>
-const data = {
-    labels: [{% for row in data %}'{{ row.question.text|escapejs }}',{% endfor %}],
-    datasets: [
-        {label: '{{ yes_label|escapejs }}', data: [{% for row in data %}{{ row.yes }},{% endfor %}], backgroundColor: 'green'},
-        {label: '{{ no_label|escapejs }}', data: [{% for row in data %}{{ row.no }},{% endfor %}], backgroundColor: 'red'}
-    ]
-};
-
-const pieData = [
-    {% for row in data %}{ yes: {{ row.yes }}, no: {{ row.no }}, total: {{ row.total }} },{% endfor %}
-];
 const yesLabel = '{{ yes_label|escapejs }}';
 const noLabel = '{{ no_label|escapejs }}';
-
-// Calculate appropriate height based on number of questions
-const chartEl = document.getElementById('resultsChart');
-const labelsEl = document.getElementById('barChartLabels');
-const lineHeight = parseFloat(getComputedStyle(document.body).lineHeight);
-const barHeight = Math.ceil(lineHeight * 1.2);
-const chartHeight = barHeight * data.labels.length + 100; // +100 for padding, legend, etc.
-
-// Set container height and disable responsive behavior
-chartEl.style.height = `${chartHeight}px`;
-chartEl.style.width = '100%';
-data.labels.forEach(text => {
-    const div = document.createElement('div');
-    div.className = 'chart-label';
-    div.textContent = text;
-    div.style.height = `${barHeight}px`;
-    labelsEl.appendChild(div);
-});
-
-new Chart(chartEl, {
-    type: 'bar',
-    data: data,
-    options: {
-        responsive: false, // Disable responsive behavior
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        scales: {
-            x: { 
-                stacked: true, 
-                max: {{ total_users }},
-                grid: {
-                    display: true
-                },
-                ticks: {
-                    stepSize: 1,
-                    precision: 0
-                }
-            },
-            y: {
-                stacked: true,
-                grid: {
-                    display: false
-                },
-                ticks: {
-                    display: false
-                }
-            }
-        },
-        plugins: {
-            legend: { 
-                display: true,
-                position: 'top'
-            }
-        },
-        // Control bar thickness more precisely
-        elements: {
-            bar: {
-                borderWidth: 0
-            }
-        },
-        layout: {
-            padding: {
-                top: 20,
-                bottom: 20,
-                left: 10,
-                right: 10
-            }
-        }
-    }
-});
-
-const chart = Chart.getChart(chartEl);
-const chartTop = chart.chartArea.top;
-labelsEl.style.top = chartTop + 'px';
-const labelWidth = labelsEl.offsetWidth + 10;
-chartEl.style.marginLeft = labelWidth + 'px';
-chartEl.style.width = `calc(100% - ${labelWidth}px)`;
 
 // Pie charts
 const pieContainers = document.querySelectorAll('#pieCharts .pie-chart');
 const totals = Array.from(pieContainers, el => parseInt(el.dataset.total));
 const maxTotal = Math.max(...totals, 1);
 const maxSize = 200;
-pieContainers.forEach((el, idx) => {
+pieContainers.forEach(el => {
     const yes = parseInt(el.dataset.yes);
     const no = parseInt(el.dataset.no);
     const total = parseInt(el.dataset.total);
@@ -163,7 +86,7 @@ pieContainers.forEach((el, idx) => {
 });
 
 function updateChartVisibility(type) {
-    const barEl = document.getElementById('resultsChartContainer');
+    const barEl = document.getElementById('barChartTable');
     const pieEl = document.getElementById('pieChartsContainer');
     if (type === 'bar') {
         barEl.style.display = '';
@@ -180,7 +103,7 @@ document.getElementById(savedType + 'ChartRadio').checked = true;
 updateChartVisibility(savedType);
 
 document.querySelectorAll('input[name="chartType"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
+    radio.addEventListener('change', e => {
         const type = e.target.value;
         localStorage.setItem(chartTypeKey, type);
         updateChartVisibility(type);

@@ -8,17 +8,3 @@ body {
   vertical-align: middle;
 }
 
-#resultsChartContainer {
-  position: relative;
-}
-
-#barChartLabels {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-#barChartLabels .chart-label {
-  display: flex;
-  align-items: center;
-}
