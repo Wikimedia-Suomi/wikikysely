@@ -113,6 +113,10 @@ msgstr "Aloituspäivä"
 msgid "End date"
 msgstr "Päättymispäivä"
 
+#: templates/survey/survey_detail.html:8
+msgid "Survey period"
+msgstr "Kyselyaika"
+
 #: templates/survey/survey_detail.html:12
 msgid "Unanswered questions"
 msgstr "Vastaamattomat kysymykset"
