@@ -21,9 +21,26 @@ class SurveyForm(BootstrapMixin, forms.ModelForm):
         model = Survey
         fields = ['title', 'description', 'start_date', 'end_date', 'state']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date', 'placeholder': '2024-01-01'}),
-            'end_date': forms.DateInput(attrs={'type': 'date', 'placeholder': '2024-12-31'}),
+            'start_date': forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    'type': 'date',
+                    'placeholder': '2024-01-01',
+                },
+            ),
+            'end_date': forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={
+                    'type': 'date',
+                    'placeholder': '2024-12-31',
+                },
+            ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['start_date'].input_formats = ['%Y-%m-%d']
+        self.fields['end_date'].input_formats = ['%Y-%m-%d']
 
     def clean(self):
         cleaned_data = super().clean()
