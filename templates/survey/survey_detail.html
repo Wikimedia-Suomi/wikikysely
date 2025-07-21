@@ -70,11 +70,11 @@
   <tbody>
     {% for a in user_answers %}
     <tr>
-      <td><a href="{% url 'survey:answer_edit' a.pk %}">{{ a.question.text }}</a></td>
+      <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
       <td>{{ a.get_answer_display }}</td>
       <td>
         {% if survey.state == 'running' %}
-        <a href="{% url 'survey:answer_edit' a.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
+        <a href="{% url 'survey:answer_question' a.question.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
         <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
         {% endif %}
       </td>

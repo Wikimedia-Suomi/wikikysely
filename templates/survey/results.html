@@ -47,11 +47,7 @@
 <tr>
   <td>
     {% if request.user.is_authenticated %}
-      {% if row.answer_pk %}
-        <a href="{% url 'survey:answer_edit' row.answer_pk %}">{{ row.question.text }}</a>
-      {% else %}
-        <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
-      {% endif %}
+      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
     {% else %}
       {{ row.question.text }}
     {% endif %}
