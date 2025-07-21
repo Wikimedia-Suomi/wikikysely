@@ -5,12 +5,12 @@
 <h1>{{ survey.title }} - {% translate 'Results' %}</h1>
 <div class="mb-3">
   <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar" checked>
-    <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
+    <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie" checked>
+    <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
   </div>
   <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie">
-    <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
+    <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar">
+    <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
   </div>
 </div>
 <table id="barChartTable" class="table" style="display:none">
@@ -112,7 +112,7 @@ function updateChartVisibility(type) {
 }
 
 const chartTypeKey = 'resultsChartType';
-let savedType = localStorage.getItem(chartTypeKey) || 'bar';
+let savedType = localStorage.getItem(chartTypeKey) || 'pie';
 document.getElementById(savedType + 'ChartRadio').checked = true;
 updateChartVisibility(savedType);
 
