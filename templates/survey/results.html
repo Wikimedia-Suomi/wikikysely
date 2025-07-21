@@ -3,8 +3,18 @@
 {% block title %}{{ survey.title }}{% endblock %}
 {% block content %}
 <h1>{{ survey.title }} - {% translate 'Results' %}</h1>
-<canvas id="resultsChart"></canvas>
-<div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
+<div class="mb-3">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar" checked>
+    <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie">
+    <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
+  </div>
+</div>
+<canvas id="resultsChart" style="display:none"></canvas>
+<div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4" style="display:none">
 {% for row in data %}
   <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
     <canvas></canvas>
@@ -126,6 +136,31 @@ pieContainers.forEach((el, idx) => {
                 legend: { display: false }
             }
         }
+    });
+});
+
+function updateChartVisibility(type) {
+    const barEl = document.getElementById('resultsChart');
+    const pieEl = document.getElementById('pieCharts');
+    if (type === 'bar') {
+        barEl.style.display = '';
+        pieEl.style.display = 'none';
+    } else {
+        barEl.style.display = 'none';
+        pieEl.style.display = '';
+    }
+}
+
+const chartTypeKey = 'resultsChartType';
+let savedType = localStorage.getItem(chartTypeKey) || 'bar';
+document.getElementById(savedType + 'ChartRadio').checked = true;
+updateChartVisibility(savedType);
+
+document.querySelectorAll('input[name="chartType"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        const type = e.target.value;
+        localStorage.setItem(chartTypeKey, type);
+        updateChartVisibility(type);
     });
 });
 </script>
