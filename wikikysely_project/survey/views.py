@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, gettext
+from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
 from django.db.models.functions import NullIf
 from .models import Survey, Question, Answer
@@ -250,7 +251,6 @@ def answer_survey(request, pk):
     )
 
 
-@login_required
 def answer_question(request, pk):
     question = get_object_or_404(
         Question,
@@ -266,22 +266,33 @@ def answer_question(request, pk):
         messages.error(request, _('Survey not active'))
         return redirect('survey:survey_detail', pk=survey.pk)
 
-    answer = Answer.objects.filter(question=question, user=request.user).first()
-
-    if request.method == 'POST':
-        form = AnswerForm(request.POST, instance=answer)
-        if form.is_valid():
-            answer_value = form.cleaned_data['answer']
-            if answer_value:
-                Answer.objects.update_or_create(
-                    user=request.user,
-                    question=question,
-                    defaults={'answer': answer_value},
-                )
-                messages.success(request, _('Answer saved'))
-                return redirect('survey:survey_detail', pk=survey.pk)
+    answer = None
+    if not request.user.is_authenticated:
+        login_url = f"{reverse('login')}?next={request.path}"
+        messages.info(
+            request,
+            format_html(
+                _('To answer the question you must <a href="{0}">log in</a>.'),
+                login_url,
+            ),
+        )
+        form = None
     else:
-        form = AnswerForm(instance=answer, initial={'question_id': question.pk})
+        answer = Answer.objects.filter(question=question, user=request.user).first()
+        if request.method == 'POST':
+            form = AnswerForm(request.POST, instance=answer)
+            if form.is_valid():
+                answer_value = form.cleaned_data['answer']
+                if answer_value:
+                    Answer.objects.update_or_create(
+                        user=request.user,
+                        question=question,
+                        defaults={'answer': answer_value},
+                    )
+                    messages.success(request, _('Answer saved'))
+                    return redirect('survey:survey_detail', pk=survey.pk)
+        else:
+            form = AnswerForm(instance=answer, initial={'question_id': question.pk})
     return render(
         request,
         'survey/answer_form.html',

@@ -4,6 +4,7 @@
 {% block content %}
 <h1>{{ survey.title }}</h1>
 <h2>{{ question.text }}</h2>
+{% if request.user.is_authenticated %}
 <form method="post">
   {% csrf_token %}
   {% if form.non_field_errors %}
@@ -23,4 +24,5 @@
     <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
   {% endif %}
 </form>
+{% endif %}
 {% endblock %}
