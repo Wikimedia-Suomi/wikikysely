@@ -13,14 +13,18 @@
     <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
   </div>
 </div>
-<canvas id="resultsChart" style="display:none"></canvas>
-<div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4" style="display:none">
+<div id="resultsChartContainer" style="display:none">
+  <canvas id="resultsChart"></canvas>
+</div>
+<div id="pieChartsContainer" style="display:none">
+  <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
 {% for row in data %}
   <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
     <canvas></canvas>
     <p class="mt-2">{{ row.question.text }}</p>
   </div>
 {% endfor %}
+</div>
 </div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <table class="table">
@@ -140,8 +144,8 @@ pieContainers.forEach((el, idx) => {
 });
 
 function updateChartVisibility(type) {
-    const barEl = document.getElementById('resultsChart');
-    const pieEl = document.getElementById('pieCharts');
+    const barEl = document.getElementById('resultsChartContainer');
+    const pieEl = document.getElementById('pieChartsContainer');
     if (type === 'bar') {
         barEl.style.display = '';
         pieEl.style.display = 'none';
