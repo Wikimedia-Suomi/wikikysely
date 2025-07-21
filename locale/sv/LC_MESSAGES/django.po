@@ -113,6 +113,10 @@ msgstr "Startdatum"
 msgid "End date"
 msgstr "Slutdatum"
 
+#: templates/survey/survey_detail.html:8
+msgid "Survey period"
+msgstr "Enkätperiod"
+
 #: templates/survey/survey_detail.html:12
 msgid "Unanswered questions"
 msgstr "Obesvarade frågor"
