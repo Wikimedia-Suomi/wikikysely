@@ -12,6 +12,15 @@
 {% if not questions %}
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
 {% endif %}
+<form method="get" class="mb-3">
+  <label for="sort" class="form-label">Sort by</label>
+  <select id="sort" name="sort" class="form-select" onchange="this.form.submit()">
+    <option value="text"{% if request.GET.sort == 'text' or not request.GET.sort %} selected{% endif %}>Text</option>
+    <option value="created"{% if request.GET.sort == 'created' %} selected{% endif %}>Published</option>
+    <option value="answers"{% if request.GET.sort == 'answers' %} selected{% endif %}>Answers</option>
+    <option value="agreement"{% if request.GET.sort == 'agreement' %} selected{% endif %}>Agree</option>
+  </select>
+</form>
 {% if request.user.is_authenticated %}
     {# Edit survey button moved next to the Results button at the bottom #}
     {% if unanswered_questions %}
