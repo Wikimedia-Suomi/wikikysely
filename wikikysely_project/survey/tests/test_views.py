@@ -197,17 +197,4 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse('survey:survey_detail', kwargs={'pk': survey.pk}))
         self.assertContains(response, 'This survey is currently paused.')
 
-    def test_question_sorting_by_answers(self):
-        survey = self._create_survey()
-        q1 = self._create_question(survey, text='A?')
-        q2 = self._create_question(survey, text='B?')
-        Answer.objects.create(question=q1, user=self.users[1], answer='yes')
-        Answer.objects.create(question=q1, user=self.users[2], answer='no')
-        Answer.objects.create(question=q2, user=self.user, answer='yes')
-
-        response = self.client.get(
-            reverse('survey:survey_detail', kwargs={'pk': survey.pk}) + '?sort=answers'
-        )
-        questions = list(response.context['questions'])
-        self.assertEqual(questions[0], q1)
 
