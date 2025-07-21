@@ -18,7 +18,7 @@
   {% if is_edit %}
     <a href="{% url 'survey:survey_detail' survey.pk %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
     {% if survey.state == 'running' %}
-    <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger ms-2">{% translate 'Remove' %}</a>
+    <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger ms-2">{% translate 'Remove answer' %}</a>
     {% endif %}
   {% else %}
     <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
