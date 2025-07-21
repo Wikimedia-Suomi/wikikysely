@@ -251,6 +251,10 @@ msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 msgid "This survey has no questions yet. Please add questions."
 msgstr "Kyselyssä ei ole yhtään kysymystä vielä."
 
+#: templates/survey/survey_detail.html:9
+msgid "This survey is currently paused."
+msgstr "Tämä kysely on tauolla."
+
 #: wikikysely_project/survey/views.py:110
 msgid "The question \"%(text)s\" already exists and has %(count)d answers (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Please rephrase the question."
 msgstr "Kysymys \"%(text)s\" on jo olemassa ja sille on %(count)d vastausta (%(yes_label)s %(yes)d, %(no_label)s %(no)d). Muotoile kysymys toisin."
