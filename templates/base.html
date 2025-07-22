@@ -13,7 +13,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'survey:survey_list' %}">WikiKysely</a>
+    <a class="navbar-brand" href="{% url 'survey:survey_detail' %}">WikiKysely</a>
     <div class="collapse navbar-collapse">
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}

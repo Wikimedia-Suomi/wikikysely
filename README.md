@@ -1,6 +1,8 @@
 # wikikysely
 
 Prototype implementation of a multilingual wiki survey tool built with Django.
+All questions belong to a single main survey. Administrators can edit the survey
+description, manage questions and change the state (running, paused or closed).
 
 ## Requirements
 - Python 3.11

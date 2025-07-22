@@ -7,13 +7,13 @@
 <thead><tr><th>{% translate 'Title' %}</th><th>{% translate 'State' %}</th></tr></thead>
 <tbody>
 {% for survey in surveys %}
-<tr><td><a href="{% url 'survey:survey_detail' survey.pk %}">{{ survey.title }}</a></td><td>{{ survey.get_state_display }}</td></tr>
+<tr><td><a href="{% url 'survey:survey_detail' %}">{{ survey.title }}</a></td><td>{{ survey.get_state_display }}</td></tr>
 {% empty %}
 <tr><td colspan="2">{% translate 'No surveys' %}</td></tr>
 {% endfor %}
 </tbody>
 </table>
 {% if request.user.is_authenticated %}
-<a href="{% url 'survey:survey_create' %}" class="btn btn-primary mt-3">{% translate 'Create survey' %}</a>
+<a href="{% url 'survey:survey_edit' %}" class="btn btn-primary mt-3">{% translate 'Edit survey' %}</a>
 {% endif %}
 {% endblock %}

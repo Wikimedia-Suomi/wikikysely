@@ -5,18 +5,12 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
 from django.db.models.functions import NullIf
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
-
-
-def survey_list(request):
-    surveys = Survey.objects.filter(deleted=False)
-    return render(request, 'survey/survey_list.html', {'surveys': surveys})
 
 
 def register(request):
@@ -33,23 +27,8 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-@login_required
-def survey_create(request):
-    if request.method == 'POST':
-        form = SurveyForm(request.POST)
-        if form.is_valid():
-            survey = form.save(commit=False)
-            survey.creator = request.user
-            survey.save()
-            messages.success(request, _('Survey created'))
-            return redirect('survey:survey_detail', pk=survey.pk)
-    else:
-        form = SurveyForm()
-    return render(request, 'survey/survey_form.html', {'form': form, 'is_edit': False})
-
-
-def survey_detail(request, pk):
-    survey = get_object_or_404(Survey, pk=pk, deleted=False)
+def survey_detail(request):
+    survey = Survey.get_main_survey()
     base_qs = survey.questions.filter(deleted=False)
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
@@ -98,17 +77,17 @@ def survey_detail(request, pk):
 
 
 @login_required
-def survey_edit(request, pk):
-    survey = get_object_or_404(Survey, pk=pk, deleted=False)
+def survey_edit(request):
+    survey = Survey.get_main_survey()
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if request.method == 'POST':
         form = SurveyForm(request.POST, instance=survey)
         if form.is_valid():
             form.save()
             messages.success(request, _('Survey updated'))
-            return redirect('survey:survey_detail', pk=survey.pk)
+            return redirect('survey:survey_detail')
     else:
         form = SurveyForm(instance=survey)
     active_questions = survey.questions.filter(deleted=False)
@@ -123,14 +102,14 @@ def survey_edit(request, pk):
 
 
 @login_required
-def question_add(request, survey_pk):
-    survey = get_object_or_404(Survey, pk=survey_pk, deleted=False)
+def question_add(request):
+    survey = Survey.get_main_survey()
     if survey.state == 'closed':
         messages.error(request, _('Cannot add questions to a closed survey'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if survey.state != 'running' and request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
@@ -160,7 +139,7 @@ def question_add(request, survey_pk):
                 question.creator = request.user
                 question.save()
                 messages.success(request, _('Question added'))
-                return redirect('survey:survey_detail', pk=survey.pk)
+                return redirect('survey:survey_detail')
     else:
         form = QuestionForm()
     return render(request, 'survey/question_form.html', {'form': form, 'survey': survey})
@@ -172,14 +151,14 @@ def question_delete(request, pk):
     survey = question.survey
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_edit', pk=survey.pk)
+        return redirect('survey:survey_edit')
     if survey.state == 'closed':
         messages.error(request, _('Cannot remove questions from a closed survey'))
-        return redirect('survey:survey_edit', pk=survey.pk)
+        return redirect('survey:survey_edit')
     question.deleted = True
     question.save()
     messages.success(request, _('Question removed'))
-    return redirect('survey:survey_edit', pk=survey.pk)
+    return redirect('survey:survey_edit')
 
 
 @login_required
@@ -188,25 +167,25 @@ def question_restore(request, pk):
     survey = question.survey
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_edit', pk=survey.pk)
+        return redirect('survey:survey_edit')
     if survey.state == 'closed':
         messages.error(request, _('Cannot restore questions in a closed survey'))
-        return redirect('survey:survey_edit', pk=survey.pk)
+        return redirect('survey:survey_edit')
     question.deleted = False
     question.save()
     messages.success(request, _('Question restored'))
-    return redirect('survey:survey_edit', pk=survey.pk)
+    return redirect('survey:survey_edit')
 
 
 @login_required
-def answer_survey(request, pk):
-    survey = get_object_or_404(Survey, pk=pk, deleted=False)
+def answer_survey(request):
+    survey = Survey.get_main_survey()
     if survey.state == 'paused':
         messages.error(request, _('Survey not active'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if not survey.is_active():
         messages.error(request, _('Survey not active'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         question = get_object_or_404(
@@ -224,10 +203,10 @@ def answer_survey(request, pk):
                     defaults={'answer': answer_value},
                 )
                 messages.success(request, _('Answer saved'))
-                return redirect('survey:answer_survey', pk=survey.pk)
+                return redirect('survey:answer_survey')
             else:
                 next_url = (
-                    f"{reverse('survey:answer_survey', kwargs={'pk': survey.pk})}?skip={question.pk}"
+                    f"{reverse('survey:answer_survey')}?skip={question.pk}"
                 )
                 return redirect(next_url)
     else:
@@ -242,7 +221,7 @@ def answer_survey(request, pk):
         question = random.choice(list(remaining)) if remaining else None
         if not question:
             messages.info(request, _('No more questions'))
-            return redirect('survey:survey_detail', pk=survey.pk)
+            return redirect('survey:survey_detail')
         form = AnswerForm(initial={'question_id': question.pk})
     return render(
         request,
@@ -261,10 +240,10 @@ def answer_question(request, pk):
     survey = question.survey
     if survey.state == 'paused':
         messages.error(request, _('Survey not active'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if not survey.is_active():
         messages.error(request, _('Survey not active'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
 
     answer = None
     if not request.user.is_authenticated:
@@ -290,7 +269,7 @@ def answer_question(request, pk):
                         defaults={'answer': answer_value},
                     )
                     messages.success(request, _('Answer saved'))
-                    return redirect('survey:survey_detail', pk=survey.pk)
+                    return redirect('survey:survey_detail')
         else:
             form = AnswerForm(instance=answer, initial={'question_id': question.pk})
     return render(
@@ -317,13 +296,13 @@ def answer_edit(request, pk):
     survey = answer.question.survey
     if survey.state != 'running':
         messages.error(request, _('Answer can only be edited while the survey is running'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     if request.method == 'POST':
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():
             form.save()
             messages.success(request, _('Answer updated'))
-            return redirect('survey:survey_detail', pk=survey.pk)
+            return redirect('survey:survey_detail')
     else:
         form = AnswerForm(instance=answer, initial={'question_id': answer.question_id})
     return render(request, 'survey/answer_form.html', {
@@ -340,14 +319,14 @@ def answer_delete(request, pk):
     survey = answer.question.survey
     if survey.state != 'running':
         messages.error(request, _('Answer can only be removed while the survey is running'))
-        return redirect('survey:survey_detail', pk=survey.pk)
+        return redirect('survey:survey_detail')
     answer.delete()
     messages.success(request, _('Answer removed'))
-    return redirect('survey:survey_detail', pk=survey.pk)
+    return redirect('survey:survey_detail')
 
 
-def survey_results(request, pk):
-    survey = get_object_or_404(Survey, pk=pk, deleted=False)
+def survey_results(request):
+    survey = Survey.get_main_survey()
     questions = survey.questions.filter(deleted=False)
     data = []
     total_users = (
