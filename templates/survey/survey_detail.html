@@ -20,7 +20,7 @@
         <li class="list-group-item">
           <div><a href="{% url 'survey:answer_question' q.pk %}"><strong>{{ q.text }}</strong></a></div>
           <small class="text-muted">
-            {% translate 'Published' %}: {{ q.created_at }} |
+          {% translate 'Published' %}: {{ q.created_at|date:"Y-m-d" }} |
             {% translate 'Answers' %}: {{ q.total_answers }} |
             {% translate 'Agree' %}: {% widthratio q.yes_count q.total_answers 100 %}%
           </small>
@@ -54,7 +54,7 @@
     <li class="list-group-item">
       <div><strong>{{ q.text }}</strong></div>
       <small class="text-muted">
-        {% translate 'Published' %}: {{ q.created_at }} |
+        {% translate 'Published' %}: {{ q.created_at|date:"Y-m-d" }} |
         {% translate 'Answers' %}: {{ q.total_answers }} |
         {% translate 'Agree' %}: {% widthratio q.yes_count q.total_answers 100 %}%
       </small>
