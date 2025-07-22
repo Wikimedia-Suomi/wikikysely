@@ -133,6 +133,18 @@ msgstr "Sinun tulee olla kirjautunut sisään vastataksesi kysymyksiin"
 msgid "Edit"
 msgstr "Muokkaa"
 
+#: templates/survey/survey_detail.html:45
+msgid "Published"
+msgstr "Julkaistu"
+
+#: templates/survey/survey_detail.html:46
+msgid "Answers"
+msgstr "Vastaukset"
+
+#: templates/survey/survey_detail.html:47
+msgid "Agree"
+msgstr "Samanmielisyys"
+
 # UI strings
 #: templates/survey/survey_detail.html:54 templates/survey/survey_form.html:3
 #: templates/survey/survey_form.html:5
