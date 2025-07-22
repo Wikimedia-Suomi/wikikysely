@@ -8,6 +8,9 @@
 {% if not questions %}
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
 {% endif %}
+{% if not request.user.is_authenticated and questions %}
+  <p class="alert alert-info">{% translate 'You must be logged in to answer questions' %}</p>
+{% endif %}
 <p>{{ survey.description }}</p>
 {% if request.user.is_authenticated %}
   <div class="mb-3">
@@ -42,9 +45,6 @@
       </ul>
     {% endif %}
 {% else %}
-  {% if questions %}
-  <p class="alert alert-info">{% translate 'You must be logged in to answer questions' %}</p>
-  {% endif %}
   <h2 class="mt-3">{% translate 'Questions' %}</h2>
   <ul class="list-group mb-3">
     {% for q in questions %}
