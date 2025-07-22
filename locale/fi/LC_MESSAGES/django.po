@@ -125,6 +125,10 @@ msgstr "Vastaamattomat kysymykset"
 msgid "Answer survey"
 msgstr "Vastaa kyselyyn"
 
+#: templates/survey/answer_form.html:3
+msgid "Answer question"
+msgstr "Vastaa kysymykseen"
+
 #: templates/survey/survey_detail.html:36
 msgid "You must be logged in to answer questions"
 msgstr "Sinun tulee olla kirjautunut sisään vastataksesi kysymyksiin"

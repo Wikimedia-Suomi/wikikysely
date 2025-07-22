@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{{ survey.title }}{% endblock %}
+{% block title %}{% translate 'Answer question' %}{% endblock %}
 {% block content %}
-<h1>{{ survey.title }}</h1>
 <h2>{{ question.text }}</h2>
 {% if request.user.is_authenticated %}
 <form method="post">
