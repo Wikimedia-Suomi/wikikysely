@@ -133,6 +133,18 @@ msgstr "Du måste vara inloggad för att kunna svara på frågorna"
 msgid "Edit"
 msgstr "Redigera"
 
+#: templates/survey/survey_detail.html:45
+msgid "Published"
+msgstr "Publicerad"
+
+#: templates/survey/survey_detail.html:46
+msgid "Answers"
+msgstr "Svar"
+
+#: templates/survey/survey_detail.html:47
+msgid "Agree"
+msgstr "Instämmande"
+
 # UI strings
 #: templates/survey/survey_detail.html:54 templates/survey/survey_form.html:3
 #: templates/survey/survey_form.html:5
