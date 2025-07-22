@@ -9,7 +9,7 @@ class QuestionInline(admin.TabularInline):
 
 class SurveyAdmin(admin.ModelAdmin):
     inlines = [QuestionInline]
-    list_display = ('title', 'state', 'start_date', 'end_date', 'deleted')
+    list_display = ('title', 'state', 'deleted')
     list_filter = ('state', 'deleted')
 
 

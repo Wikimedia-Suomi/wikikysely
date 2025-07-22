@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -12,15 +11,26 @@ class Survey(models.Model):
     ]
     title = models.CharField(_('Title'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    start_date = models.DateField(_('Start date'))
-    end_date = models.DateField(_('End date'))
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
     state = models.CharField(_('State'), max_length=7, choices=STATE_CHOICES, default='paused')
     deleted = models.BooleanField(default=False)
 
+    @classmethod
+    def get_main_survey(cls):
+        survey = cls.objects.filter(deleted=False).first()
+        if not survey:
+            survey = cls.objects.create(
+                title=_('Main Survey'),
+                description='',
+                creator=None,
+                state='paused',
+            )
+        return survey
+
     def is_active(self):
-        today = timezone.now().date()
-        return self.state == 'running' and self.start_date <= today <= self.end_date and not self.deleted
+        return self.state == 'running' and not self.deleted
 
     def __str__(self):
         return self.title

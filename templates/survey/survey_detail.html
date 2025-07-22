@@ -4,7 +4,6 @@
 {% block content %}
 <h1>{{ survey.title }}</h1>
 <p>{{ survey.description }}</p>
-<p>{% translate 'Survey period' %}: {{ survey.start_date }} - {{ survey.end_date }}</p>
 {% if survey.state == 'paused' %}
   <div class="alert alert-info">{% translate 'This survey is currently paused.' %}</div>
 {% endif %}
@@ -30,18 +29,18 @@
     {% endif %}
   <div class="mb-3">
       {% if unanswered_questions and survey.state == 'running' %}
-        <a href="{% url 'survey:answer_survey' survey.pk %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
+        <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary me-2">{% translate 'Answer survey' %}</a>
       {% elif questions %}
-        <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
+        <a href="{% url 'survey:survey_results' %}" class="btn btn-info me-2">{% translate 'Results' %}</a>
       {% endif %}
       {% if survey.state == 'running' or can_edit and survey.state != 'closed' %}
-        <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+        <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
       {% endif %}
       </div>
 {% elif can_edit %}
     <div class="mb-2">
       {% if survey.state != 'closed' %}
-      <a href="{% url 'survey:question_add' survey_pk=survey.pk %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
+      <a href="{% url 'survey:question_add' %}" class="btn btn-secondary me-2">{% translate 'Add question' %}</a>
       {% endif %}
     </div>
 {% else %}
@@ -83,9 +82,9 @@
 </table>
 {% endif %}
 {% if questions %}
-<a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info mt-3 me-2">{% translate 'Results' %}</a>
+<a href="{% url 'survey:survey_results' %}" class="btn btn-info mt-3 me-2">{% translate 'Results' %}</a>
 {% endif %}
 {% if can_edit %}
-<a href="{% url 'survey:survey_edit' survey.pk %}" class="btn btn-warning mt-3">{% translate 'Edit survey' %}</a>
+<a href="{% url 'survey:survey_edit' %}" class="btn btn-warning mt-3">{% translate 'Edit survey' %}</a>
 {% endif %}
 {% endblock %}

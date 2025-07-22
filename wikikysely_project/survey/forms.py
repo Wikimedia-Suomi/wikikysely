@@ -19,38 +19,7 @@ class BootstrapMixin:
 class SurveyForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         model = Survey
-        fields = ['title', 'description', 'start_date', 'end_date', 'state']
-        widgets = {
-            'start_date': forms.DateInput(
-                format="%Y-%m-%d",
-                attrs={
-                    'type': 'date',
-                    'placeholder': '2024-01-01',
-                },
-            ),
-            'end_date': forms.DateInput(
-                format="%Y-%m-%d",
-                attrs={
-                    'type': 'date',
-                    'placeholder': '2024-12-31',
-                },
-            ),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['start_date'].input_formats = ['%Y-%m-%d']
-        self.fields['end_date'].input_formats = ['%Y-%m-%d']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start = cleaned_data.get('start_date')
-        end = cleaned_data.get('end_date')
-        if start and end and end < start:
-            raise forms.ValidationError({
-                'end_date': _('End date must be after start date.')
-            })
-        return cleaned_data
+        fields = ['title', 'description', 'state']
 
 
 class QuestionForm(BootstrapMixin, forms.ModelForm):
