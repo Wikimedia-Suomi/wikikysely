@@ -27,7 +27,7 @@
       <a href="{% url 'survey:survey_results' %}" class="btn btn-info">{% translate 'Results' %}</a>
     {% endif %}
     {% if survey.state == 'running' or can_edit and survey.state != 'closed' %}
-      <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+      {# Add question button moved to the navbar #}
     {% endif %}
     {% if can_edit %}
     <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
