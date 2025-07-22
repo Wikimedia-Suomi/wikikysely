@@ -15,6 +15,8 @@
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'survey:survey_detail' %}">WikiKysely</a>
     <div class="collapse navbar-collapse">
+      <ul id="userbar" class="navbar-nav ms-auto">
+      <li class="nav-item">
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}
         <select id="language-select" name="language" class="form-select">
@@ -26,8 +28,7 @@
         </select>
         <input id="language-next" type="hidden" name="next" value="{{ request.path }}" />
       </form>
-      <ul id="userbar" class="navbar-nav me-auto" style="float:right">
-
+      </li>
       {% if request.user.is_authenticated %}
         <li class="nav-item"><span class="nav-link  ms-3">{{ request.user.username }}</span></li>
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:answer_list' %}">{% translate 'My answers' %}</a></li>
