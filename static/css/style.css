@@ -9,7 +9,14 @@ body {
 }
 
 /* Ensure bar chart titles have some room */
-.bar-chart-question {
-  min-width: 15rem;
+  .bar-chart-question {
+    min-width: 15rem;
+  }
+
+/* Center pie charts relative to the question text */
+#pieCharts .pie-chart canvas {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
