@@ -11,11 +11,9 @@
 {% if not request.user.is_authenticated and questions %}
   {% if request.GET.login_required %}
     <p class="alert alert-info">
-      {% translate 'You must be logged in to answer questions' %}
+      {% translate 'You must be logged in to answer questions' %}.
       <a href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a>
     </p>
-  {% else %}
-    <a href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
   {% endif %}
 {% endif %}
 <p>{{ survey.description }}</p>
@@ -33,6 +31,10 @@
     <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
     {% endif %}
   </div>
+{% else %}
+    {% if questions %}
+        <a href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+    {% endif %}
 {% endif %}
 {% if request.user.is_authenticated %}
     {# Edit survey button moved next to the Results button at the bottom #}
