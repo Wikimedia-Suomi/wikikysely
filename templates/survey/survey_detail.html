@@ -21,14 +21,12 @@
   <div class="mb-3">
     {% if unanswered_questions and survey.state == 'running' %}
       <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-    {% elif questions %}
+    {% endif %}
+    {% if questions %}
       <a href="{% url 'survey:survey_results' %}" class="btn btn-info">{% translate 'Results' %}</a>
     {% endif %}
-    {% if survey.state == 'running' or can_edit and survey.state != 'closed' %}
-      {# Add question button moved to the navbar #}
-    {% endif %}
     {% if can_edit %}
-    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
+      <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning">{% translate 'Edit survey' %}</a>
     {% endif %}
   </div>
 {% else %}
@@ -38,9 +36,6 @@
 {% endif %}
     {% if unanswered_questions %}
         <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
-    {% else %}
-        <h2 class="mt-3">{% translate 'Questions' %}</h2>
-    {% endif %}
       <table class="table mb-3">
         <thead>
           <tr>
@@ -58,13 +53,15 @@
 {% else %}
             <td>{{ q.text }}</td>
 {% endif %}
-            <td>{{ q.created_at }}</td>
+            <td>{{ q.created_at | date:"Y-m-d" }}</td>
             <td>{{ q.total_answers }}</td>
             <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
           </tr>
         {% endfor %}
         </tbody>
       </table>
+    {% endif %}
+
 {% if user_answers %}
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
 <table class="table">
@@ -85,7 +82,5 @@
   </tbody>
 </table>
 {% endif %}
-{% if questions %}
-<a href="{% url 'survey:survey_results' %}" class="btn btn-info mt-3 me-2">{% translate 'Results' %}</a>
-{% endif %}
+
 {% endblock %}
