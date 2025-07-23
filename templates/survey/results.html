@@ -17,7 +17,13 @@
   <tbody>
   {% for row in data %}
   <tr>
-    <td class="bar-chart-question">{{ row.question.text }}</td>
+    <td class="bar-chart-question">
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+    {% else %}
+      {{ row.question.text }}
+    {% endif %}
+    </td>
     <td class="w-100">
       <div class="progress" style="height: 1.25rem;">
         <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
@@ -33,7 +39,13 @@
 {% for row in data %}
   <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
     <canvas></canvas>
-    <p class="mt-2">{{ row.question.text }}</p>
+    <p class="mt-2">
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+    {% else %}
+      {{ row.question.text }}
+    {% endif %}
+    </p>
   </div>
 {% endfor %}
 </div>

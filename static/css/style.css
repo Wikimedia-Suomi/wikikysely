@@ -21,9 +21,10 @@ body {
 }
 
 /* Set column widths on question tables */
+#answerTable th:nth-child(1),
 .survey-detail-table th:nth-child(1),
 .survey-detail-table td:nth-child(1) {
-  width: 20%;
+  width: 10%;
 }
 .survey-detail-table th:nth-child(2),
 .survey-detail-table td:nth-child(2) {
