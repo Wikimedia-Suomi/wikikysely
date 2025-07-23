@@ -36,7 +36,7 @@
 {% endif %}
     {% if unanswered_questions %}
         <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
-      <table class="table mb-3">
+      <table class="table mb-3 survey-detail-table">
         <thead>
           <tr>
             <th>{% translate 'Title' %}</th>
@@ -64,7 +64,7 @@
 
 {% if user_answers %}
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
-<table class="table mb-3">
+<table class="table mb-3 survey-detail-table">
   <thead>
     <tr>
       <th>{% translate 'Title' %}</th>
