@@ -64,23 +64,29 @@
 {% endif %}
 {% if user_answers %}
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
-<table class="table">
-  <thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Answer' %}</th><th></th></tr></thead>
-  <tbody>
-    {% for a in user_answers %}
-    <tr>
-      <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
-      <td>{{ a.get_answer_display }}</td>
-      <td>
-        {% if survey.state == 'running' %}
-        <a href="{% url 'survey:answer_question' a.question.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
+<ul class="list-group mb-3">
+  {% for a in user_answers %}
+  <li class="list-group-item">
+    <div class="d-flex justify-content-between">
+      <div>
+        <a href="{% url 'survey:answer_question' a.question.pk %}"><strong>{{ a.question.text }}</strong></a>
+        <span class="badge bg-secondary ms-2">{{ a.get_answer_display }}</span>
+      </div>
+      {% if survey.state == 'running' %}
+      <div>
+        <a href="{% url 'survey:answer_question' a.question.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
         <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove answer' %}</a>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      </div>
+      {% endif %}
+    </div>
+    <small class="text-muted">
+      {% translate 'Published' %}: {{ a.question.created_at|date:"Y-m-d" }} |
+      {% translate 'Answers' %}: {{ a.total_answers }} |
+      {% translate 'Agree' %}: {% widthratio a.yes_count a.total_answers 100 %}%
+    </small>
+  </li>
+  {% endfor %}
+</ul>
 {% endif %}
 {% if questions %}
 <a href="{% url 'survey:survey_results' survey.pk %}" class="btn btn-info mt-3 me-2">{% translate 'Results' %}</a>

@@ -54,8 +54,25 @@ def survey_detail(request, pk):
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
     if request.user.is_authenticated:
-        user_answers = Answer.objects.filter(user=request.user, question__survey=survey)
-        answered_ids = user_answers.values_list('question_id', flat=True)
+        user_answers = (
+            Answer.objects.filter(user=request.user, question__survey=survey)
+            .select_related("question")
+            .annotate(
+                yes_count=Count(
+                    "question__answers",
+                    filter=Q(question__answers__answer="yes"),
+                    distinct=True,
+                ),
+                total_answers=Count("question__answers", distinct=True),
+            )
+        )
+        user_answers = user_answers.annotate(
+            agree_ratio=ExpressionWrapper(
+                F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+                output_field=FloatField(),
+            )
+        )
+        answered_ids = user_answers.values_list("question_id", flat=True)
         unanswered_questions_qs = base_qs.exclude(id__in=answered_ids)
     questions = base_qs.annotate(
         yes_count=Count('answers', filter=Q(answers__answer='yes')),
