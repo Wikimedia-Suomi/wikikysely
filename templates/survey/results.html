@@ -50,7 +50,7 @@
   <th>{% translate 'Total' %}</th>
   <th>{% translate 'Agree' %}</th>
   {% if request.user.is_authenticated %}
-  <th>{% translate 'My answer' %}</th>
+  <!--th>{% translate 'My answer' %}</th-->
   {% endif %}
 </tr>
 </thead>
@@ -70,7 +70,7 @@
   <td>{{ row.total }}</td>
   <td>{% widthratio row.yes row.total 100 %}%</td>
   {% if request.user.is_authenticated %}
-  <td>{{ row.my_answer }}</td>
+  <!--td>{{ row.my_answer|default:"" }}</td-->
   {% endif %}
 </tr>
 {% endfor %}
