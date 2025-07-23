@@ -40,7 +40,7 @@
 </div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <h2>{% translate 'Answer table' %}</h2>
-<table class="table">
+<table id="answerTable" class="table">
 <thead>
 <tr>
   <th>{% translate 'Question' %}</th>
@@ -144,6 +144,51 @@ document.querySelectorAll('input[name="chartType"]').forEach(radio => {
         const type = e.target.value;
         localStorage.setItem(chartTypeKey, type);
         updateChartVisibility(type);
+    });
+});
+</script>
+<script>
+// Sorting for answer table
+document.addEventListener('DOMContentLoaded', () => {
+    const table = document.getElementById('answerTable');
+    if (!table) return;
+    const headers = table.querySelectorAll('th');
+    const directions = Array.from(headers, () => null);
+    const baseTexts = Array.from(headers, h => h.textContent.trim());
+
+    function clearArrows() {
+        headers.forEach((h, i) => {
+            h.textContent = baseTexts[i];
+        });
+    }
+
+    function sortTable(index, direction) {
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const multiplier = direction === 'asc' ? 1 : -1;
+        rows.sort((a, b) => {
+            const aText = a.children[index].textContent.trim();
+            const bText = b.children[index].textContent.trim();
+            const aNum = parseFloat(aText);
+            const bNum = parseFloat(bText);
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return (aNum - bNum) * multiplier;
+            }
+            return aText.localeCompare(bText, undefined, {numeric: true}) * multiplier;
+        });
+        rows.forEach(r => tbody.appendChild(r));
+    }
+
+    headers.forEach((header, i) => {
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', () => {
+            const current = directions[i] === 'asc' ? 'desc' : 'asc';
+            directions.fill(null);
+            directions[i] = current;
+            clearArrows();
+            header.textContent = baseTexts[i] + (current === 'asc' ? ' \u2191' : ' \u2193');
+            sortTable(i, current);
+        });
     });
 });
 </script>
