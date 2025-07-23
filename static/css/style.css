@@ -38,6 +38,10 @@ body {
 .survey-detail-table td:nth-child(4) {
   width: 10%;
 }
+.survey-detail-table th:nth-child(5),
+.survey-detail-table td:nth-child(5) {
+  width: 10%;
+}
 
 /* Make the active navigation link stand out more */
 .nav-link.active {
