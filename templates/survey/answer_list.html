@@ -4,13 +4,28 @@
 {% block content %}
 <h1>{% translate 'My answers' %}</h1>
 <table class="table">
-<thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Answer' %}</th></tr></thead>
-<tbody>
-{% for answer in answers %}
-<tr><td>{{ answer.question.text }}</td><td>{{ answer.get_answer_display }}</td></tr>
-{% empty %}
-<tr><td colspan="2">{% translate 'No answers' %}</td></tr>
-{% endfor %}
-</tbody>
+  <thead>
+    <tr>
+      <th>{% translate 'Question' %}</th>
+      <th>{% translate 'Answer' %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for answer in answers %}
+    <tr>
+      <td><a href="{% url 'survey:answer_question' answer.question.pk %}">{{ answer.question.text }}</a></td>
+      <td>{{ answer.get_answer_display }}</td>
+      <td>
+        {% if answer.question.survey.state == 'running' %}
+        <a href="{% url 'survey:answer_edit' answer.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
+        <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove answer' %}</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">{% translate 'No answers' %}</td></tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}
