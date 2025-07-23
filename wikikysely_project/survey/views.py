@@ -339,21 +339,25 @@ def survey_results(request):
     user_answers = {}
     if request.user.is_authenticated:
         user_answers = {
-            a.question_id: a.pk
+            a.question_id: a.get_answer_display()
             for a in Answer.objects.filter(user=request.user, question__survey=survey)
         }
 
     for q in questions:
         yes_count = q.answers.filter(answer='yes').count()
         no_count = q.answers.filter(answer='no').count()
+        total = yes_count + no_count
+        agree_ratio = (yes_count * 100.0 / total) if total else 0
         row = {
             'question': q,
+            'published': q.created_at,
             'yes': yes_count,
             'no': no_count,
-            'total': yes_count + no_count,
+            'total': total,
+            'agree_ratio': agree_ratio,
         }
         if request.user.is_authenticated:
-            row['answer_pk'] = user_answers.get(q.pk)
+            row['my_answer'] = user_answers.get(q.pk)
         data.append(row)
     yes_label = gettext('Yes')
     no_label = gettext('No')

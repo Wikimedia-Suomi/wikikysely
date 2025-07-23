@@ -41,7 +41,19 @@
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <h2>{% translate 'Answer table' %}</h2>
 <table class="table">
-<thead><tr><th>{% translate 'Question' %}</th><th>{% translate 'Yes' %}</th><th>{% translate 'No' %}</th><th>{% translate 'Total' %}</th></tr></thead>
+<thead>
+<tr>
+  <th>{% translate 'Question' %}</th>
+  <th>{% translate 'Published' %}</th>
+  <th>{% translate 'Yes' %}</th>
+  <th>{% translate 'No' %}</th>
+  <th>{% translate 'Total' %}</th>
+  <th>{% translate 'Agree' %}</th>
+  {% if request.user.is_authenticated %}
+  <th>{% translate 'My answer' %}</th>
+  {% endif %}
+</tr>
+</thead>
 <tbody>
 {% for row in data %}
 <tr>
@@ -52,9 +64,14 @@
       {{ row.question.text }}
     {% endif %}
   </td>
+  <td>{{ row.published|date:"Y-m-d" }}</td>
   <td>{{ row.yes }}</td>
   <td>{{ row.no }}</td>
   <td>{{ row.total }}</td>
+  <td>{% widthratio row.yes row.total 100 %}%</td>
+  {% if request.user.is_authenticated %}
+  <td>{{ row.my_answer }}</td>
+  {% endif %}
 </tr>
 {% endfor %}
 </tbody>

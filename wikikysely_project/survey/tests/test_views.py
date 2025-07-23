@@ -150,6 +150,9 @@ class SurveyFlowTests(TransactionTestCase):
         data = response.context['data'][0]
         self.assertEqual(data['yes'], 1)
         self.assertEqual(data['no'], 0)
+        self.assertIn('published', data)
+        self.assertEqual(data['agree_ratio'], 100.0)
+        self.assertEqual(data['my_answer'], 'Yes')
         self.assertEqual(response.context['total_users'], 1)
         self.assertContains(response, 'Answer table')
 

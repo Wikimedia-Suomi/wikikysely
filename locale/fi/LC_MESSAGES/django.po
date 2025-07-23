@@ -96,6 +96,10 @@ msgstr "Vastaajien määrä"
 msgid "Answer table"
 msgstr "Vastaustaulukko"
 
+#: templates/survey/results.html:53
+msgid "My answer"
+msgstr "Oma vastaus"
+
 #: templates/survey/results.html:9
 msgid "Total"
 msgstr "Yhteensä"
