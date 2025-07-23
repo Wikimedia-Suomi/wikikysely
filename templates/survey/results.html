@@ -64,6 +64,7 @@
 <script>
 const yesLabel = '{{ yes_label|escapejs }}';
 const noLabel = '{{ no_label|escapejs }}';
+const noAnswersLabel = '{{ no_answers_label|escapejs }}';
 const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
 const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
 const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
@@ -88,7 +89,7 @@ pieContainers.forEach(el => {
     new Chart(canvas, {
         type: 'pie',
         data: {
-            labels: total === 0 ? [''] : [yesLabel, noLabel],
+            labels: total === 0 ? [noAnswersLabel] : [yesLabel, noLabel],
             datasets: [{
                 data: data,
                 backgroundColor: colors
