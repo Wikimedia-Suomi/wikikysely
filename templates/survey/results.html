@@ -78,7 +78,7 @@ pieContainers.forEach(el => {
     const yes = parseInt(el.dataset.yes);
     const no = parseInt(el.dataset.no);
     const total = parseInt(el.dataset.total);
-    const placeholderSize = 30;
+    const placeholderSize = 100;
     const size = total === 0 ? placeholderSize : maxSize * Math.sqrt(total / maxTotal);
     const canvas = el.querySelector('canvas');
     canvas.width = size;
