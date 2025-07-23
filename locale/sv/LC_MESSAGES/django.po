@@ -96,6 +96,10 @@ msgstr "Antal svarande"
 msgid "Answer table"
 msgstr "Svarstabell"
 
+#: templates/survey/results.html:53
+msgid "My answer"
+msgstr "Mitt svar"
+
 #: templates/survey/results.html:9
 msgid "Total"
 msgstr "Totalt"
