@@ -169,20 +169,6 @@ msgstr "Luo kysely"
 msgid "Questions"
 msgstr "Kysymykset"
 
-# Navigation tabs
-#: templates/survey/survey_base.html:5
-msgid "Survey info"
-msgstr "Kyselyn tiedot"
-
-#: templates/survey/survey_base.html:9
-msgid "All answers"
-msgstr "Kaikkien vastaukset"
-
-# Headings
-#: templates/survey/answer_list.html:5
-msgid "My answers heading"
-msgstr "Omat vastaukseni"
-
 #: templates/survey/survey_form.html:20
 msgid "No questions"
 msgstr "Ei kysymyksiä"

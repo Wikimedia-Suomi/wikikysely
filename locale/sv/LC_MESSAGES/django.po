@@ -169,20 +169,6 @@ msgstr "Skapa enkät"
 msgid "Questions"
 msgstr "Frågor"
 
-# Navigation tabs
-#: templates/survey/survey_base.html:5
-msgid "Survey info"
-msgstr "Enkätinfo"
-
-#: templates/survey/survey_base.html:9
-msgid "All answers"
-msgstr "Allas svar"
-
-# Headings
-#: templates/survey/answer_list.html:5
-msgid "My answers heading"
-msgstr "Mina egna svar"
-
 #: templates/survey/survey_form.html:20
 msgid "No questions"
 msgstr "Inga frågor"

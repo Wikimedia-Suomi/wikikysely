@@ -1,8 +1,7 @@
-{% extends 'survey/survey_base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{{ survey.title }}{% endblock %}
-{% block survey_content %}
-<h1>{% translate 'Questions' %}</h1>
+{% block content %}
 {% if survey.state == 'paused' %}
   <div class="alert alert-info">{% translate 'This survey is currently paused.' %}</div>
 {% endif %}
