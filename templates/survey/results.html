@@ -43,8 +43,8 @@
 <table id="answerTable" class="table">
 <thead>
 <tr>
-  <th>{% translate 'Question' %}</th>
   <th>{% translate 'Published' %}</th>
+  <th>{% translate 'Question' %}</th>
   <th>{% translate 'Yes' %}</th>
   <th>{% translate 'No' %}</th>
   <th>{% translate 'Total' %}</th>
@@ -57,6 +57,7 @@
 <tbody>
 {% for row in data %}
 <tr>
+  <td>{{ row.published|date:"Y-m-d" }}</td>
   <td>
     {% if request.user.is_authenticated %}
       <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
@@ -64,7 +65,6 @@
       {{ row.question.text }}
     {% endif %}
   </td>
-  <td>{{ row.published|date:"Y-m-d" }}</td>
   <td>{{ row.yes }}</td>
   <td>{{ row.no }}</td>
   <td>{{ row.total }}</td>

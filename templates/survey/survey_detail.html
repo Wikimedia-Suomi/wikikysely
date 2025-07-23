@@ -39,25 +39,25 @@
         <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
       <table class="table mb-3 survey-detail-table">
         <thead>
-          <tr>
-            <th>{% translate 'Title' %}</th>
-            <th>{% translate 'Published' %}</th>
-            <th>{% translate 'Answers' %}</th>
-            <th>{% translate 'Agree' %}</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for q in unanswered_questions %}
-          <tr>
+      <tr>
+        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Title' %}</th>
+        <th>{% translate 'Answers' %}</th>
+        <th>{% translate 'Agree' %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for q in unanswered_questions %}
+        <tr>
+        <td>{{ q.created_at | date:"Y-m-d" }}</td>
 {% if request.user.is_authenticated %}
-            <td><a href="{% url 'survey:answer_question' q.pk %}">{{ q.text }}</a></td>
+        <td><a href="{% url 'survey:answer_question' q.pk %}">{{ q.text }}</a></td>
 {% else %}
-            <td>{{ q.text }}</td>
+        <td>{{ q.text }}</td>
 {% endif %}
-            <td>{{ q.created_at | date:"Y-m-d" }}</td>
-            <td>{{ q.total_answers }}</td>
-            <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
-          </tr>
+        <td>{{ q.total_answers }}</td>
+        <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
+        </tr>
         {% endfor %}
         </tbody>
       </table>
@@ -67,21 +67,21 @@
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
 <table class="table mb-3 survey-detail-table">
   <thead>
-    <tr>
-      <th>{% translate 'Title' %}</th>
-      <th>{% translate 'Published' %}</th>
-      <th>{% translate 'Answers' %}</th>
-      <th>{% translate 'Agree' %}</th>
-    </tr>
+  <tr>
+    <th>{% translate 'Published' %}</th>
+    <th>{% translate 'Title' %}</th>
+    <th>{% translate 'Answers' %}</th>
+    <th>{% translate 'Agree' %}</th>
+  </tr>
   </thead>
   <tbody>
   {% for a in user_answers %}
     <tr>
+      <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
       <td>
         <a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a>
         <span class="badge bg-secondary ms-2">{{ a.get_answer_display }}</span>
       </td>
-      <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
       <td>{{ a.total_answers }}</td>
       <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
     </tr>
