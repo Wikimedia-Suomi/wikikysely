@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% translate 'Add question' %}{% endblock %}
 {% block content %}
-<h1>{{ survey.title }} - {% translate 'Add question' %}</h1>
+<h1>{% translate 'Add question' %}</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
