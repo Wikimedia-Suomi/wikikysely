@@ -127,7 +127,7 @@ msgstr "Obesvarade frågor"
 
 #: templates/survey/survey_detail.html:21
 msgid "Answer survey"
-msgstr "Svara på enkäten"
+msgstr "Svara"
 
 #: templates/survey/answer_form.html:3
 msgid "Answer question"

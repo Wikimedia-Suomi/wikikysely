@@ -127,7 +127,7 @@ msgstr "Vastaamattomat kysymykset"
 
 #: templates/survey/survey_detail.html:21
 msgid "Answer survey"
-msgstr "Vastaa kyselyyn"
+msgstr "Vastaa"
 
 #: templates/survey/answer_form.html:3
 msgid "Answer question"
