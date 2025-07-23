@@ -21,6 +21,10 @@
   <div class="mb-3">
     {% if unanswered_questions and survey.state == 'running' %}
       <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+    {% else %}
+      {% if questions %}
+        <a href="{% url 'survey:survey_results' %}" class="btn btn-info">{% translate 'Results' %}</a>
+      {% endif %}
     {% endif %}
     <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
   </div>
