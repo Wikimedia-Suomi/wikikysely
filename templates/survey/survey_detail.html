@@ -41,6 +41,7 @@
         <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
         <th>{% translate 'Agree' %}</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -54,6 +55,7 @@
 {% endif %}
         <td>{{ q.total_answers }}</td>
         <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
+        <td></td>
         </tr>
         {% endfor %}
         </tbody>
@@ -69,6 +71,7 @@
     <th>{% translate 'Title' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
+    <th></th>
   </tr>
   </thead>
   <tbody>
@@ -81,6 +84,12 @@
       </td>
       <td>{{ a.total_answers }}</td>
       <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
+      <td class="text-end">
+        {% if a.question.survey.state == 'running' %}
+        <a href="{% url 'survey:answer_edit' a.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
+        {% endif %}
+      </td>
     </tr>
   {% endfor %}
   </tbody>
