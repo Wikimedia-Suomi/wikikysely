@@ -357,10 +357,12 @@ def survey_results(request):
         data.append(row)
     yes_label = gettext('Yes')
     no_label = gettext('No')
+    no_answers_label = gettext('No answers')
     return render(request, 'survey/results.html', {
         'survey': survey,
         'data': data,
         'total_users': total_users,
         'yes_label': yes_label,
         'no_label': no_label,
+        'no_answers_label': no_answers_label,
     })
