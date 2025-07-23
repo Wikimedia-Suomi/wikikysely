@@ -21,7 +21,11 @@
       {% url 'survey:survey_results' as survey_results_url %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
+        {% if unanswered_count %}
         <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %}</a></li>
+        {% else %}
+        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %}</span></li>
+        {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_results_url %} active{% endif %}" href="{{ survey_results_url }}">{% translate 'Results' %}</a></li>
       </ul>
       <ul id="userbar" class="navbar-nav ms-auto">
