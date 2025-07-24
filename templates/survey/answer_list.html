@@ -1,8 +1,34 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% translate 'My answers' %}{% endblock %}
+{% block title %}{{ request.user.username }}{% endblock %}
 {% block content %}
-<h1>{% translate 'My answers' %}</h1>
+<h1>{{ request.user.username }}</h1>
+
+<h2>{% translate 'My questions' %}</h2>
+<table class="table mb-4">
+  <thead>
+    <tr>
+      <th>{% translate 'Question' %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for question in questions %}
+    <tr>
+      <td>{{ question.text }}</td>
+      <td class="text-end">
+        {% if question.pk in deletable_questions %}
+        <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
+        {% endif %}
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="2">{% translate 'No questions' %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>{% translate 'My answers' %}</h2>
 <table class="table">
 <thead>
   <tr>
