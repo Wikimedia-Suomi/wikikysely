@@ -57,6 +57,9 @@
 <tr>
   <th>{% translate 'Published' %}</th>
   <th>{% translate 'Question' %}</th>
+  {% if request.user.is_authenticated %}
+  <th>{% translate 'My answer' %}</th>
+  {% endif %}
   <th>{% translate 'Yes' %}</th>
   <th>{% translate 'No' %}</th>
   <th>{% translate 'Total' %}</th>
@@ -70,13 +73,13 @@
   <td>
     {% if request.user.is_authenticated %}
       <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
-      {% if row.my_answer %}
-        <span class="badge bg-secondary ms-2">{{ row.my_answer }}</span>
-      {% endif %}
     {% else %}
       {{ row.question.text }}
     {% endif %}
   </td>
+  {% if request.user.is_authenticated %}
+  <td>{{ row.my_answer }}</td>
+  {% endif %}
   <td>{{ row.yes }}</td>
   <td>{{ row.no }}</td>
   <td>{{ row.total }}</td>
