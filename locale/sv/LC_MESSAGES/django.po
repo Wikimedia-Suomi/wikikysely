@@ -99,11 +99,11 @@ msgid ""
 "Add any question related to the survey's topic, but phrase it so it can only "
 "be answered 'Yes' or 'No'. You may also add a statement, provided the "
 "respondent can similarly answer whether they agree or disagree - yes or no."
-msgstr "L\xE4gg till vilken fr\xE5ga som helst om \xE4mnet f\xF6r unders\xF6kningen, men formulera den s\xE5 att man kan svara bara 'Ja' eller 'Nej'. Du kan ocks\xE5 l\xE4gga till ett p\xE5st\xE5ende s\xE5 l\xE4nge svararen p\xE5 samma s\xE4tt kan svara om hen inst\xE4mmer eller inte - ja eller nej."
+msgstr "Lägg till vilken fråga som helst om ämnet för undersökningen, men formulera den så att man kan svara bara 'Ja' eller 'Nej'. Du kan också lägga till ett påstående så länge svararen på samma sätt kan svara om hen instämmer eller inte - ja eller nej."
 
 #: templates/survey/question_form.html:7
 msgid "Read more instructions"
-msgstr "L\xE4s mer anvisningar"
+msgstr "Läs mer anvisningar"
 
 #: templates/survey/question_form.html:11 templates/survey/survey_form.html:9
 msgid "Save"
