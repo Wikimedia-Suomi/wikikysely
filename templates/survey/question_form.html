@@ -3,6 +3,8 @@
 {% block title %}{% translate 'Add question' %}{% endblock %}
 {% block content %}
 <h1>{{ survey.title }} - {% translate 'Add question' %}</h1>
+<p>{% translate "Add any question related to the survey's topic, but phrase it so it can only be answered 'Yes' or 'No'. You may also add a statement, provided the respondent can similarly answer whether they agree or disagree - yes or no." %}</p>
+<p><a href="https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet" target="_blank">{% translate 'Read more instructions' %}</a></p>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
