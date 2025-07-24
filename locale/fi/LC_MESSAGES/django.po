@@ -25,6 +25,10 @@ msgstr "Tulokset"
 msgid "My answers"
 msgstr "Vastaukseni"
 
+#: templates/survey/answer_list.html:6
+msgid "My questions"
+msgstr "Omat kysymykset"
+
 #: templates/base.html:48
 msgid "Logout"
 msgstr "Kirjaudu ulos"

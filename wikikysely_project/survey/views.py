@@ -324,8 +324,50 @@ def answer_question(request, pk):
 
 @login_required
 def answer_list(request):
-    answers = Answer.objects.filter(user=request.user, question__deleted=False, question__survey__deleted=False)
-    return render(request, 'survey/answer_list.html', {'answers': answers})
+    answers = Answer.objects.filter(
+        user=request.user,
+        question__deleted=False,
+        question__survey__deleted=False,
+    )
+
+    questions_qs = (
+        Question.objects.filter(
+            creator=request.user,
+            deleted=False,
+            survey__deleted=False,
+        )
+        .select_related("survey")
+        .annotate(
+            other_answers=Count(
+                "answers",
+                filter=~Q(answers__user=request.user),
+                distinct=True,
+            )
+        )
+    )
+
+    deletable_questions = []
+    for q in questions_qs:
+        can_creator_delete = q.other_answers == 0
+        can_delete = (
+            request.user == q.survey.creator
+            or request.user.is_superuser
+            or can_creator_delete
+        )
+        if q.survey.state == "closed":
+            can_delete = False
+        if can_delete:
+            deletable_questions.append(q.pk)
+
+    return render(
+        request,
+        "survey/answer_list.html",
+        {
+            "answers": answers,
+            "questions": questions_qs,
+            "deletable_questions": deletable_questions,
+        },
+    )
 
 
 @login_required
