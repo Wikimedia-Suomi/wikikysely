@@ -12,8 +12,12 @@
   {% for field in form.hidden_fields %}
     {{ field }}
   {% endfor %}
-  <button type="submit" name="answer" value="yes" class="btn btn-success me-2">{% translate 'Yes' %}</button>
-  <button type="submit" name="answer" value="no" class="btn btn-danger me-2">{% translate 'No' %}</button>
+  {% with current=form.instance.answer %}
+  <div class="yes-no-toggle {% if current == 'no' %}no-active{% else %}yes-active{% endif %}">
+    <button type="submit" name="answer" value="yes" class="btn yes-btn{% if current == 'yes' %} active{% endif %}">{% translate 'Yes' %}</button>
+    <button type="submit" name="answer" value="no" class="btn no-btn{% if current == 'no' %} active{% endif %}">{% translate 'No' %}</button>
+  </div>
+  {% endwith %}
   {% if is_edit %}
     <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
     {% if survey.state == 'running' %}
