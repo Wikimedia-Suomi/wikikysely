@@ -91,8 +91,10 @@
         <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline">
           {% csrf_token %}
           <input type="hidden" name="question_id" value="{{ a.question.pk }}">
-          <button type="submit" name="answer" value="yes" class="btn btn-sm btn-success me-1{% if a.answer == 'yes' %} active disabled{% endif %}">{% translate 'Yes' %}</button>
-          <button type="submit" name="answer" value="no" class="btn btn-sm btn-danger{% if a.answer == 'no' %} active disabled{% endif %}">{% translate 'No' %}</button>
+          <div class="yes-no-toggle {% if a.answer == 'no' %}no-active{% else %}yes-active{% endif %}">
+            <button type="submit" name="answer" value="yes" class="btn btn-sm yes-btn{% if a.answer == 'yes' %} active disabled{% endif %}">{% translate 'Yes' %}</button>
+            <button type="submit" name="answer" value="no" class="btn btn-sm no-btn{% if a.answer == 'no' %} active disabled{% endif %}">{% translate 'No' %}</button>
+          </div>
         </form>
         <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
         {% endif %}
