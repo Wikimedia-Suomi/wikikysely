@@ -12,8 +12,14 @@
   {% for field in form.hidden_fields %}
     {{ field }}
   {% endfor %}
-  <button type="submit" name="answer" value="yes" class="btn btn-success me-2">{% translate 'Yes' %}</button>
-  <button type="submit" name="answer" value="no" class="btn btn-danger me-2">{% translate 'No' %}</button>
+  <div class="btn-group me-2" role="group" aria-label="{% translate 'Answer' %}">
+    <input type="radio" class="btn-check" name="answer" id="answerYes"
+           value="yes" onchange="this.form.submit()"{% if form.answer.value == 'yes' %} checked{% endif %}>
+    <label class="btn btn-outline-success" for="answerYes">{% translate 'Yes' %}</label>
+    <input type="radio" class="btn-check" name="answer" id="answerNo"
+           value="no" onchange="this.form.submit()"{% if form.answer.value == 'no' %} checked{% endif %}>
+    <label class="btn btn-outline-danger" for="answerNo">{% translate 'No' %}</label>
+  </div>
   {% if is_edit %}
     <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
     {% if survey.state == 'running' %}
