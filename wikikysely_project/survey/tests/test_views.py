@@ -156,14 +156,14 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.context['total_users'], 1)
         self.assertContains(response, 'Answer table')
 
-    def test_results_view_displays_my_answer_badge(self):
+    def test_results_view_displays_my_answer_column(self):
         survey = self._create_survey()
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer='yes')
         response = self.client.get(reverse('survey:survey_results'))
         self.assertContains(
             response,
-            '<span class="badge bg-secondary ms-2">Yes</span>',
+            '<td>Yes</td>',
             html=True,
         )
 

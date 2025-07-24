@@ -70,6 +70,7 @@
   <tr>
     <th>{% translate 'Published' %}</th>
     <th>{% translate 'Title' %}</th>
+    <th>{% translate 'My answer' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
     <th></th>
@@ -81,8 +82,8 @@
       <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
       <td>
         <a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a>
-        <span class="badge bg-secondary ms-2">{{ a.get_answer_display }}</span>
       </td>
+      <td>{{ a.get_answer_display }}</td>
       <td>{{ a.total_answers }}</td>
       <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
       <td class="text-end">
