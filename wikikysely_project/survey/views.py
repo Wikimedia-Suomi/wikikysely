@@ -166,16 +166,31 @@ def question_add(request):
 def question_delete(request, pk):
     question = get_object_or_404(Question, pk=pk, deleted=False)
     survey = question.survey
-    if request.user != survey.creator and not request.user.is_superuser:
+
+    can_creator_delete = (
+        request.user == question.creator
+        and not question.answers.exclude(user=request.user).exists()
+    )
+
+    if not (
+        request.user == survey.creator
+        or request.user.is_superuser
+        or can_creator_delete
+    ):
         messages.error(request, _('No permission'))
-        return redirect('survey:survey_edit')
+        return redirect('survey:survey_detail')
+
     if survey.state == 'closed':
         messages.error(request, _('Cannot remove questions from a closed survey'))
-        return redirect('survey:survey_edit')
+        return redirect('survey:survey_detail')
+
     question.deleted = True
     question.save()
     messages.success(request, _('Question removed'))
-    return redirect('survey:survey_edit')
+
+    if request.user == survey.creator or request.user.is_superuser:
+        return redirect('survey:survey_edit')
+    return redirect('survey:survey_detail')
 
 
 @login_required
@@ -263,6 +278,7 @@ def answer_question(request, pk):
         return redirect('survey:survey_detail')
 
     answer = None
+    can_delete_question = False
     if not request.user.is_authenticated:
         login_url = f"{reverse('login')}?next={request.path}"
         messages.info(
@@ -289,6 +305,10 @@ def answer_question(request, pk):
                     return redirect('survey:survey_detail')
         else:
             form = AnswerForm(instance=answer, initial={'question_id': question.pk})
+        can_delete_question = (
+            request.user == question.creator
+            and not question.answers.exclude(user=request.user).exists()
+        )
     return render(
         request,
         'survey/answer_form.html',
@@ -297,6 +317,7 @@ def answer_question(request, pk):
             'question': question,
             'form': form,
             'is_edit': answer is not None,
+            'can_delete_question': can_delete_question if request.user.is_authenticated else False,
         },
     )
 
