@@ -69,6 +69,10 @@ msgstr "Peruuta"
 msgid "Remove answer"
 msgstr "Poista vastaus"
 
+#: templates/survey/answer_form.html:21
+msgid "Remove question"
+msgstr "Poista kysymys"
+
 #: templates/survey/answer_form.html:23 wikikysely_project/survey/forms.py:36
 msgid "Skip"
 msgstr "Ohita"

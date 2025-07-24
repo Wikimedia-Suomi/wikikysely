@@ -25,6 +25,9 @@
     {% if survey.state == 'running' %}
     <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger ms-2">{% translate 'Remove answer' %}</a>
     {% endif %}
+    {% if can_delete_question %}
+    <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-danger ms-2">{% translate 'Remove question' %}</a>
+    {% endif %}
   {% else %}
     <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
   {% endif %}
