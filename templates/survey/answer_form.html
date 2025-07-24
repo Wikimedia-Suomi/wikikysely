@@ -12,10 +12,10 @@
   {% for field in form.hidden_fields %}
     {{ field }}
   {% endfor %}
-  <div class="btn-group me-2" role="group" aria-label="{% translate 'Answer' %}">
+  <div class="mb-2" role="group" aria-label="{% translate 'Answer' %}">
     <input type="radio" class="btn-check" name="answer" id="answerYes"
            value="yes" onchange="this.form.submit()"{% if form.answer.value == 'yes' %} checked{% endif %}>
-    <label class="btn btn-outline-success" for="answerYes">{% translate 'Yes' %}</label>
+    <label class="btn btn-outline-success me-2" for="answerYes">{% translate 'Yes' %}</label>
     <input type="radio" class="btn-check" name="answer" id="answerNo"
            value="no" onchange="this.form.submit()"{% if form.answer.value == 'no' %} checked{% endif %}>
     <label class="btn btn-outline-danger" for="answerNo">{% translate 'No' %}</label>
