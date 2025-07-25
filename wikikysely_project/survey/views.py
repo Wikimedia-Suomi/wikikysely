@@ -585,8 +585,11 @@ def question_similar(request):
 @lru_cache(maxsize=1)
 def _get_embedding_model():
     from sentence_transformers import SentenceTransformer
-
-    return SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+    # Avoid PyTorch meta tensor issues by disabling low_cpu_mem_usage.
+    return SentenceTransformer(
+        "paraphrase-multilingual-MiniLM-L12-v2",
+        model_kwargs={"low_cpu_mem_usage": False},
+    )
 
 
 def _simple_detect_language(text: str) -> str:
