@@ -13,6 +13,29 @@ from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
 
+def get_user_answers(user, survey):
+    """Return user's answers for the survey with aggregated stats."""
+    return (
+        Answer.objects.filter(user=user, question__survey=survey)
+        .select_related("question")
+        .annotate(
+            yes_count=Count(
+                "question__answers",
+                filter=Q(question__answers__answer="yes"),
+                distinct=True,
+            ),
+            total_answers=Count("question__answers", distinct=True),
+        )
+        .annotate(
+            agree_ratio=ExpressionWrapper(
+                F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+                output_field=FloatField(),
+            )
+        )
+        .order_by("-created_at")
+    )
+
+
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -338,10 +361,17 @@ def answer_survey(request):
             messages.info(request, _("No more questions"))
             return redirect("survey:survey_detail")
         form = AnswerForm(initial={"question_id": question.pk})
+
+    user_answers = get_user_answers(request.user, survey)
     return render(
         request,
         "survey/answer_form.html",
-        {"survey": survey, "question": question, "form": form},
+        {
+            "survey": survey,
+            "question": question,
+            "form": form,
+            "user_answers": user_answers,
+        },
     )
 
 
@@ -392,6 +422,11 @@ def answer_question(request, pk):
             request.user == question.creator
             and not question.answers.exclude(user=request.user).exists()
         )
+    user_answers = (
+        get_user_answers(request.user, survey)
+        if request.user.is_authenticated
+        else Answer.objects.none()
+    )
     return render(
         request,
         "survey/answer_form.html",
@@ -403,6 +438,7 @@ def answer_question(request, pk):
             "can_delete_question": (
                 can_delete_question if request.user.is_authenticated else False
             ),
+            "user_answers": user_answers,
         },
     )
 
