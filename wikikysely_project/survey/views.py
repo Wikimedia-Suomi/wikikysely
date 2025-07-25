@@ -577,7 +577,11 @@ def question_similar(request):
                 zip(questions, scores.tolist()), key=lambda x: x[1], reverse=True
             )
             for question, score in pairs[:5]:
-                results.append({"id": question.pk, "text": question.text})
+                results.append({
+                    "id": question.pk,
+                    "text": question.text,
+                    "score": round(float(score) * 100, 1),
+                })
     return JsonResponse({"results": results})
 
 
