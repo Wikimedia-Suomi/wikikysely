@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% translate 'Add question' %}{% endblock %}
+{% block title %}{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}{% endblock %}
 {% block content %}
-<h1>{% translate 'Add question' %}</h1>
+<h1>{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit" class="btn btn-primary me-2">{% translate 'Save' %}</button>
   <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
 </form>
+{% if not is_edit %}
 <hr>
 <p>{% translate "Add any question related to the survey's topic, but phrase it so it can only be answered 'Yes' or 'No'. You may also add a statement, provided the respondent can similarly answer whether they agree or disagree - yes or no." %}</p>
 <p><a href="https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet" target="_blank">{% translate 'Read more instructions' %}</a></p>
+{% endif %}
 </div>
 {% endblock %}
