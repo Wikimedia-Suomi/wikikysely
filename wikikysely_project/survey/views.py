@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
-from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
+from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
 from django.db.models.functions import NullIf, TruncDate
 from datetime import timedelta
 import json
@@ -403,6 +403,13 @@ def answer_survey(request):
 
     user_answers = get_user_answers(request.user, survey)
     question_stats = get_question_stats(question, request.user) if question else None
+    max_total = (
+        survey.questions.filter(deleted=False)
+        .annotate(total=Count("answers"))
+        .aggregate(max_total=Max("total"))
+        .get("max_total")
+        or 0
+    )
     yes_label = gettext("Yes")
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
@@ -416,6 +423,7 @@ def answer_survey(request):
             "form": form,
             "user_answers": user_answers,
             "question_stats": question_stats,
+            "max_total": max_total,
             "timeline_data": timeline_data,
             "yes_label": yes_label,
             "no_label": no_label,
@@ -477,6 +485,13 @@ def answer_question(request, pk):
         else Answer.objects.none()
     )
     question_stats = get_question_stats(question, request.user)
+    max_total = (
+        survey.questions.filter(deleted=False)
+        .annotate(total=Count("answers"))
+        .aggregate(max_total=Max("total"))
+        .get("max_total")
+        or 0
+    )
     yes_label = gettext("Yes")
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
@@ -494,6 +509,7 @@ def answer_question(request, pk):
             ),
             "user_answers": user_answers,
             "question_stats": question_stats,
+            "max_total": max_total,
             "timeline_data": timeline_data,
             "yes_label": yes_label,
             "no_label": no_label,
