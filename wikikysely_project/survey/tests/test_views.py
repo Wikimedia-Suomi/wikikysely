@@ -82,11 +82,11 @@ class SurveyFlowTests(TransactionTestCase):
 
     def test_add_question(self):
         survey = self._create_survey()
-        data = {"text": "What do you think?"}
+        data = {"text": "What do you think about this?"}
         response = self.client.post(reverse("survey:question_add"), data)
         self.assertEqual(survey.questions.filter(deleted=False).count(), 1)
         question = survey.questions.first()
-        self.assertEqual(question.text, "What do you think?")
+        self.assertEqual(question.text, "What do you think about this?")
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_delete_and_restore_question(self):
@@ -110,13 +110,13 @@ class SurveyFlowTests(TransactionTestCase):
     def test_edit_question(self):
         survey = self._create_survey()
         question = self._create_question(survey)
-        data = {"text": "Updated question?"}
+        data = {"text": "Updated question text for testing?"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
             data,
         )
         question.refresh_from_db()
-        self.assertEqual(question.text, "Updated question?")
+        self.assertEqual(question.text, "Updated question text for testing?")
         self.assertRedirects(response, reverse("survey:survey_edit"))
 
     def test_cannot_edit_question_answered_by_others(self):
@@ -128,7 +128,7 @@ class SurveyFlowTests(TransactionTestCase):
             survey=survey, text="Original?", creator=self.user
         )
         Answer.objects.create(question=question, user=other_user, answer="yes")
-        data = {"text": "Updated?"}
+        data = {"text": "Updated question text for testing?"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
             data,

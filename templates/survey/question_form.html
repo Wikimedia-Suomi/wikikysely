@@ -6,12 +6,14 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <div id="language-detection" class="form-text" data-label="{% translate 'Detected language: %s' %}"></div>
     <button type="submit" class="btn btn-primary me-2">{% translate 'Save' %}</button>
     <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary">{% translate 'Cancel' %}</a>
   </form>
   {% if not is_edit %}
   <hr>
   <p>{% translate "Add any question related to the survey's topic, but phrase it so it can only be answered 'Yes' or 'No'. You may also add a statement, provided the respondent can similarly answer whether they agree or disagree - yes or no." %}</p>
+  <p>{% translate "The question must contain at least five words." %}</p>
   <p>{% translate "You can edit or delete the question you added as long as nobody has answered it." %}</p>
   <p><a href="https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet" target="_blank">{% translate 'Read more instructions' %}</a></p>
   <div id="suggestions" class="mt-3" data-heading="{% translate 'Similar questions' %}"></div>
@@ -20,7 +22,9 @@
 
 {% block scripts %}
 <script src="{% static 'js/question_suggestions.js' %}"></script>
+<script src="{% static 'js/language_detect.js' %}"></script>
 <script>
   suggestionsSetup("{% url 'survey:question_similar' %}");
+  languageDetectSetup("{% url 'survey:question_detect_language' %}");
 </script>
 {% endblock %}
