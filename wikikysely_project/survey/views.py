@@ -612,7 +612,7 @@ def _get_fasttext_model():
     try:
         import fasttext
     except Exception:
-        raise RuntimeError("fasttext is not available")
+        raise RuntimeError("fasttext-wheel is not available")
     return fasttext.load_model(settings.FASTTEXT_MODEL_PATH)
 
 
