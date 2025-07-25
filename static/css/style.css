@@ -14,6 +14,7 @@ body {
 }
 
 /* Center pie charts relative to the question text */
+#answerPieChart,
 #pieCharts .pie-chart canvas {
   display: block;
   margin-left: auto;
