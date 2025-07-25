@@ -26,7 +26,8 @@ function suggestionsSetup(url) {
                     data.results.forEach(item => {
                         const li = document.createElement('li');
                         li.className = 'list-group-item';
-                        li.textContent = item.text;
+                        const pct = Math.round(item.score);
+                        li.textContent = `${item.text} (${pct}%)`;
                         ul.appendChild(li);
                     });
                     container.appendChild(ul);

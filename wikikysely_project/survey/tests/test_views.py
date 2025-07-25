@@ -237,3 +237,35 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:survey_detail"))
         self.assertContains(response, "This survey is currently paused.")
+
+    def test_question_similar_returns_scores(self):
+        survey = self._create_survey()
+        self._create_question(survey, text="First question?")
+        self._create_question(survey, text="Second question?")
+
+        from unittest.mock import patch, MagicMock
+        import numpy as np
+
+        dummy_model = MagicMock()
+        dummy_model.encode.side_effect = [
+            [1, 0],  # query embedding
+            [[1, 0], [0, 1]],  # corpus embeddings
+        ]
+
+        with patch(
+            "wikikysely_project.survey.views._get_embedding_model",
+            return_value=dummy_model,
+        ):
+            with patch("sentence_transformers.util.cos_sim") as cos_sim:
+                cos_sim.return_value = np.array([[0.9, 0.1]])
+                response = self.client.get(
+                    reverse("survey:question_similar") + "?q=first"
+                )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("results", data)
+        self.assertTrue(len(data["results"]) > 0)
+        self.assertIn("score", data["results"][0])
+        self.assertGreaterEqual(data["results"][0]["score"], 0)
+        self.assertLessEqual(data["results"][0]["score"], 100)
