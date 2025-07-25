@@ -56,7 +56,12 @@
 {% endif %}
         <td>{{ q.total_answers }}</td>
         <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
-        <td></td>
+        <td class="text-end">
+          {% if request.user.is_authenticated and request.user == q.creator and q.total_answers == 0 and survey.state != 'closed' %}
+          <a href="{% url 'survey:question_edit' q.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
+          <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
+          {% endif %}
+        </td>
         </tr>
         {% endfor %}
         </tbody>
