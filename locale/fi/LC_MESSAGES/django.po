@@ -148,7 +148,7 @@ msgstr "Piirakkadiagrammi"
 
 #: templates/survey/results.html:13
 msgid "Bar chart"
-msgstr "Pylväsdiagrammi"
+msgstr "Palkkidiagrammi"
 
 #: templates/survey/results.html:53
 msgid "Total respondents"

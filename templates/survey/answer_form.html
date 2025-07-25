@@ -161,6 +161,7 @@ const successColor = getComputedStyle(document.documentElement).getPropertyValue
 const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
 const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
     getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary').trim() || 'gray';
+const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || 'blue';
 const yesCount = {{ question_stats.yes|default:0 }};
 const noCount = {{ question_stats.no|default:0 }};
 const totalCount = {{ question_stats.total|default:0 }};
@@ -196,8 +197,8 @@ if (tlCtx) {
             datasets: [{
                 label: '{{ Answers|escapejs }}',
                 data: timelineData.map(d => d.count),
-                backgroundColor: successColor,
-                borderColor: successColor
+                backgroundColor: primaryColor,
+                borderColor: primaryColor
             }]
         },
         options: {
