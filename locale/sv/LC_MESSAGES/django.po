@@ -359,6 +359,10 @@ msgstr "Svar kan tas bort endast när enkäten är igång"
 msgid "Answer removed"
 msgstr "Svar borttaget"
 
+#: templates/survey/question_form.html:17
+msgid "Similar questions"
+msgstr "Liknande frågor"
+
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 

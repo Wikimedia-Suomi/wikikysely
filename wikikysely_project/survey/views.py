@@ -9,6 +9,8 @@ from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
 from django.db.models.functions import NullIf
+from django.http import JsonResponse
+from functools import lru_cache
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
@@ -553,3 +555,34 @@ def survey_results(request):
             "no_answers_label": no_answers_label,
         },
     )
+
+
+@login_required
+def question_similar(request):
+    """Return similar questions for the given query string."""
+    query = request.GET.get("q", "").strip()
+    results = []
+    if query:
+        from sentence_transformers import SentenceTransformer, util
+
+        model = _get_embedding_model()
+        survey = Survey.get_main_survey()
+        questions = list(survey.questions.filter(deleted=False))
+        texts = [q.text for q in questions]
+        if texts:
+            query_emb = model.encode(query, convert_to_tensor=True)
+            corpus_emb = model.encode(texts, convert_to_tensor=True)
+            scores = util.cos_sim(query_emb, corpus_emb)[0]
+            pairs = sorted(
+                zip(questions, scores.tolist()), key=lambda x: x[1], reverse=True
+            )
+            for question, score in pairs[:5]:
+                results.append({"id": question.pk, "text": question.text})
+    return JsonResponse({"results": results})
+
+
+@lru_cache(maxsize=1)
+def _get_embedding_model():
+    from sentence_transformers import SentenceTransformer
+
+    return SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
