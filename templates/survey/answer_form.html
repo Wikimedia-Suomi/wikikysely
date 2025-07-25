@@ -34,5 +34,96 @@
     {% endif %}
   </div>
 </form>
+  <h2 class="mt-4">{% translate 'My answers' %}</h2>
+  <table class="table mb-3 survey-detail-table">
+    <thead>
+      <tr>
+        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Title' %}</th>
+        <th>{% translate 'Answers' %}</th>
+        <th>{% translate 'Agree' %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in user_answers %}
+      <tr>
+        <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
+        <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
+        <td>{{ a.total_answers }}</td>
+        <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
+        <td class="text-end">
+          {% if a.question.survey.state == 'running' %}
+          <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{ a.question.pk }}">
+            <div class="btn-group" role="group" aria-label="{% translate 'Answer' %}">
+              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes" onchange="this.form.submit()"{% if a.answer == 'yes' %} checked{% endif %}>
+              <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
+              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no" onchange="this.form.submit()"{% if a.answer == 'no' %} checked{% endif %}>
+              <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
+            </div>
+          </form>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Enable sorting on survey detail tables
+document.addEventListener('DOMContentLoaded', () => {
+    const tables = document.querySelectorAll('.survey-detail-table');
+    tables.forEach(table => {
+        const headers = table.querySelectorAll('th');
+        const directions = Array.from(headers, () => null);
+        const baseTexts = Array.from(headers, h => h.textContent.trim());
+
+        function clearArrows() {
+            headers.forEach((h, i) => {
+                h.textContent = baseTexts[i];
+            });
+        }
+
+        function sortTable(index, direction) {
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const multiplier = direction === 'asc' ? 1 : -1;
+            rows.sort((a, b) => {
+                const aText = a.children[index].textContent.trim();
+                const bText = b.children[index].textContent.trim();
+                const aDate = Date.parse(aText);
+                const bDate = Date.parse(bText);
+                if (!isNaN(aDate) && !isNaN(bDate)) {
+                    return (aDate - bDate) * multiplier;
+                }
+                const aNum = parseFloat(aText);
+                const bNum = parseFloat(bText);
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return (aNum - bNum) * multiplier;
+                }
+                return aText.localeCompare(bText, undefined, {numeric: true}) * multiplier;
+            });
+            rows.forEach(r => tbody.appendChild(r));
+        }
+
+        headers.forEach((header, i) => {
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', () => {
+                const current = directions[i] === 'asc' ? 'desc' : 'asc';
+                directions.fill(null);
+                directions[i] = current;
+                clearArrows();
+                header.textContent = baseTexts[i] + (current === 'asc' ? ' \u2191' : ' \u2193');
+                sortTable(i, current);
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
