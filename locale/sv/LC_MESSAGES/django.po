@@ -363,18 +363,6 @@ msgstr "Svar borttaget"
 msgid "Similar questions"
 msgstr "Liknande frågor"
 
-msgid "Detected language: %s"
-msgstr "Upptäckt språk: %s"
-
-msgid "The question must contain at least five words."
-msgstr "Frågan måste bestå av minst fem ord."
-
-msgid "Minimum length is %(min)d words."
-msgstr "Minimilängden är %(min)d ord."
-
-msgid "Question must contain at least %(min)d words."
-msgstr "Frågan måste innehålla minst %(min)d ord."
-
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 

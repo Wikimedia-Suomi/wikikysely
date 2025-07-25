@@ -12,7 +12,6 @@ from django.db.models.functions import NullIf
 from django.http import JsonResponse
 from functools import lru_cache
 from .models import Survey, Question, Answer
-from django.conf import settings
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
 
@@ -590,29 +589,3 @@ def _get_embedding_model():
         "paraphrase-multilingual-MiniLM-L12-v2",
         model_kwargs={"low_cpu_mem_usage": False},
     )
-
-
-def _simple_detect_language(text: str) -> str:
-    """Very small heuristic language detector for fi, sv and en."""
-    text = text.lower()
-    if not text:
-        return ""
-    if "å" in text:
-        return "sv"
-    finnish_words = [" ja ", " ei ", " että ", " se ", " on "]
-    swedish_words = [" och ", " inte ", " det ", " att ", " är "]
-    fi_score = sum(w in text for w in finnish_words)
-    sv_score = sum(w in text for w in swedish_words)
-    if fi_score > sv_score:
-        return "fi"
-    if sv_score > fi_score:
-        return "sv"
-    return "en"
-
-
-def question_detect_language(request):
-    """Return detected language for given query text."""
-    query = request.GET.get("q", "")
-    code = _simple_detect_language(query)
-    lang_map = dict(settings.LANGUAGES)
-    return JsonResponse({"language": lang_map.get(code, "")})

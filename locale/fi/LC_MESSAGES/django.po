@@ -363,18 +363,6 @@ msgstr "Vastaus poistettu"
 msgid "Similar questions"
 msgstr "Samankaltaiset kysymykset"
 
-msgid "Detected language: %s"
-msgstr "Tunnistettu kieli: %s"
-
-msgid "The question must contain at least five words."
-msgstr "Kysymyksen on oltava vähintään viiden sanan mittainen."
-
-msgid "Minimum length is %(min)d words."
-msgstr "Vähimmäispituus on %(min)d sanaa."
-
-msgid "Question must contain at least %(min)d words."
-msgstr "Kysymyksen tulee sisältää vähintään %(min)d sanaa."
-
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 
