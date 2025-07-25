@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-24 13:08+0000\n"
+"POT-Creation-Date: 2025-07-25 04:06+0000\n"
 "Language: fi\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
@@ -20,26 +20,17 @@ msgstr "Vastaa"
 msgid "Results"
 msgstr "Tulokset"
 
-#: templates/base.html:47 templates/survey/answer_list.html:3
-#: templates/survey/answer_list.html:5 templates/survey/survey_detail.html:67
-msgid "My answers"
-msgstr "Vastaukseni"
-
-#: templates/survey/answer_list.html:6
-msgid "My questions"
-msgstr "Omat kysymykset"
-
-#: templates/base.html:48
+#: templates/base.html:47
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
-#: templates/base.html:50 templates/registration/login.html:3
+#: templates/base.html:49 templates/registration/login.html:3
 #: templates/registration/login.html:5 templates/registration/login.html:10
 #: templates/survey/survey_detail.html:15
 msgid "Login"
 msgstr "Kirjaudu sisään"
 
-#: templates/base.html:51 templates/registration/register.html:3
+#: templates/base.html:50 templates/registration/register.html:3
 #: templates/registration/register.html:5
 #: templates/registration/register.html:10
 msgid "Register"
@@ -49,73 +40,107 @@ msgstr "Rekisteröidy"
 msgid "Answer question"
 msgstr "Vastaa kysymykseen"
 
-#: templates/survey/answer_form.html:15 templates/survey/results.html:63
+#: templates/survey/answer_form.html:15 templates/survey/answer_list.html:39
+#: templates/survey/survey_detail.html:97
+msgid "Answer"
+msgstr "Vastaus"
+
+#: templates/survey/answer_form.html:19 templates/survey/results.html:63
+#: templates/survey/survey_detail.html:99
 #: wikikysely_project/survey/models.py:52
-#: wikikysely_project/survey/views.py:139
-#: wikikysely_project/survey/views.py:379
+#: wikikysely_project/survey/views.py:153
+#: wikikysely_project/survey/views.py:263
+#: wikikysely_project/survey/views.py:541
 msgid "Yes"
 msgstr "Kyllä"
 
-#: templates/survey/answer_form.html:16 templates/survey/results.html:64
+#: templates/survey/answer_form.html:22 templates/survey/results.html:64
+#: templates/survey/survey_detail.html:101
 #: wikikysely_project/survey/models.py:53
-#: wikikysely_project/survey/views.py:140
-#: wikikysely_project/survey/views.py:380
+#: wikikysely_project/survey/views.py:154
+#: wikikysely_project/survey/views.py:264
+#: wikikysely_project/survey/views.py:542
 msgid "No"
 msgstr "Ei"
 
-#: templates/survey/answer_form.html:18 templates/survey/question_form.html:12
+#: templates/survey/answer_form.html:25 templates/survey/question_form.html:10
 #: templates/survey/survey_form.html:11
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: templates/survey/answer_form.html:20 templates/survey/answer_list.html:22
-#: templates/survey/survey_detail.html:92
+#: templates/survey/answer_form.html:27 templates/survey/answer_list.html:51
+#: templates/survey/survey_detail.html:104
 msgid "Remove answer"
 msgstr "Poista vastaus"
 
-#: templates/survey/answer_form.html:21
+#: templates/survey/answer_form.html:30 templates/survey/answer_list.html:24
+#: templates/survey/survey_detail.html:62
 msgid "Remove question"
 msgstr "Poista kysymys"
 
-#: templates/survey/answer_form.html:23 wikikysely_project/survey/forms.py:36
+#: templates/survey/answer_form.html:33 wikikysely_project/survey/forms.py:36
 msgid "Skip"
 msgstr "Ohita"
 
-#: templates/survey/answer_list.html:9 templates/survey/results.html:59
+#: templates/survey/answer_list.html:7
+msgid "My questions"
+msgstr "Omat kysymykset"
+
+#: templates/survey/answer_list.html:11 templates/survey/answer_list.html:38
+#: templates/survey/results.html:59
 msgid "Question"
 msgstr "Kysymys"
 
-#: templates/survey/answer_list.html:10
-msgid "Answer"
-msgstr "Vastaus"
-
-#: templates/survey/answer_list.html:21 templates/survey/survey_detail.html:91
+#: templates/survey/answer_list.html:21 templates/survey/answer_list.html:50
+#: templates/survey/survey_detail.html:61
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: templates/survey/answer_list.html:27 wikikysely_project/survey/views.py:381
+#: templates/survey/answer_list.html:29 templates/survey/survey_form.html:25
+msgid "No questions"
+msgstr "Ei kysymyksiä"
+
+#: templates/survey/answer_list.html:34 templates/survey/survey_detail.html:72
+msgid "My answers"
+msgstr "Vastaukseni"
+
+#: templates/survey/answer_list.html:56 wikikysely_project/survey/views.py:543
 msgid "No answers"
 msgstr "Ei vastauksia"
+
+#: templates/survey/question_form.html:3 templates/survey/question_form.html:5
+msgid "Edit question"
+msgstr "Muokkaa kysymystä"
 
 #: templates/survey/question_form.html:3 templates/survey/question_form.html:5
 #: templates/survey/survey_detail.html:29
 msgid "Add question"
 msgstr "Lisää kysymys"
 
-#: templates/survey/question_form.html:6
+#: templates/survey/question_form.html:9 templates/survey/survey_form.html:9
+msgid "Save"
+msgstr "Tallenna"
+
+#: templates/survey/question_form.html:14
 msgid ""
 "Add any question related to the survey's topic, but phrase it so it can only "
 "be answered 'Yes' or 'No'. You may also add a statement, provided the "
 "respondent can similarly answer whether they agree or disagree - yes or no."
-msgstr "Lisää mikä tahansa kyselyn aiheeseen liittyvä kysymys, mutta muotoile se niin, että vastata voi vain 'Kyllä' tai 'Ei'. Kysymyksen ohella voit lisätä väitteen, kunhan vastaaja voi samaan tapaan vastata olevansa samaa tai eri mieltä - kyllä tai ei."
+msgstr ""
+"Lisää mikä tahansa kyselyn aiheeseen liittyvä kysymys, mutta muotoile se "
+"niin, että vastata voi vain 'Kyllä' tai 'Ei'. Kysymyksen ohella voit lisätä "
+"väitteen, kunhan vastaaja voi samaan tapaan vastata olevansa samaa tai eri "
+"mieltä - kyllä tai ei."
 
-#: templates/survey/question_form.html:7
+#: templates/survey/question_form.html:15
+msgid ""
+"You can edit or delete the question you added as long as nobody has answered "
+"it."
+msgstr "Voit muokata lisäämääsi kysymystä tai poistaa sen niin kauan kuin kysymykseen ei ole vastattu."
+
+#: templates/survey/question_form.html:16
 msgid "Read more instructions"
 msgstr "Lue tarkemmat ohjeet"
-
-#: templates/survey/question_form.html:11 templates/survey/survey_form.html:9
-msgid "Save"
-msgstr "Tallenna"
 
 #: templates/survey/results.html:9
 msgid "Pie chart"
@@ -134,11 +159,11 @@ msgid "Answer table"
 msgstr "Vastaustaulukko"
 
 #: templates/survey/results.html:58 templates/survey/survey_detail.html:41
-#: templates/survey/survey_detail.html:71
+#: templates/survey/survey_detail.html:76
 msgid "Published"
 msgstr "Julkaistu"
 
-#: templates/survey/results.html:61 templates/survey/survey_detail.html:73
+#: templates/survey/results.html:61
 msgid "My answer"
 msgstr "Oma vastaus"
 
@@ -147,7 +172,7 @@ msgid "Total"
 msgstr "Yhteensä"
 
 #: templates/survey/results.html:66 templates/survey/survey_detail.html:44
-#: templates/survey/survey_detail.html:75
+#: templates/survey/survey_detail.html:79
 msgid "Agree"
 msgstr "Samanmielisyys"
 
@@ -168,18 +193,18 @@ msgid "Unanswered questions"
 msgstr "Vastaamattomat kysymykset"
 
 #: templates/survey/survey_detail.html:42
-#: templates/survey/survey_detail.html:72 templates/survey/survey_list.html:7
+#: templates/survey/survey_detail.html:77 templates/survey/survey_list.html:7
 #: wikikysely_project/survey/models.py:12
 msgid "Title"
 msgstr "Otsikko"
 
 #: templates/survey/survey_detail.html:43
-#: templates/survey/survey_detail.html:74
+#: templates/survey/survey_detail.html:78
 msgid "Answers"
 msgstr "Vastaukset"
 
 # UI strings
-#: templates/survey/survey_detail.html:101 templates/survey/survey_form.html:3
+#: templates/survey/survey_detail.html:113 templates/survey/survey_form.html:3
 #: templates/survey/survey_form.html:5 templates/survey/survey_list.html:17
 msgid "Edit survey"
 msgstr "Muokkaa kyselyä"
@@ -192,10 +217,6 @@ msgstr "Luo kysely"
 #: templates/survey/survey_form.html:21
 msgid "Remove"
 msgstr "Poista"
-
-#: templates/survey/survey_form.html:25
-msgid "No questions"
-msgstr "Ei kysymyksiä"
 
 #: templates/survey/survey_form.html:29
 msgid "Deleted questions"
@@ -247,22 +268,24 @@ msgstr "Kyselyt"
 msgid "Registration successful"
 msgstr "Rekisteröinti onnistui"
 
-#: wikikysely_project/survey/views.py:100
-#: wikikysely_project/survey/views.py:128
-#: wikikysely_project/survey/views.py:170
-#: wikikysely_project/survey/views.py:186
+#: wikikysely_project/survey/views.py:106
+#: wikikysely_project/survey/views.py:142
+#: wikikysely_project/survey/views.py:198
+#: wikikysely_project/survey/views.py:219
+#: wikikysely_project/survey/views.py:243
 msgid "No permission"
 msgstr "Ei oikeuksia"
 
-#: wikikysely_project/survey/views.py:106
+#: wikikysely_project/survey/views.py:112
 msgid "Survey updated"
 msgstr "Kysely päivitetty"
 
-#: wikikysely_project/survey/views.py:125
+#: wikikysely_project/survey/views.py:135
 msgid "Cannot add questions to a closed survey"
 msgstr "Suljettuun kyselyyn ei voi lisätä kysymyksiä"
 
-#: wikikysely_project/survey/views.py:143
+#: wikikysely_project/survey/views.py:158
+#: wikikysely_project/survey/views.py:268
 #, python-format
 msgid ""
 "The question \"%(text)s\" already exists and has %(count)d answers "
@@ -271,72 +294,68 @@ msgstr ""
 "Kysymys \"%(text)s\" on jo olemassa ja sille on %(count)d vastausta "
 "(%(yes_label)s %(yes)d, %(no_label)s %(no)d). Muotoile kysymys toisin."
 
-#: wikikysely_project/survey/views.py:158
+#: wikikysely_project/survey/views.py:174
 msgid "Question added"
 msgstr "Kysymys lisätty"
 
-#: wikikysely_project/survey/views.py:173
+#: wikikysely_project/survey/views.py:202
 msgid "Cannot remove questions from a closed survey"
 msgstr "Suljetusta kyselystä ei voi poistaa kysymyksiä"
 
-#: wikikysely_project/survey/views.py:177
+#: wikikysely_project/survey/views.py:207
 msgid "Question removed"
 msgstr "Kysymys poistettu"
 
-#: wikikysely_project/survey/views.py:189
+#: wikikysely_project/survey/views.py:222
 msgid "Cannot restore questions in a closed survey"
 msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 
-#: wikikysely_project/survey/views.py:193
+#: wikikysely_project/survey/views.py:226
 msgid "Question restored"
 msgstr "Kysymys palautettu"
 
-#: wikikysely_project/survey/views.py:213
+#: wikikysely_project/survey/views.py:247
 msgid "Cannot edit questions in a closed survey"
 msgstr "Suljetussa kyselyssä ei voi muokata kysymyksiä"
 
-#: templates/survey/question_form.html:3 templates/survey/question_form.html:5
-msgid "Edit question"
-msgstr "Muokkaa kysymystä"
-
-#: wikikysely_project/survey/views.py:216
+#: wikikysely_project/survey/views.py:281
 msgid "Question updated"
 msgstr "Kysymys päivitetty"
 
-#: wikikysely_project/survey/views.py:201
-#: wikikysely_project/survey/views.py:204
-#: wikikysely_project/survey/views.py:259
-#: wikikysely_project/survey/views.py:262
+#: wikikysely_project/survey/views.py:299
+#: wikikysely_project/survey/views.py:302
+#: wikikysely_project/survey/views.py:357
+#: wikikysely_project/survey/views.py:360
 msgid "Survey not active"
 msgstr "Kysely ei ole aktiivinen"
 
-#: wikikysely_project/survey/views.py:222
-#: wikikysely_project/survey/views.py:288
+#: wikikysely_project/survey/views.py:320
+#: wikikysely_project/survey/views.py:387
 msgid "Answer saved"
 msgstr "Vastaus tallennettu"
 
-#: wikikysely_project/survey/views.py:240
+#: wikikysely_project/survey/views.py:338
 msgid "No more questions"
 msgstr "Ei enempää kysymyksiä"
 
-#: wikikysely_project/survey/views.py:271
+#: wikikysely_project/survey/views.py:370
 #, python-brace-format
 msgid "To answer the question you must <a href=\"{0}\">log in</a>."
 msgstr ""
 
-#: wikikysely_project/survey/views.py:315
+#: wikikysely_project/survey/views.py:473
 msgid "Answer can only be edited while the survey is running"
 msgstr "Vastauksen voi muokata vain, kun kysely on käynnissä"
 
-#: wikikysely_project/survey/views.py:321
+#: wikikysely_project/survey/views.py:480
 msgid "Answer updated"
 msgstr "Vastaus päivitetty"
 
-#: wikikysely_project/survey/views.py:338
+#: wikikysely_project/survey/views.py:502
 msgid "Answer can only be removed while the survey is running"
 msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
 
-#: wikikysely_project/survey/views.py:341
+#: wikikysely_project/survey/views.py:506
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 
