@@ -34,6 +34,33 @@
     {% endif %}
   </div>
 </form>
+{% if question_stats %}
+  <h2 class="mt-4">{% translate 'Answer details' %}</h2>
+  <table class="table mb-3">
+    <thead>
+      <tr>
+        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Yes' %}</th>
+        <th>{% translate 'No' %}</th>
+        <th>{% translate 'Total' %}</th>
+        <th>{% translate 'Agree' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ question_stats.published|date:"Y-m-d" }}</td>
+        <td>{{ question_stats.yes }}</td>
+        <td>{{ question_stats.no }}</td>
+        <td>{{ question_stats.total }}</td>
+        <td>{% widthratio question_stats.yes question_stats.total 100 %}%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="row mb-4">
+    <div class="col-md-6"><canvas id="answerPieChart"></canvas></div>
+    <div class="col-md-6"><canvas id="answerTimelineChart"></canvas></div>
+  </div>
+{% endif %}
   <h2 class="mt-4">{% translate 'My answers' %}</h2>
   <table class="table mb-3 survey-detail-table">
     <thead>
@@ -125,5 +152,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+</script>
+<script>
+const yesLabel = '{{ yes_label|escapejs }}';
+const noLabel = '{{ no_label|escapejs }}';
+const noAnswersLabel = '{{ no_answers_label|escapejs }}';
+const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
+const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
+const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
+    getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary').trim() || 'gray';
+const yesCount = {{ question_stats.yes|default:0 }};
+const noCount = {{ question_stats.no|default:0 }};
+const totalCount = {{ question_stats.total|default:0 }};
+const pieCtx = document.getElementById('answerPieChart');
+if (pieCtx) {
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: totalCount === 0 ? [noAnswersLabel] : [yesLabel, noLabel],
+            datasets: [{
+                data: totalCount === 0 ? [1] : [yesCount, noCount],
+                backgroundColor: totalCount === 0 ? [placeholderColor] : [successColor, dangerColor]
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+const timelineData = {{ timeline_data|safe }};
+const tlCtx = document.getElementById('answerTimelineChart');
+if (tlCtx) {
+    new Chart(tlCtx, {
+        type: 'line',
+        data: {
+            labels: timelineData.map(d => d.date),
+            datasets: [{
+                label: '{{ "Answers"|translate|escapejs }}',
+                data: timelineData.map(d => d.count),
+                fill: false,
+                borderColor: successColor,
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true, precision: 0 } }
+        }
+    });
+}
 </script>
 {% endblock %}

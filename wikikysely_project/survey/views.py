@@ -8,7 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
-from django.db.models.functions import NullIf
+from django.db.models.functions import NullIf, TruncDate
+import json
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
@@ -34,6 +35,37 @@ def get_user_answers(user, survey):
         )
         .order_by("-created_at")
     )
+
+
+def get_question_stats(question, user=None):
+    """Return aggregated statistics for a single question."""
+    yes_count = question.answers.filter(answer="yes").count()
+    no_count = question.answers.filter(answer="no").count()
+    total = yes_count + no_count
+    agree_ratio = (yes_count * 100.0 / total) if total else 0
+    user_answer = None
+    if user and user.is_authenticated:
+        ans = Answer.objects.filter(question=question, user=user).first()
+        if ans:
+            user_answer = ans.get_answer_display()
+    timeline_qs = (
+        question.answers.annotate(date=TruncDate("created_at"))
+        .values("date")
+        .annotate(count=Count("id"))
+        .order_by("date")
+    )
+    timeline = [
+        {"date": str(row["date"]), "count": row["count"]} for row in timeline_qs
+    ]
+    return {
+        "published": question.created_at,
+        "yes": yes_count,
+        "no": no_count,
+        "total": total,
+        "agree_ratio": agree_ratio,
+        "my_answer": user_answer,
+        "timeline": timeline,
+    }
 
 
 def register(request):
@@ -363,6 +395,11 @@ def answer_survey(request):
         form = AnswerForm(initial={"question_id": question.pk})
 
     user_answers = get_user_answers(request.user, survey)
+    question_stats = get_question_stats(question, request.user) if question else None
+    yes_label = gettext("Yes")
+    no_label = gettext("No")
+    no_answers_label = gettext("No answers")
+    timeline_data = json.dumps(question_stats["timeline"]) if question_stats else "[]"
     return render(
         request,
         "survey/answer_form.html",
@@ -371,6 +408,11 @@ def answer_survey(request):
             "question": question,
             "form": form,
             "user_answers": user_answers,
+            "question_stats": question_stats,
+            "timeline_data": timeline_data,
+            "yes_label": yes_label,
+            "no_label": no_label,
+            "no_answers_label": no_answers_label,
         },
     )
 
@@ -427,6 +469,11 @@ def answer_question(request, pk):
         if request.user.is_authenticated
         else Answer.objects.none()
     )
+    question_stats = get_question_stats(question, request.user)
+    yes_label = gettext("Yes")
+    no_label = gettext("No")
+    no_answers_label = gettext("No answers")
+    timeline_data = json.dumps(question_stats["timeline"])
     return render(
         request,
         "survey/answer_form.html",
@@ -439,6 +486,11 @@ def answer_question(request, pk):
                 can_delete_question if request.user.is_authenticated else False
             ),
             "user_answers": user_answers,
+            "question_stats": question_stats,
+            "timeline_data": timeline_data,
+            "yes_label": yes_label,
+            "no_label": no_label,
+            "no_answers_label": no_answers_label,
         },
     )
 
