@@ -2,9 +2,13 @@
 {% load i18n %}
 {% block title %}{% translate 'Answer question' %}{% endblock %}
 {% block content %}
-<h2>{{ question.text }}</h2>
+<div class="card mx-auto mb-4" style="max-width: 40rem;">
+  <div class="card-body text-center">
+    <h2 class="card-title mb-0">{{ question.text }}</h2>
+  </div>
+</div>
 {% if request.user.is_authenticated %}
-<form method="post">
+<form method="post" class="text-center">
   {% csrf_token %}
   {% if form.non_field_errors %}
     <div class="alert alert-danger">{{ form.non_field_errors }}</div>
