@@ -179,11 +179,15 @@ const primaryColor = getComputedStyle(document.documentElement).getPropertyValue
 const yesCount = {{ question_stats.yes|default:0 }};
 const noCount = {{ question_stats.no|default:0 }};
 const totalCount = {{ question_stats.total|default:0 }};
+const maxTotal = {{ max_total|default:0 }};
 const pieCtx = document.getElementById('answerPieChart');
 if (pieCtx) {
     const maxPieSize = 200;
-    pieCtx.width = maxPieSize;
-    pieCtx.height = maxPieSize;
+    const placeholderSize = 100;
+    const size = totalCount === 0 ? placeholderSize :
+        maxPieSize * Math.sqrt(totalCount / Math.max(maxTotal, 1));
+    pieCtx.width = size;
+    pieCtx.height = size;
     new Chart(pieCtx, {
         type: 'pie',
         data: {
