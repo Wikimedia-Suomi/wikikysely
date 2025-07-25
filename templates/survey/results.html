@@ -4,6 +4,14 @@
 {% block content %}
 <h1>{% translate 'Results' %}</h1>
 <p>{{ survey.description }}</p>
+{% if not request.user.is_authenticated and data %}
+  {% if request.GET.login_required %}
+    <p class="alert alert-info">
+      {% translate 'You must be logged in to answer questions' %}.
+      <a href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a>
+    </p>
+  {% endif %}
+{% endif %}
 {% if request.user.is_authenticated %}
   {% if data and survey.state == 'running' %}
     <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3">{% translate 'Answer survey' %}</a>
