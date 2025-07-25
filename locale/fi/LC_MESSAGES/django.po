@@ -363,6 +363,14 @@ msgstr "Vastaus poistettu"
 msgid "Answer details"
 msgstr "Vastaustiedot"
 
+#: templates/survey/answer_form.html:60
+msgid "Answer distribution"
+msgstr "Vastausjakauma"
+
+#: templates/survey/answer_form.html:61
+msgid "Answers over time"
+msgstr "Vastausten määrä ajan kuluessa"
+
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 

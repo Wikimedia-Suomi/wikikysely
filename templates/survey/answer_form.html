@@ -57,8 +57,14 @@
     </tbody>
   </table>
   <div class="row mb-4">
-    <div class="col-md-6"><canvas id="answerPieChart"></canvas></div>
-    <div class="col-md-6"><canvas id="answerTimelineChart"></canvas></div>
+    <div class="col-md-6 text-center">
+      <canvas id="answerPieChart"></canvas>
+      <p class="mt-2">{% translate 'Answer distribution' %}</p>
+    </div>
+    <div class="col-md-6 text-center">
+      <canvas id="answerTimelineChart"></canvas>
+      <p class="mt-2">{% translate 'Answers over time' %}</p>
+    </div>
   </div>
 {% endif %}
   <h2 class="mt-4">{% translate 'My answers' %}</h2>

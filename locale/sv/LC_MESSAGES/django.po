@@ -363,6 +363,14 @@ msgstr "Svar borttaget"
 msgid "Answer details"
 msgstr "Svarsinformation"
 
+#: templates/survey/answer_form.html:60
+msgid "Answer distribution"
+msgstr "Svarsfördelning"
+
+#: templates/survey/answer_form.html:61
+msgid "Answers over time"
+msgstr "Antal svar över tid"
+
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 
