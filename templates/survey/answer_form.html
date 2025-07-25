@@ -39,6 +39,16 @@
     <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="true" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
   </h2>
   <div id="answerDetails" class="collapse show">
+  <div class="row mb-4">
+    <div class="col-md-6 text-center">
+      <p class="mt-2">{% translate 'Answer distribution' %}</p>
+      <canvas id="answerPieChart"></canvas>
+    </div>
+    <div class="col-md-6 text-center">
+      <p class="mt-2">{% translate 'Answers over time' %}</p>
+      <canvas id="answerTimelineChart"></canvas>
+    </div>
+  </div>
   <table class="table mb-3">
     <thead>
       <tr>
@@ -59,16 +69,6 @@
       </tr>
     </tbody>
   </table>
-  <div class="row mb-4">
-    <div class="col-md-6 text-center">
-      <canvas id="answerPieChart"></canvas>
-      <p class="mt-2">{% translate 'Answer distribution' %}</p>
-    </div>
-    <div class="col-md-6 text-center">
-      <canvas id="answerTimelineChart"></canvas>
-      <p class="mt-2">{% translate 'Answers over time' %}</p>
-  </div>
-  </div>
   </div>
 {% endif %}
   <h2 class="mt-4">
