@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
 from django.db.models.functions import NullIf, TruncDate
+from django.http import JsonResponse
 from datetime import timedelta
 import json
 from .models import Survey, Question, Answer
@@ -267,6 +268,8 @@ def question_delete(request, pk):
     question.deleted = True
     question.save()
     messages.success(request, _("Question removed"))
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse({"deleted": True})
 
     if request.user == survey.creator or request.user.is_superuser:
         return redirect("survey:survey_edit")
@@ -589,6 +592,19 @@ def answer_edit(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, _("Answer updated"))
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                question = answer.question
+                yes_count = question.answers.filter(answer="yes").count()
+                total = question.answers.count()
+                ratio = int(yes_count * 100 / total) if total else 0
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "yes_count": yes_count,
+                        "total": total,
+                        "agree_ratio": ratio,
+                    }
+                )
             return redirect("survey:survey_detail")
     else:
         form = AnswerForm(instance=answer, initial={"question_id": answer.question_id})
@@ -613,8 +629,21 @@ def answer_delete(request, pk):
             request, _("Answer can only be removed while the survey is running")
         )
         return redirect("survey:survey_detail")
+    question = answer.question
     answer.delete()
     messages.success(request, _("Answer removed"))
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        yes_count = question.answers.filter(answer="yes").count()
+        total = question.answers.count()
+        ratio = int(yes_count * 100 / total) if total else 0
+        return JsonResponse(
+            {
+                "deleted": True,
+                "yes_count": yes_count,
+                "total": total,
+                "agree_ratio": ratio,
+            }
+        )
     return redirect("survey:survey_detail")
 
 

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ survey.title }}{% endblock %}
 {% block content %}
 {% if survey.state == 'paused' %}
@@ -54,12 +54,12 @@
 {% else %}
         <td>{{ q.text }}</td>
 {% endif %}
-        <td>{{ q.total_answers }}</td>
-        <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
+        <td class="total-answers">{{ q.total_answers }}</td>
+        <td class="agree-ratio">{% widthratio q.yes_count q.total_answers 100 %}%</td>
         <td class="text-end">
           {% if request.user.is_authenticated and request.user == q.creator and q.total_answers == 0 and survey.state != 'closed' %}
           <a href="{% url 'survey:question_edit' q.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
-          <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
+          <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger ajax-delete-question">{% translate 'Remove question' %}</a>
           {% endif %}
         </td>
         </tr>
@@ -87,21 +87,21 @@
       <td>
         <a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a>
       </td>
-      <td>{{ a.total_answers }}</td>
-      <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
+      <td class="total-answers">{{ a.total_answers }}</td>
+      <td class="agree-ratio">{% widthratio a.yes_count a.total_answers 100 %}%</td>
       <td class="text-end">
         {% if a.question.survey.state == 'running' %}
-        <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline">
+        <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
           {% csrf_token %}
           <input type="hidden" name="question_id" value="{{ a.question.pk }}">
           <div class="btn-group" role="group" aria-label="{% translate 'Answer' %}">
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes" onchange="this.form.submit()"{% if a.answer == 'yes' %} checked{% endif %}>
+            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes"{% if a.answer == 'yes' %} checked{% endif %}>
             <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no" onchange="this.form.submit()"{% if a.answer == 'no' %} checked{% endif %}>
+            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
             <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
           </div>
         </form>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer">{% translate 'Remove answer' %}</a>
         {% endif %}
       </td>
     </tr>
@@ -166,4 +166,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="{% static 'js/survey_detail_ajax.js' %}"></script>
 {% endblock %}
