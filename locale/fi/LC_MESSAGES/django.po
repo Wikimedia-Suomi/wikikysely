@@ -291,6 +291,18 @@ msgstr "Suljettuun kyselyyn ei voi palauttaa kysymyksiä"
 msgid "Question restored"
 msgstr "Kysymys palautettu"
 
+#: wikikysely_project/survey/views.py:213
+msgid "Cannot edit questions in a closed survey"
+msgstr "Suljetussa kyselyssä ei voi muokata kysymyksiä"
+
+#: templates/survey/question_form.html:3 templates/survey/question_form.html:5
+msgid "Edit question"
+msgstr "Muokkaa kysymystä"
+
+#: wikikysely_project/survey/views.py:216
+msgid "Question updated"
+msgstr "Kysymys päivitetty"
+
 #: wikikysely_project/survey/views.py:201
 #: wikikysely_project/survey/views.py:204
 #: wikikysely_project/survey/views.py:259
