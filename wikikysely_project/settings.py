@@ -63,6 +63,8 @@ LANGUAGES = [
     ('fi', 'Finnish'),
     ('sv', 'Swedish'),
     ('en', 'English'),
+    ('se', 'Northern Sami'),
+    ('smn', 'Inari Sami'),
 ]
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
@@ -92,3 +94,11 @@ from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {
     message_constants.ERROR: 'danger',
 }
+
+# Path to fastText language identification model. The model should be downloaded
+# separately as it is not included in the repository.
+FASTTEXT_MODEL_PATH = BASE_DIR / 'lid.176.ftz'
+
+# Minimum probability for accepting detected language. Lower probabilities are
+# treated as gibberish.
+FASTTEXT_LANG_THRESHOLD = 0.5
