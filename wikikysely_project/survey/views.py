@@ -405,6 +405,8 @@ def answer_survey(request):
         form = AnswerForm(initial={"question_id": question.pk})
 
     user_answers = get_user_answers(request.user, survey)
+    if question:
+        user_answers = user_answers.exclude(question=question)
     question_stats = get_question_stats(question, request.user) if question else None
     max_total = (
         survey.questions.filter(deleted=False)
@@ -500,6 +502,8 @@ def answer_question(request, pk):
         if request.user.is_authenticated
         else Answer.objects.none()
     )
+    if request.user.is_authenticated:
+        user_answers = user_answers.exclude(question=question)
     question_stats = get_question_stats(question, request.user)
     max_total = (
         survey.questions.filter(deleted=False)
