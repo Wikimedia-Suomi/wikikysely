@@ -35,7 +35,10 @@
   </div>
 </form>
 {% if question_stats %}
-  <h2 class="mt-4">{% translate 'Answer details' %}</h2>
+  <h2 class="mt-4">
+    <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="true" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
+  </h2>
+  <div id="answerDetails" class="collapse show">
   <table class="table mb-3">
     <thead>
       <tr>
@@ -64,10 +67,14 @@
     <div class="col-md-6 text-center">
       <canvas id="answerTimelineChart"></canvas>
       <p class="mt-2">{% translate 'Answers over time' %}</p>
-    </div>
+  </div>
+  </div>
   </div>
 {% endif %}
-  <h2 class="mt-4">{% translate 'My answers' %}</h2>
+  <h2 class="mt-4">
+    <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="true" aria-controls="myAnswers">{% translate 'My answers' %}</a>
+  </h2>
+  <div id="myAnswers" class="collapse show">
   <table class="table mb-3 survey-detail-table">
     <thead>
       <tr>
@@ -104,6 +111,7 @@
       {% endfor %}
     </tbody>
   </table>
+  </div>
 {% endif %}
 {% endblock %}
 
@@ -217,5 +225,26 @@ if (tlCtx) {
         }
     });
 }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = [
+        {key: 'answerDetailsOpen', id: 'answerDetails'},
+        {key: 'myAnswersOpen', id: 'myAnswers'}
+    ];
+    sections.forEach(({key, id}) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const collapse = new bootstrap.Collapse(el, {toggle: false});
+        const saved = localStorage.getItem(key);
+        if (saved === 'false') {
+            collapse.hide();
+        } else {
+            collapse.show();
+        }
+        el.addEventListener('shown.bs.collapse', () => localStorage.setItem(key, 'true'));
+        el.addEventListener('hidden.bs.collapse', () => localStorage.setItem(key, 'false'));
+    });
+});
 </script>
 {% endblock %}
