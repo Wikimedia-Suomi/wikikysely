@@ -636,12 +636,33 @@ def answer_delete(request, pk):
         yes_count = question.answers.filter(answer="yes").count()
         total = question.answers.count()
         ratio = int(yes_count * 100 / total) if total else 0
+
+        can_edit = (
+            request.user == question.creator
+            and total == 0
+            and survey.state != "closed"
+        )
+
         return JsonResponse(
             {
                 "deleted": True,
                 "yes_count": yes_count,
                 "total": total,
                 "agree_ratio": ratio,
+                "question_id": question.pk,
+                "question_text": question.text,
+                "question_published": question.created_at.strftime("%Y-%m-%d"),
+                "question_url": reverse("survey:answer_question", args=[question.pk]),
+                "can_edit": can_edit,
+                "edit_url": reverse("survey:question_edit", args=[question.pk]) if can_edit else "",
+                "delete_url": reverse("survey:question_delete", args=[question.pk]) if can_edit else "",
+                "edit_label": gettext("Edit"),
+                "remove_label": gettext("Remove question"),
+                "unanswered_label": gettext("Unanswered questions"),
+                "published_label": gettext("Published"),
+                "title_label": gettext("Title"),
+                "answers_label": gettext("Answers"),
+                "agree_label": gettext("Agree"),
             }
         )
     return redirect("survey:survey_detail")
