@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}{% endblock %}
 {% block content %}
 <h1>{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}</h1>
@@ -16,7 +16,6 @@
   <p><a href="https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet" target="_blank">{% translate 'Read more instructions' %}</a></p>
   <div id="suggestions" class="mt-3" data-heading="{% translate 'Similar questions' %}"></div>
   {% endif %}
-</div>
 {% endblock %}
 
 {% block scripts %}
