@@ -3,6 +3,16 @@
 {% block title %}{% translate 'Results' %}{% endblock %}
 {% block content %}
 <h1>{% translate 'Results' %}</h1>
+<p>{{ survey.description }}</p>
+{% if request.user.is_authenticated %}
+  {% if data and survey.state == 'running' %}
+    <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3">{% translate 'Answer survey' %}</a>
+  {% endif %}
+{% else %}
+  {% if data %}
+    <a href="?login_required=1" class="btn btn-primary mb-3">{% translate 'Answer survey' %}</a>
+  {% endif %}
+{% endif %}
 <div class="mb-3">
   <div class="form-check form-check-inline">
     <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie" checked>
