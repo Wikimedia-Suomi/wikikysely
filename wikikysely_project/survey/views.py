@@ -607,40 +607,34 @@ def _simple_detect_language(text: str) -> str:
     return "en"
 
 
-@lru_cache(maxsize=1)
-def _get_fasttext_model():
-    try:
-        import fasttext
-    except Exception:
-        raise RuntimeError("fasttext-wheel is not available")
-    return fasttext.load_model(str(settings.FASTTEXT_MODEL_PATH))
-
-
-def _fasttext_detect_language(text: str) -> str:
+def _cld3_detect_language(text: str) -> str:
     text = text.strip()
     if not text:
         return ""
     try:
-        model = _get_fasttext_model()
+        import pycld3
     except Exception:
         return _simple_detect_language(text)
 
-    labels, probs = model.predict(text.replace("\n", " "))
-    label = labels[0].replace("__label__", "")
-    prob = probs[0]
-
-    if prob < settings.FASTTEXT_LANG_THRESHOLD:
+    result = pycld3.get_language(text)
+    if result is None or not result.is_reliable:
         return "gibberish"
 
-    # Normalize some language codes used by the model
+    code = result.language
+    prob = result.probability
+
+    if prob < settings.CLD3_LANG_THRESHOLD:
+        return "gibberish"
+
+    # Normalize some language codes used by the detector
     normalization = {
         "sme": "se",  # Northern Sami
         "fin": "fi",
         "swe": "sv",
     }
-    normalized = normalization.get(label, label)
+    normalized = normalization.get(code, code)
 
-    # fastText does not include Inari Sami; use a small heuristic to detect it
+    # CLD3 does not include Inari Sami; use a small heuristic to detect it
     if normalized == "fi":
         lower = text.lower()
         inari_words = ["â", "đ", "ŋ", "ž"]
@@ -653,7 +647,7 @@ def _fasttext_detect_language(text: str) -> str:
 def question_detect_language(request):
     """Return detected language for given query text."""
     query = request.GET.get("q", "")
-    code = _fasttext_detect_language(query)
+    code = _cld3_detect_language(query)
     lang_map = dict(settings.LANGUAGES)
     # For gibberish we return an empty string so UI does not show anything
     if code == "gibberish":

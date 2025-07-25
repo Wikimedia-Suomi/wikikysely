@@ -95,10 +95,6 @@ MESSAGE_TAGS = {
     message_constants.ERROR: 'danger',
 }
 
-# Path to fastText language identification model. The model should be downloaded
-# separately as it is not included in the repository.
-FASTTEXT_MODEL_PATH = BASE_DIR / 'lid.176.ftz'
-
 # Minimum probability for accepting detected language. Lower probabilities are
-# treated as gibberish.
-FASTTEXT_LANG_THRESHOLD = 0.5
+# treated as gibberish when using CLD3.
+CLD3_LANG_THRESHOLD = 0.5

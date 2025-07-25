@@ -25,9 +25,8 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```bash
    pip install -r requirements.txt
    ```
-   The language detection relies on the fastText model `lid.176.ftz`. Download it
-   from <https://fasttext.cc/docs/en/language-identification.html> and place the
-   file in the project root.
+   Language detection relies on the CLD3 library via `pycld3` and does not
+   require any additional model files.
 4. Apply migrations:
    ```bash
    python manage.py makemigrations
