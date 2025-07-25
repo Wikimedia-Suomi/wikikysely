@@ -190,15 +190,14 @@ const timelineData = {{ timeline_data|safe }};
 const tlCtx = document.getElementById('answerTimelineChart');
 if (tlCtx) {
     new Chart(tlCtx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: timelineData.map(d => d.date),
             datasets: [{
                 label: '{{ Answers|escapejs }}',
                 data: timelineData.map(d => d.count),
-                fill: false,
-                borderColor: successColor,
-                tension: 0.1
+                backgroundColor: successColor,
+                borderColor: successColor
             }]
         },
         options: {
