@@ -4,9 +4,7 @@
 {% block content %}
 <div class="card mx-auto mb-4" style="max-width: 40rem;">
   <div class="card-body text-center">
-    <h2 class="card-title mb-0">{{ question.text }}</h2>
-  </div>
-</div>
+    <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
 {% if request.user.is_authenticated %}
 <form method="post" class="text-center">
   {% csrf_token %}
@@ -38,6 +36,8 @@
     {% endif %}
   </div>
 </form>
+  </div>
+</div>
 {% if question_stats %}
   <h2 class="mt-4">
     <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="true" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
