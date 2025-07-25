@@ -189,7 +189,7 @@ if (tlCtx) {
         data: {
             labels: timelineData.map(d => d.date),
             datasets: [{
-                label: '{{ "Answers"|translate|escapejs }}',
+                label: '{{ Answers|escapejs }}',
                 data: timelineData.map(d => d.count),
                 fill: false,
                 borderColor: successColor,
