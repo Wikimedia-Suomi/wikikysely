@@ -2,6 +2,8 @@ from django import forms
 from .models import Survey, Question, Answer
 from django.utils.translation import gettext_lazy as _
 
+MIN_QUESTION_WORDS = 5
+
 
 class BootstrapMixin:
     """Apply basic Bootstrap classes to form fields."""
@@ -23,12 +25,26 @@ class SurveyForm(BootstrapMixin, forms.ModelForm):
 
 
 class QuestionForm(BootstrapMixin, forms.ModelForm):
+
     class Meta:
         model = Question
         fields = ['text']
         labels = {
             'text': _('Text'),
         }
+        help_texts = {
+            'text': _('Minimum length is %(min)d words.') % {'min': MIN_QUESTION_WORDS},
+        }
+
+    def clean_text(self):
+        text = self.cleaned_data['text']
+        word_count = len(text.strip().split())
+        if word_count < MIN_QUESTION_WORDS:
+            raise forms.ValidationError(
+                _('Question must contain at least %(min)d words.')
+                % {'min': MIN_QUESTION_WORDS}
+            )
+        return text
 
 
 class AnswerForm(BootstrapMixin, forms.ModelForm):

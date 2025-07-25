@@ -18,4 +18,9 @@ urlpatterns = [
     path("answers/", views.answer_list, name="answer_list"),
     path("results/", views.survey_results, name="survey_results"),
     path("question/similar/", views.question_similar, name="question_similar"),
+    path(
+        "question/detect-language/",
+        views.question_detect_language,
+        name="question_detect_language",
+    ),
 ]
