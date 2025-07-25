@@ -166,6 +166,9 @@ const noCount = {{ question_stats.no|default:0 }};
 const totalCount = {{ question_stats.total|default:0 }};
 const pieCtx = document.getElementById('answerPieChart');
 if (pieCtx) {
+    const maxPieSize = 200;
+    pieCtx.width = maxPieSize;
+    pieCtx.height = maxPieSize;
     new Chart(pieCtx, {
         type: 'pie',
         data: {
@@ -176,6 +179,8 @@ if (pieCtx) {
             }]
         },
         options: {
+            responsive: false,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } }
         }
     });
@@ -197,7 +202,12 @@ if (tlCtx) {
             }]
         },
         options: {
-            scales: { y: { beginAtZero: true, precision: 0 } }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1, precision: 0 }
+                }
+            }
         }
     });
 }
