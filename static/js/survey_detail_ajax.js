@@ -79,7 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
         if (!data || !data.success) { window.location.reload(); return; }
-        const row = form.closest('tr');
+        let row = form.closest('tr');
+        if (!row) {
+          const qInput = form.querySelector('input[name="question_id"]');
+          if (qInput) {
+            row = document.querySelector(`tr[data-question-id="${qInput.value}"]`);
+          }
+        }
         if (row) {
           const totalCell = row.querySelector('.total-answers');
           const ratioCell = row.querySelector('.agree-ratio');
@@ -101,7 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
         if (!data || !data.deleted) { window.location.reload(); return; }
-        const row = link.closest('tr');
+        let row = link.closest('tr');
+        if (!row) {
+          const qid = link.dataset.questionId;
+          if (qid) {
+            row = document.querySelector(`tr[data-question-id="${qid}"]`);
+          }
+        }
         const tableElem = row ? row.closest('table') : document.getElementById('unanswered-table');
         if (row) row.remove();
         addUnansweredRow(data, tableElem || document.body);

@@ -6,7 +6,7 @@
   <div class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
 {% if request.user.is_authenticated %}
-<form method="post" class="text-center">
+<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center ajax-answer-form">
   {% csrf_token %}
   {% if form.non_field_errors %}
     <div class="alert alert-danger">{{ form.non_field_errors }}</div>
@@ -17,16 +17,16 @@
   <div class="answer-buttons mb-2" role="group" aria-label="{% translate 'Answer' %}">
     <div class="btn-group me-2" role="group">
       <input type="radio" class="btn-check" name="answer" id="answerYes"
-             value="yes" onchange="this.form.submit()"{% if form.answer.value == 'yes' %} checked{% endif %}>
+             value="yes"{% if form.answer.value == 'yes' %} checked{% endif %}>
       <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'yes' %}btn-success{% else %}btn-outline-success{% endif %}{% else %}btn-success{% endif %}" for="answerYes">{% translate 'Yes' %}</label>
       <input type="radio" class="btn-check" name="answer" id="answerNo"
-             value="no" onchange="this.form.submit()"{% if form.answer.value == 'no' %} checked{% endif %}>
+             value="no"{% if form.answer.value == 'no' %} checked{% endif %}>
       <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'no' %}btn-danger{% else %}btn-outline-danger{% endif %}{% else %}btn-danger{% endif %}" for="answerNo">{% translate 'No' %}</label>
     </div>
     {% if is_edit %}
       <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary me-2">{% translate 'Cancel' %}</a>
       {% if survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2 ajax-delete-answer" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
       <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-danger">{% translate 'Remove question' %}</a>
@@ -91,24 +91,24 @@
     </thead>
     <tbody>
       {% for a in user_answers %}
-      <tr>
+      <tr data-question-id="{{ a.question.pk }}">
         <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
         <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
         <td>{{ a.total_answers }}</td>
         <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
         <td class="text-end">
           {% if a.question.survey.state == 'running' %}
-          <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline">
+          <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
             {% csrf_token %}
             <input type="hidden" name="question_id" value="{{ a.question.pk }}">
             <div class="btn-group" role="group" aria-label="{% translate 'Answer' %}">
-              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes" onchange="this.form.submit()"{% if a.answer == 'yes' %} checked{% endif %}>
+              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes"{% if a.answer == 'yes' %} checked{% endif %}>
               <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
-              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no" onchange="this.form.submit()"{% if a.answer == 'no' %} checked{% endif %}>
+              <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
               <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
             </div>
           </form>
-          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}">{% translate 'Remove answer' %}</a>
           {% endif %}
         </td>
       </tr>
@@ -255,4 +255,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="{% static 'js/survey_detail_ajax.js' %}"></script>
 {% endblock %}
