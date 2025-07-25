@@ -607,9 +607,55 @@ def _simple_detect_language(text: str) -> str:
     return "en"
 
 
+@lru_cache(maxsize=1)
+def _get_fasttext_model():
+    try:
+        import fasttext
+    except Exception:
+        raise RuntimeError("fasttext is not available")
+    return fasttext.load_model(settings.FASTTEXT_MODEL_PATH)
+
+
+def _fasttext_detect_language(text: str) -> str:
+    text = text.strip()
+    if not text:
+        return ""
+    try:
+        model = _get_fasttext_model()
+    except Exception:
+        return _simple_detect_language(text)
+
+    labels, probs = model.predict(text.replace("\n", " "))
+    label = labels[0].replace("__label__", "")
+    prob = probs[0]
+
+    if prob < settings.FASTTEXT_LANG_THRESHOLD:
+        return "gibberish"
+
+    # Normalize some language codes used by the model
+    normalization = {
+        "sme": "se",  # Northern Sami
+        "fin": "fi",
+        "swe": "sv",
+    }
+    normalized = normalization.get(label, label)
+
+    # fastText does not include Inari Sami; use a small heuristic to detect it
+    if normalized == "fi":
+        lower = text.lower()
+        inari_words = ["â", "đ", "ŋ", "ž"]
+        if any(ch in lower for ch in inari_words):
+            return "smn"
+
+    return normalized
+
+
 def question_detect_language(request):
     """Return detected language for given query text."""
     query = request.GET.get("q", "")
-    code = _simple_detect_language(query)
+    code = _fasttext_detect_language(query)
     lang_map = dict(settings.LANGUAGES)
+    # For gibberish we return an empty string so UI does not show anything
+    if code == "gibberish":
+        return JsonResponse({"language": ""})
     return JsonResponse({"language": lang_map.get(code, "")})

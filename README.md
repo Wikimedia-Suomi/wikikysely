@@ -23,8 +23,11 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```   
 3. Install dependencies (requires internet access):
    ```bash
-   pip install django==4.2
+   pip install -r requirements.txt
    ```
+   The language detection relies on the fastText model `lid.176.ftz`. Download it
+   from <https://fasttext.cc/docs/en/language-identification.html> and place the
+   file in the project root.
 4. Apply migrations:
    ```bash
    python manage.py makemigrations
@@ -44,7 +47,7 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```
 8. Access the site at `http://localhost:8000/`.
 
-The UI supports Finnish, Swedish and English. You can change the language from the menu.
+The UI supports Finnish, Swedish, English, Northern Sami and Inari Sami. You can change the language from the menu.
 If the selected language does not apply, ensure translation files have been compiled using `python manage.py compilemessages`.
 
 ## Running tests
