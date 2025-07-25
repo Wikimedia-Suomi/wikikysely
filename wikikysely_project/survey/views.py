@@ -475,6 +475,19 @@ def answer_question(request, pk):
                         defaults={"answer": answer_value},
                     )
                     messages.success(request, _("Answer saved"))
+                    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                        yes_count = question.answers.filter(answer="yes").count()
+                        total = question.answers.count()
+                        ratio = int(yes_count * 100 / total) if total else 0
+                        return JsonResponse(
+                            {
+                                "success": True,
+                                "yes_count": yes_count,
+                                "total": total,
+                                "agree_ratio": ratio,
+                                "question_id": question.pk,
+                            }
+                        )
                     return redirect("survey:survey_detail")
         else:
             form = AnswerForm(instance=answer, initial={"question_id": question.pk})
