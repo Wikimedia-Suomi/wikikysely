@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper
 from django.db.models.functions import NullIf, TruncDate
+from datetime import timedelta
 import json
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
@@ -54,9 +55,15 @@ def get_question_stats(question, user=None):
         .annotate(count=Count("id"))
         .order_by("date")
     )
-    timeline = [
-        {"date": str(row["date"]), "count": row["count"]} for row in timeline_qs
-    ]
+
+    timeline_dict = {row["date"]: row["count"] for row in timeline_qs}
+    first_date = question.created_at.date()
+    last_date = max(timeline_dict.keys(), default=first_date)
+    timeline = []
+    current = first_date
+    while current <= last_date:
+        timeline.append({"date": str(current), "count": timeline_dict.get(current, 0)})
+        current += timedelta(days=1)
     return {
         "published": question.created_at,
         "yes": yes_count,
