@@ -5,6 +5,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
@@ -157,6 +159,8 @@ def survey_detail(request):
             "user_answers": user_answers,
             "unanswered_count": unanswered_count,
             "unanswered_questions": unanswered_questions,
+            "yes_label": gettext("Yes"),
+            "no_label": gettext("No"),
         },
     )
 
@@ -664,3 +668,146 @@ def survey_results(request):
             "no_answers_label": no_answers_label,
         },
     )
+
+
+def _question_can_delete(request, question):
+    """Check if the request user can delete the question."""
+    if request.user.is_authenticated:
+        can_creator_delete = (
+            request.user == question.creator
+            and not question.answers.exclude(user=request.user).exists()
+        )
+        return request.user == question.survey.creator or request.user.is_superuser or can_creator_delete
+    return False
+
+
+def api_unanswered_questions(request):
+    """Return unanswered questions for the current user in JSON format."""
+    survey = Survey.get_main_survey()
+    base_qs = survey.questions.filter(deleted=False)
+    if request.user.is_authenticated:
+        answered_ids = Answer.objects.filter(
+            user=request.user, question__survey=survey
+        ).values_list("question_id", flat=True)
+        qs = base_qs.exclude(id__in=answered_ids)
+    else:
+        qs = base_qs
+
+    qs = qs.annotate(
+        yes_count=Count("answers", filter=Q(answers__answer="yes")),
+        total_answers=Count("answers"),
+    ).annotate(
+        agree_ratio=ExpressionWrapper(
+            F("yes_count") * 100.0 / NullIf(F("total_answers"), 0),
+            output_field=FloatField(),
+        )
+    ).order_by("pk")
+
+    items = []
+    for q in qs:
+        items.append(
+            {
+                "id": q.pk,
+                "published": q.created_at.strftime("%Y-%m-%d"),
+                "text": q.text,
+                "total_answers": q.total_answers,
+                "agree_ratio": round(q.agree_ratio or 0, 1),
+                "can_delete": _question_can_delete(request, q)
+                and survey.state != "closed",
+            }
+        )
+
+    return JsonResponse({"items": items})
+
+
+@login_required
+def api_my_answers(request):
+    """Return user's answers for the survey in JSON format."""
+    survey = Survey.get_main_survey()
+    answers = (
+        Answer.objects.filter(user=request.user, question__survey=survey)
+        .select_related("question")
+        .annotate(
+            yes_count=Count(
+                "question__answers",
+                filter=Q(question__answers__answer="yes"),
+                distinct=True,
+            ),
+            total_answers=Count("question__answers", distinct=True),
+        )
+        .annotate(
+            agree_ratio=ExpressionWrapper(
+                F("yes_count") * 100.0 / NullIf(F("total_answers"), 0),
+                output_field=FloatField(),
+            )
+        )
+        .order_by("-created_at")
+    )
+
+    items = []
+    for a in answers:
+        items.append(
+            {
+                "answer_id": a.pk,
+                "question_id": a.question.pk,
+                "published": a.question.created_at.strftime("%Y-%m-%d"),
+                "text": a.question.text,
+                "total_answers": a.total_answers,
+                "agree_ratio": round(a.agree_ratio or 0, 1),
+                "answer": a.answer,
+                "survey_state": a.question.survey.state,
+            }
+        )
+
+    return JsonResponse({"items": items})
+
+
+@login_required
+@require_POST
+def api_save_answer(request):
+    """Save an answer via AJAX."""
+    question_id = request.POST.get("question_id")
+    answer_value = request.POST.get("answer")
+    try:
+        question = Question.objects.get(pk=question_id, deleted=False)
+    except Question.DoesNotExist:
+        return JsonResponse({"error": "Invalid question"}, status=400)
+
+    if question.survey.state != "running":
+        return JsonResponse({"error": "Survey not running"}, status=400)
+
+    if answer_value not in {"yes", "no"}:
+        return JsonResponse({"error": "Invalid answer"}, status=400)
+
+    Answer.objects.update_or_create(
+        user=request.user, question=question, defaults={"answer": answer_value}
+    )
+    return JsonResponse({"success": True})
+
+
+@login_required
+@require_POST
+def api_delete_question(request, pk):
+    """Delete a question via AJAX."""
+    question = get_object_or_404(Question, pk=pk, deleted=False)
+    survey = question.survey
+    if survey.state == "closed":
+        return JsonResponse({"error": "Survey closed"}, status=400)
+
+    if not _question_can_delete(request, question):
+        return JsonResponse({"error": "No permission"}, status=403)
+
+    question.deleted = True
+    question.save()
+    return JsonResponse({"success": True})
+
+
+@login_required
+@require_POST
+def api_delete_answer(request, pk):
+    """Delete an answer via AJAX."""
+    answer = get_object_or_404(Answer, pk=pk, user=request.user)
+    if answer.question.survey.state != "running":
+        return JsonResponse({"error": "Survey not running"}, status=400)
+    answer.delete()
+    return JsonResponse({"success": True})

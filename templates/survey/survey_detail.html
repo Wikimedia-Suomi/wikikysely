@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ survey.title }}{% endblock %}
 {% block content %}
 {% if survey.state == 'paused' %}
@@ -33,82 +33,73 @@
         <a href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
     {% endif %}
 {% endif %}
-    {% if unanswered_questions %}
+<div id="survey-app">
+    <div v-if="unanswered.length">
         <h2 class="mt-3">{% translate 'Unanswered questions' %}</h2>
-      <table class="table mb-3 survey-detail-table">
-        <thead>
-      <tr>
-        <th>{% translate 'Published' %}</th>
-        <th>{% translate 'Title' %}</th>
-        <th>{% translate 'Answers' %}</th>
-        <th>{% translate 'Agree' %}</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for q in unanswered_questions %}
-        <tr>
-        <td>{{ q.created_at | date:"Y-m-d" }}</td>
-{% if request.user.is_authenticated %}
-        <td><a href="{% url 'survey:answer_question' q.pk %}">{{ q.text }}</a></td>
-{% else %}
-        <td>{{ q.text }}</td>
-{% endif %}
-        <td>{{ q.total_answers }}</td>
-        <td>{% widthratio q.yes_count q.total_answers 100 %}%</td>
-        <td class="text-end">
-          {% if request.user.is_authenticated and request.user == q.creator and q.total_answers == 0 and survey.state != 'closed' %}
-          <a href="{% url 'survey:question_edit' q.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
-          <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
-          {% endif %}
-        </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
+        <table class="table mb-3 survey-detail-table">
+            <thead>
+            <tr>
+                <th>{% translate 'Published' %}</th>
+                <th>{% translate 'Title' %}</th>
+                <th>{% translate 'Answers' %}</th>
+                <th>{% translate 'Agree' %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="q in unanswered" :key="q.id">
+                <td>{{ q.published }}</td>
+                <td>
+                    {% if request.user.is_authenticated %}
+                    <a :href="'/question/' + q.id + '/'">{{ q.text }}</a>
+                    {% else %}
+                    {{ q.text }}
+                    {% endif %}
+                </td>
+                <td>{{ q.total_answers }}</td>
+                <td>{{ q.agree_ratio }}%</td>
+                <td class="text-end">
+                    <button v-if="q.can_delete" @click="deleteQuestion(q)" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-{% if user_answers %}
-<h2 class="mt-4">{% translate 'My answers' %}</h2>
-<table class="table mb-3 survey-detail-table">
-  <thead>
-  <tr>
-    <th>{% translate 'Published' %}</th>
-    <th>{% translate 'Title' %}</th>
-    <th>{% translate 'Answers' %}</th>
-    <th>{% translate 'Agree' %}</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  {% for a in user_answers %}
-    <tr>
-      <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
-      <td>
-        <a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a>
-      </td>
-      <td>{{ a.total_answers }}</td>
-      <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
-      <td class="text-end">
-        {% if a.question.survey.state == 'running' %}
-        <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline">
-          {% csrf_token %}
-          <input type="hidden" name="question_id" value="{{ a.question.pk }}">
-          <div class="btn-group" role="group" aria-label="{% translate 'Answer' %}">
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes" onchange="this.form.submit()"{% if a.answer == 'yes' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no" onchange="this.form.submit()"{% if a.answer == 'no' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
-          </div>
-        </form>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-{% endif %}
+    <div v-if="answers.length">
+        <h2 class="mt-4">{% translate 'My answers' %}</h2>
+        <table class="table mb-3 survey-detail-table">
+            <thead>
+            <tr>
+                <th>{% translate 'Published' %}</th>
+                <th>{% translate 'Title' %}</th>
+                <th>{% translate 'Answers' %}</th>
+                <th>{% translate 'Agree' %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="a in answers" :key="a.answer_id">
+                <td>{{ a.published }}</td>
+                <td><a :href="'/question/' + a.question_id + '/'">{{ a.text }}</a></td>
+                <td>{{ a.total_answers }}</td>
+                <td>{{ a.agree_ratio }}%</td>
+                <td class="text-end">
+                    <div v-if="a.survey_state === 'running'" class="d-inline">
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" :id="'answer-' + a.answer_id + '-yes'" value="yes" :checked="a.answer === 'yes'" @change="saveAnswer(a, 'yes')">
+                            <label class="btn btn-sm btn-outline-success" :for="'answer-' + a.answer_id + '-yes'">{{ yesLabel }}</label>
+                            <input type="radio" class="btn-check" :id="'answer-' + a.answer_id + '-no'" value="no" :checked="a.answer === 'no'" @change="saveAnswer(a, 'no')">
+                            <label class="btn btn-sm btn-outline-danger" :for="'answer-' + a.answer_id + '-no'">{{ noLabel }}</label>
+                        </div>
+                        <button @click="deleteAnswer(a)" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
 {% endif %}
@@ -166,4 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.15/dist/vue.global.prod.js"></script>
+<script>
+window.surveyYesLabel = '{{ yes_label|escapejs }}';
+window.surveyNoLabel = '{{ no_label|escapejs }}';
+</script>
+<script src="{% static 'js/survey_detail.js' %}"></script>
 {% endblock %}
