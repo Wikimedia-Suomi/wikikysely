@@ -359,6 +359,10 @@ msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 
+#: templates/survey/question_form.html:17
+msgid "Similar questions"
+msgstr "Samankaltaiset kysymykset"
+
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 
