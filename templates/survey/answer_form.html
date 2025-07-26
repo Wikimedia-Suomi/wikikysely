@@ -17,15 +17,14 @@
   {% endfor %}
   <div class="answer-buttons mb-2" role="group" aria-label="{% translate 'Answer' %}">
     <div class="btn-group me-2" role="group">
-      <input type="radio" class="btn-check" name="answer" id="answerYes"
+      <input type="radio" class="btn-check" name="answer" id="answerYes" onchange="this.form.submit()"
              value="yes"{% if form.answer.value == 'yes' %} checked{% endif %}>
       <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'yes' %}btn-success{% else %}btn-outline-success{% endif %}{% else %}btn-success{% endif %}" for="answerYes">{% translate 'Yes' %}</label>
-      <input type="radio" class="btn-check" name="answer" id="answerNo"
+      <input type="radio" class="btn-check" name="answer" id="answerNo" onchange="this.form.submit()"
              value="no"{% if form.answer.value == 'no' %} checked{% endif %}>
       <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'no' %}btn-danger{% else %}btn-outline-danger{% endif %}{% else %}btn-danger{% endif %}" for="answerNo">{% translate 'No' %}</label>
     </div>
     {% if is_edit %}
-      <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary me-2">{% translate 'Cancel' %}</a>
       {% if survey.state == 'running' %}
       <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
