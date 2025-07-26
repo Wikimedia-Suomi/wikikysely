@@ -176,6 +176,26 @@ msgstr "Yhteensä"
 msgid "Agree"
 msgstr "Yksimielisyys"
 
+#: templates/survey/results_wikitext.html:3 templates/survey/results_wikitext.html:5
+msgid "Results as wikitext"
+msgstr "Tulokset wikitekstinä"
+
+#: templates/survey/results.html:16 templates/survey/results.html:21
+msgid "Print wikitext"
+msgstr "Tulosta wikiteksti"
+
+#: templates/survey/results_wikitext.html:8
+msgid "Include my answers"
+msgstr "Sisällytä omat vastaukset"
+
+#: templates/survey/results_wikitext.html:10
+msgid "Update"
+msgstr "Päivitä"
+
+#: templates/survey/results_wikitext.txt:3
+msgid "Bar charts"
+msgstr "Palkkidiagrammit"
+
 #: templates/survey/survey_detail.html:6
 msgid "This survey is currently paused."
 msgstr "Tämä kysely on tauolla."
