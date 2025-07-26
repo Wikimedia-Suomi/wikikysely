@@ -41,9 +41,9 @@
 </div>
 {% if question_stats %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="true" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
+    <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
   </h2>
-  <div id="answerDetails" class="collapse show">
+  <div id="answerDetails" class="collapse">
   <div class="row mb-4">
     <div class="col-md-6 text-center">
       <p class="mt-2">{% translate 'Answer distribution' %}</p>
@@ -77,9 +77,9 @@
   </div>
 {% endif %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="true" aria-controls="myAnswers">{% translate 'My answers' %}</a>
+    <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
-  <div id="myAnswers" class="collapse show">
+  <div id="myAnswers" class="collapse">
   <table class="table mb-3 survey-detail-table">
     <thead>
       <tr>
