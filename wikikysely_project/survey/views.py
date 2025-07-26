@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
-from django.db.models.functions import NullIf, TruncDate
+from django.db.models.functions import NullIf, TruncDate, Greatest
 from django.http import JsonResponse
 from datetime import timedelta
 import json
@@ -31,7 +31,9 @@ def get_user_answers(user, survey):
         )
         .annotate(
             agree_ratio=ExpressionWrapper(
-                F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                * 100.0
+                / NullIf(F("total_answers"), 0),
                 output_field=FloatField(),
             )
         )
@@ -44,7 +46,9 @@ def get_question_stats(question, user=None):
     yes_count = question.answers.filter(answer="yes").count()
     no_count = question.answers.filter(answer="no").count()
     total = yes_count + no_count
-    agree_ratio = (yes_count * 100.0 / total) if total else 0
+    agree_ratio = (
+        max(yes_count, no_count) * 100.0 / total
+    ) if total else 0
     user_answer = None
     if user and user.is_authenticated:
         ans = Answer.objects.filter(question=question, user=user).first()
@@ -110,7 +114,9 @@ def survey_detail(request):
         )
         user_answers = user_answers.annotate(
             agree_ratio=ExpressionWrapper(
-                F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                * 100.0
+                / NullIf(F("total_answers"), 0),
                 output_field=FloatField(),
             )
         )
@@ -127,13 +133,17 @@ def survey_detail(request):
 
     questions = questions.annotate(
         agree_ratio=ExpressionWrapper(
-            F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+            Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+            * 100.0
+            / NullIf(F("total_answers"), 0),
             output_field=FloatField(),
         )
     )
     unanswered_questions = unanswered_questions.annotate(
         agree_ratio=ExpressionWrapper(
-            F("yes_count") * 1.0 / NullIf(F("total_answers"), 0),
+            Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+            * 100.0
+            / NullIf(F("total_answers"), 0),
             output_field=FloatField(),
         )
     )
@@ -486,8 +496,9 @@ def answer_question(request, pk):
                     messages.success(request, _("Answer saved"))
                     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                         yes_count = question.answers.filter(answer="yes").count()
-                        total = question.answers.count()
-                        ratio = int(yes_count * 100 / total) if total else 0
+                        no_count = question.answers.filter(answer="no").count()
+                        total = yes_count + no_count
+                        ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
                         return JsonResponse(
                             {
                                 "success": True,
@@ -628,8 +639,9 @@ def answer_edit(request, pk):
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 question = answer.question
                 yes_count = question.answers.filter(answer="yes").count()
-                total = question.answers.count()
-                ratio = int(yes_count * 100 / total) if total else 0
+                no_count = question.answers.filter(answer="no").count()
+                total = yes_count + no_count
+                ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
                 return JsonResponse(
                     {
                         "success": True,
@@ -667,8 +679,9 @@ def answer_delete(request, pk):
     messages.success(request, _("Answer removed"))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         yes_count = question.answers.filter(answer="yes").count()
-        total = question.answers.count()
-        ratio = int(yes_count * 100 / total) if total else 0
+        no_count = question.answers.filter(answer="no").count()
+        total = yes_count + no_count
+        ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
         # updated unanswered count after deleting the answer
         answered_ids = Answer.objects.filter(
             user=request.user,
@@ -731,7 +744,7 @@ def survey_results(request):
         yes_count = q.answers.filter(answer="yes").count()
         no_count = q.answers.filter(answer="no").count()
         total = yes_count + no_count
-        agree_ratio = (yes_count * 100.0 / total) if total else 0
+        agree_ratio = (max(yes_count, no_count) * 100.0 / total) if total else 0
         row = {
             "question": q,
             "published": q.created_at,

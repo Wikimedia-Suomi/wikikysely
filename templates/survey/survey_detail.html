@@ -55,7 +55,7 @@
         <td>{{ q.text }}</td>
 {% endif %}
         <td class="total-answers">{{ q.total_answers }}</td>
-        <td class="agree-ratio">{% widthratio q.yes_count q.total_answers 100 %}%</td>
+        <td class="agree-ratio">{{ q.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end">
           {% if request.user.is_authenticated and request.user == q.creator and q.total_answers == 0 and survey.state != 'closed' %}
           <a href="{% url 'survey:question_edit' q.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
@@ -88,7 +88,7 @@
         <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
       </td>
       <td class="total-answers">{{ a.total_answers }}</td>
-      <td class="agree-ratio">{% widthratio a.yes_count a.total_answers 100 %}%</td>
+      <td class="agree-ratio">{{ a.agree_ratio|floatformat:1 }}%</td>
       <td class="text-end">
         {% if a.question.survey.state == 'running' %}
         <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">

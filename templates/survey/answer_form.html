@@ -70,7 +70,7 @@
         <td>{{ question_stats.yes }}</td>
         <td>{{ question_stats.no }}</td>
         <td>{{ question_stats.total }}</td>
-        <td>{% widthratio question_stats.yes question_stats.total 100 %}%</td>
+        <td>{{ question_stats.agree_ratio|floatformat:1 }}%</td>
       </tr>
     </tbody>
   </table>
@@ -96,7 +96,7 @@
         <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
         <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
         <td>{{ a.total_answers }}</td>
-        <td>{% widthratio a.yes_count a.total_answers 100 %}%</td>
+        <td>{{ a.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end">
           {% if a.question.survey.state == 'running' %}
           <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">

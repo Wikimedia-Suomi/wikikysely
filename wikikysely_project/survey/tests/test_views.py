@@ -209,6 +209,25 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.context["total_users"], 1)
         self.assertContains(response, "Answer table")
 
+    def test_consensus_ratio_calculation(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        User = get_user_model()
+        extra_users = [
+            User.objects.create_user(username=f"extra{i}", password="pass")
+            for i in range(1, 5)
+        ]
+        # 3 yes, 2 no
+        Answer.objects.create(question=question, user=self.user, answer="yes")
+        Answer.objects.create(question=question, user=extra_users[0], answer="yes")
+        Answer.objects.create(question=question, user=extra_users[1], answer="yes")
+        Answer.objects.create(question=question, user=extra_users[2], answer="no")
+        Answer.objects.create(question=question, user=extra_users[3], answer="no")
+
+        response = self.client.get(reverse("survey:survey_results"))
+        data = response.context["data"][0]
+        self.assertEqual(data["agree_ratio"], 60.0)
+
     def test_results_view_displays_my_answer_column(self):
         survey = self._create_survey()
         question = self._create_question(survey)
