@@ -271,6 +271,10 @@ def question_delete(request, pk):
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return JsonResponse({"deleted": True})
 
+    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
+    if next_url:
+        return redirect(next_url)
+
     if request.user == survey.creator or request.user.is_superuser:
         return redirect("survey:survey_edit")
     return redirect("survey:survey_detail")
@@ -454,6 +458,9 @@ def answer_question(request, pk):
 
     answer = None
     can_delete_question = False
+    next_url = request.GET.get("next") or request.POST.get("next")
+    if not next_url:
+        next_url = request.META.get("HTTP_REFERER")
     if not request.user.is_authenticated:
         login_url = f"{reverse('login')}?next={request.path}"
         messages.info(
@@ -490,10 +497,12 @@ def answer_question(request, pk):
                                 "question_id": question.pk,
                             }
                         )
+                    if answer is not None and next_url:
+                        return redirect(next_url)
                     return redirect("survey:answer_survey")
                 else:
-                    next_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
-                    return redirect(next_url)
+                    skip_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
+                    return redirect(skip_url)
         else:
             form = AnswerForm(instance=answer, initial={"question_id": question.pk})
         can_delete_question = (
@@ -537,6 +546,7 @@ def answer_question(request, pk):
             "yes_label": yes_label,
             "no_label": no_label,
             "no_answers_label": no_answers_label,
+            "next": next_url,
         },
     )
 
@@ -685,6 +695,10 @@ def answer_delete(request, pk):
                 "agree_label": gettext("Agree"),
             }
         )
+
+    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
+    if next_url:
+        return redirect(next_url)
     return redirect("survey:survey_detail")
 
 
