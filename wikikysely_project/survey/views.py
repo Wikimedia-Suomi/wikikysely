@@ -12,6 +12,7 @@ from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
 from django.db.models.functions import NullIf, TruncDate, Greatest
 from django.http import JsonResponse
 from datetime import timedelta
+from django.utils import timezone
 import json
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
@@ -813,6 +814,8 @@ def survey_results_wikitext(request):
     yes_label = gettext("Yes")
     no_label = gettext("No")
 
+    generated_at = timezone.localtime()
+
     wiki_text = render_to_string(
         "survey/results_wikitext.txt",
         {
@@ -822,6 +825,7 @@ def survey_results_wikitext(request):
             "yes_label": yes_label,
             "no_label": no_label,
             "include_personal": include_personal,
+            "generated_at": generated_at,
         },
     )
 

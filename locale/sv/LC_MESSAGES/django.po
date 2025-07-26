@@ -196,6 +196,10 @@ msgstr "Uppdatera"
 msgid "Bar charts"
 msgstr "Stapeldiagram"
 
+#: templates/survey/results_wikitext.txt:4
+msgid "Generated on"
+msgstr "Skapad"
+
 #: templates/survey/survey_detail.html:6
 msgid "This survey is currently paused."
 msgstr "Den här enkäten är pausad."
