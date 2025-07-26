@@ -182,7 +182,7 @@ msgstr "Tulokset wikitekstinä"
 
 #: templates/survey/results.html:16 templates/survey/results.html:21
 msgid "Print wikitext"
-msgstr "Tulosta wikiteksti"
+msgstr "Tulosta wikitekstinä"
 
 #: templates/survey/results_wikitext.html:8
 msgid "Include my answers"
