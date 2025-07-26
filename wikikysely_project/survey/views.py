@@ -787,6 +787,15 @@ def survey_results_wikitext(request):
         Answer.objects.filter(question__survey=survey).values("user").distinct().count()
     )
 
+    question_count = questions.count()
+    full_users = (
+        Answer.objects.filter(question__survey=survey)
+        .values("user")
+        .annotate(answered=Count("question", distinct=True))
+        .filter(answered=question_count)
+        .count()
+    )
+
     user_answers = {}
     if include_personal:
         user_answers = {
@@ -822,6 +831,7 @@ def survey_results_wikitext(request):
             "survey": survey,
             "data": data,
             "total_users": total_users,
+            "full_users": full_users,
             "yes_label": yes_label,
             "no_label": no_label,
             "include_personal": include_personal,

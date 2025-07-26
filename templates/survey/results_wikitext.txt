@@ -9,8 +9,8 @@
 |+ {{ row.question.text }}
 ! {{ yes_label }} !! {{ no_label }}
 |-
-| style="background-color:#cfc;height:1.25em;width:{% widthratio row.yes total_users 100 %}%" | {{ row.yes }}
-| style="background-color:#fcc;height:1.25em;width:{% widthratio row.no total_users 100 %}%" | {{ row.no }}
+| style="background-color:#cfc;height:1.25em;width:{% widthratio row.yes full_users 100 %}%" | {{ row.yes }}
+| style="background-color:#fcc;height:1.25em;width:{% widthratio row.no full_users 100 %}%" | {{ row.no }}
 |}
 {% endfor %}
 
