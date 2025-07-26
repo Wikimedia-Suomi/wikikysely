@@ -9,6 +9,9 @@
 {% if request.user.is_authenticated %}
 <form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
   {% csrf_token %}
+  {% if next %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% endif %}
   {% if form.non_field_errors %}
     <div class="alert alert-danger">{{ form.non_field_errors }}</div>
   {% endif %}
@@ -26,10 +29,10 @@
     </div>
     {% if is_edit %}
       {% if survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
-      <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-danger">{% translate 'Remove question' %}</a>
+      <a href="{% url 'survey:question_delete' question.pk %}?next={{ next|urlencode }}" class="btn btn-danger">{% translate 'Remove question' %}</a>
       {% endif %}
     {% else %}
       <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>

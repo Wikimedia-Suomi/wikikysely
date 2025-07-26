@@ -50,7 +50,7 @@
         <tr>
         <td>{{ q.created_at | date:"Y-m-d" }}</td>
 {% if request.user.is_authenticated %}
-        <td><a href="{% url 'survey:answer_question' q.pk %}">{{ q.text }}</a></td>
+        <td><a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a></td>
 {% else %}
         <td>{{ q.text }}</td>
 {% endif %}
@@ -85,7 +85,7 @@
     <tr>
       <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
       <td>
-        <a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a>
+        <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
       </td>
       <td class="total-answers">{{ a.total_answers }}</td>
       <td class="agree-ratio">{% widthratio a.yes_count a.total_answers 100 %}%</td>

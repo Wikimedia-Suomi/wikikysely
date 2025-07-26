@@ -37,7 +37,7 @@
   <tr>
     <td class="bar-chart-question">
     {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
     {% else %}
       {{ row.question.text }}
     {% endif %}
@@ -59,7 +59,7 @@
     <canvas></canvas>
     <p class="mt-2">
     {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
     {% else %}
       {{ row.question.text }}
     {% endif %}
@@ -90,7 +90,7 @@
   <td>{{ row.published|date:"Y-m-d" }}</td>
   <td>
     {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a>
+      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
     {% else %}
       {{ row.question.text }}
     {% endif %}
