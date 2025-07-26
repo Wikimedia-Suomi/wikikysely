@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         if (row) row.remove();
+        const navCount = document.getElementById('unanswered-count');
+        if (navCount && typeof data.unanswered_count !== 'undefined') {
+          navCount.textContent = data.unanswered_count;
+        }
         if (!reloadNeeded) {
           const tbody = unansweredTable.tBodies[0];
           if (tbody) {
