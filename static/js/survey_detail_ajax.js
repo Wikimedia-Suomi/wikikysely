@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function attachDeleteAnswer(link) {
     link.addEventListener('click', ev => {
       ev.preventDefault();
+      const reloadNeeded = !document.getElementById('unanswered-header');
       fetch(link.href, {
         method: 'POST',
         headers: {
@@ -71,7 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             row = document.querySelector(`tr[data-question-id="${qid}"]`);
           }
         }
-          if (row) row.remove();
+        if (row) row.remove();
+        if (reloadNeeded) {
+          window.location.reload();
+        }
       }).catch(() => window.location.reload());
     });
   }
