@@ -7,7 +7,7 @@
   <div id="answerbox" class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center ajax-answer-form">
+<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
   {% csrf_token %}
   {% if form.non_field_errors %}
     <div class="alert alert-danger">{{ form.non_field_errors }}</div>
@@ -27,7 +27,7 @@
     {% if is_edit %}
       <a href="{% url 'survey:survey_detail' %}" class="btn btn-secondary me-2">{% translate 'Cancel' %}</a>
       {% if survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2 ajax-delete-answer" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
       <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-danger">{% translate 'Remove question' %}</a>
