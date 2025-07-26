@@ -175,7 +175,8 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(answer.answer, "no")
         self.assertRedirects(
             response,
-            reverse("survey:survey_detail"),
+            reverse("survey:answer_survey"),
+            fetch_redirect_response=False,
         )
 
     def test_results_view(self):
