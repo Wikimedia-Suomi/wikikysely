@@ -669,6 +669,12 @@ def answer_delete(request, pk):
         yes_count = question.answers.filter(answer="yes").count()
         total = question.answers.count()
         ratio = int(yes_count * 100 / total) if total else 0
+        # updated unanswered count after deleting the answer
+        answered_ids = Answer.objects.filter(
+            user=request.user,
+            question__survey=survey,
+        ).values_list("question_id", flat=True)
+        unanswered_count = survey.questions.filter(deleted=False).exclude(id__in=answered_ids).count()
 
         can_edit = (
             request.user == question.creator
@@ -692,6 +698,7 @@ def answer_delete(request, pk):
                 "edit_label": gettext("Edit"),
                 "remove_label": gettext("Remove question"),
                 "unanswered_label": gettext("Unanswered questions"),
+                "unanswered_count": unanswered_count,
                 "published_label": gettext("Published"),
                 "title_label": gettext("Title"),
                 "answers_label": gettext("Answers"),

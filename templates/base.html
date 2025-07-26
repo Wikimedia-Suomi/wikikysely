@@ -22,9 +22,9 @@
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
         {% if unanswered_count %}
-        <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} ({{ unanswered_count }})</a></li>
+        <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} (<span id="unanswered-count">{{ unanswered_count }}</span>)</a></li>
         {% else %}
-        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %} (0)</span></li>
+        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %} (<span id="unanswered-count">0</span>)</span></li>
         {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_results_url %} active{% endif %}" href="{{ survey_results_url }}">{% translate 'Results' %}</a></li>
       </ul>
