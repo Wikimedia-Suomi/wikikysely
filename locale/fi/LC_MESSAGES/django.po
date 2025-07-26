@@ -174,7 +174,7 @@ msgstr "Yhteensä"
 #: templates/survey/results.html:66 templates/survey/survey_detail.html:44
 #: templates/survey/survey_detail.html:79
 msgid "Agree"
-msgstr "Samanmielisyys"
+msgstr "Yksimielisyys"
 
 #: templates/survey/survey_detail.html:6
 msgid "This survey is currently paused."
