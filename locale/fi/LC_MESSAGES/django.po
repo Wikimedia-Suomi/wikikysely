@@ -196,6 +196,10 @@ msgstr "Päivitä"
 msgid "Bar charts"
 msgstr "Palkkidiagrammit"
 
+#: templates/survey/results_wikitext.txt:4
+msgid "Generated on"
+msgstr "Luotu"
+
 #: templates/survey/survey_detail.html:6
 msgid "This survey is currently paused."
 msgstr "Tämä kysely on tauolla."

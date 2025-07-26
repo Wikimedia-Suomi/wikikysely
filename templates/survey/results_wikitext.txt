@@ -1,16 +1,18 @@
 {% load i18n %}
 == {{ survey.title }} ==
+{{ survey.description }}
+''{% translate 'Generated on' %}: {{ generated_at|date:"Y-m-d H:i" }}''
 
 === {% translate 'Bar charts' %} ===
-{| class="wikitable" style="text-align:center"
-! {% translate 'Question' %} !! {{ yes_label }} !! {{ no_label }}
 {% for row in data %}
+{| class="wikitable" style="text-align:center;margin-bottom:0.5em"
+|+ {{ row.question.text }}
+! {{ yes_label }} !! {{ no_label }}
 |-
-| {{ row.question.text }}
 | style="background-color:#cfc;height:1.25em;width:{% widthratio row.yes total_users 100 %}%" | {{ row.yes }}
 | style="background-color:#fcc;height:1.25em;width:{% widthratio row.no total_users 100 %}%" | {{ row.no }}
-{% endfor %}
 |}
+{% endfor %}
 
 === {% translate 'Answer table' %} ===
 {| class="wikitable"
