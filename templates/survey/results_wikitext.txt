@@ -1,3 +1,4 @@
+{% load i18n %}
 == {{ survey.title }} ==
 
 === {% translate 'Bar charts' %} ===
