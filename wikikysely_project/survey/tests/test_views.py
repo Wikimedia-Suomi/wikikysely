@@ -179,6 +179,21 @@ class SurveyFlowTests(TransactionTestCase):
             fetch_redirect_response=False,
         )
 
+    def test_redirects_to_next_unanswered_when_next_same_page(self):
+        survey = self._create_survey()
+        questions = self._create_questions(survey, 2)
+        Answer.objects.create(question=questions[0], user=self.user, answer="yes")
+        edit_url = reverse("survey:answer_question", args=[questions[0].pk])
+        response = self.client.post(
+            f"{edit_url}?next={edit_url}",
+            {"question_id": questions[0].pk, "answer": "no"},
+        )
+        self.assertRedirects(
+            response,
+            reverse("survey:answer_survey"),
+            fetch_redirect_response=False,
+        )
+
     def test_results_view(self):
         survey = self._create_survey()
         question = self._create_question(survey)

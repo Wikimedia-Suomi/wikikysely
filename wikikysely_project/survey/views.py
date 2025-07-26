@@ -498,7 +498,10 @@ def answer_question(request, pk):
                             }
                         )
                     if answer is not None and next_url:
-                        return redirect(next_url)
+                        from urllib.parse import urlparse
+
+                        if urlparse(next_url).path != request.path:
+                            return redirect(next_url)
                     return redirect("survey:answer_survey")
                 else:
                     skip_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
