@@ -361,7 +361,7 @@ msgstr "Vastaus poistettu"
 
 #: templates/survey/answer_form.html:37
 msgid "Answer details"
-msgstr "Vastaustiedot"
+msgstr "Muiden vastaukset"
 
 #: templates/survey/answer_form.html:60
 msgid "Answer distribution"

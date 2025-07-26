@@ -20,12 +20,10 @@
   {% endfor %}
   <div class="answer-buttons mb-2" role="group" aria-label="{% translate 'Answer' %}">
     <div class="btn-group me-2" role="group">
-      <input type="radio" class="btn-check" name="answer" id="answerYes" onchange="this.form.submit()"
-             value="yes"{% if form.answer.value == 'yes' %} checked{% endif %}>
-      <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'yes' %}btn-success{% else %}btn-outline-success{% endif %}{% else %}btn-success{% endif %}" for="answerYes">{% translate 'Yes' %}</label>
-      <input type="radio" class="btn-check" name="answer" id="answerNo" onchange="this.form.submit()"
-             value="no"{% if form.answer.value == 'no' %} checked{% endif %}>
-      <label class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'no' %}btn-danger{% else %}btn-outline-danger{% endif %}{% else %}btn-danger{% endif %}" for="answerNo">{% translate 'No' %}</label>
+      <button type="submit" name="answer" value="yes"
+              class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'yes' %}btn-success{% else %}btn-outline-success{% endif %}{% else %}btn-success{% endif %}">{% translate 'Yes' %}</button>
+      <button type="submit" name="answer" value="no"
+              class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'no' %}btn-danger{% else %}btn-outline-danger{% endif %}{% else %}btn-danger{% endif %}">{% translate 'No' %}</button>
     </div>
     {% if is_edit %}
       {% if survey.state == 'running' %}
