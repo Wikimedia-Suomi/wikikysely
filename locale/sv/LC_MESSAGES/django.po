@@ -176,6 +176,26 @@ msgstr "Totalt"
 msgid "Agree"
 msgstr "Instämmande"
 
+#: templates/survey/results_wikitext.html:3 templates/survey/results_wikitext.html:5
+msgid "Results as wikitext"
+msgstr "Resultat som wikikod"
+
+#: templates/survey/results.html:16 templates/survey/results.html:21
+msgid "Print wikitext"
+msgstr "Skriv ut wikikod"
+
+#: templates/survey/results_wikitext.html:8
+msgid "Include my answers"
+msgstr "Inkludera mina svar"
+
+#: templates/survey/results_wikitext.html:10
+msgid "Update"
+msgstr "Uppdatera"
+
+#: templates/survey/results_wikitext.txt:3
+msgid "Bar charts"
+msgstr "Stapeldiagram"
+
 #: templates/survey/survey_detail.html:6
 msgid "This survey is currently paused."
 msgstr "Den här enkäten är pausad."

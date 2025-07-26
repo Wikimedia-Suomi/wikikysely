@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate 'Results as wikitext' %}{% endblock %}
+{% block content %}
+<h1>{% translate 'Results as wikitext' %}</h1>
+<form method="get" class="mb-3">
+{% if request.user.is_authenticated %}
+  <div class="form-check mb-2">
+    <input class="form-check-input" type="checkbox" id="includePersonal" name="include_personal" value="1"{% if include_personal %} checked{% endif %}>
+    <label class="form-check-label" for="includePersonal">{% translate 'Include my answers' %}</label>
+  </div>
+  <button type="submit" class="btn btn-primary">{% translate 'Update' %}</button>
+{% endif %}
+</form>
+<textarea class="form-control" rows="20" readonly>{{ wiki_text }}</textarea>
+{% endblock %}

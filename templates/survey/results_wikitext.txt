@@ -1,0 +1,22 @@
+== {{ survey.title }} ==
+
+=== {% translate 'Bar charts' %} ===
+{% for row in data %}
+==== {{ row.question.text }} ====
+{% templatetag openvariable %}Graph:Chart|width=400|height=200|type=bar|x=answer|y=count|legend=none|data=
+answer,count
+{{ yes_label }},{{ row.yes }}
+{{ no_label }},{{ row.no }}
+{% templatetag closevariable %}
+{% endfor %}
+
+=== {% translate 'Answer table' %} ===
+{| class="wikitable"
+! {% translate 'Published' %} !! {% translate 'Question' %}{% if include_personal %} !! {% translate 'My answer' %}{% endif %} !! {{ yes_label }} !! {{ no_label }} !! {% translate 'Total' %} !! {% translate 'Agree' %}
+{% for row in data %}
+|-
+| {{ row.published|date:"Y-m-d" }} || {{ row.question.text }}{% if include_personal %} || {{ row.my_answer|default:"" }}{% endif %} || {{ row.yes }} || {{ row.no }} || {{ row.total }} || {{ row.agree_ratio|floatformat:1 }}%
+{% endfor %}
+|}
+
+''{% translate 'Total respondents' %}: {{ total_users }}''

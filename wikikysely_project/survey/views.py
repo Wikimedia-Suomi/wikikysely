@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext
 from django.utils.html import format_html
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
@@ -768,6 +769,68 @@ def survey_results(request):
             "total_users": total_users,
             "yes_label": yes_label,
             "no_label": no_label,
-            "no_answers_label": no_answers_label,
+        "no_answers_label": no_answers_label,
+        },
+    )
+
+
+def survey_results_wikitext(request):
+    survey = Survey.get_main_survey()
+    include_personal = (
+        request.GET.get("include_personal") == "1" and request.user.is_authenticated
+    )
+
+    questions = survey.questions.filter(deleted=False)
+    data = []
+    total_users = (
+        Answer.objects.filter(question__survey=survey).values("user").distinct().count()
+    )
+
+    user_answers = {}
+    if include_personal:
+        user_answers = {
+            a.question_id: a.get_answer_display()
+            for a in Answer.objects.filter(user=request.user, question__survey=survey)
+        }
+
+    for q in questions:
+        yes_count = q.answers.filter(answer="yes").count()
+        no_count = q.answers.filter(answer="no").count()
+        total = yes_count + no_count
+        agree_ratio = (max(yes_count, no_count) * 100.0 / total) if total else 0
+        row = {
+            "question": q,
+            "published": q.created_at,
+            "yes": yes_count,
+            "no": no_count,
+            "total": total,
+            "agree_ratio": agree_ratio,
+        }
+        if include_personal:
+            row["my_answer"] = user_answers.get(q.pk)
+        data.append(row)
+
+    yes_label = gettext("Yes")
+    no_label = gettext("No")
+
+    wiki_text = render_to_string(
+        "survey/results_wikitext.txt",
+        {
+            "survey": survey,
+            "data": data,
+            "total_users": total_users,
+            "yes_label": yes_label,
+            "no_label": no_label,
+            "include_personal": include_personal,
+        },
+    )
+
+    return render(
+        request,
+        "survey/results_wikitext.html",
+        {
+            "survey": survey,
+            "wiki_text": wiki_text,
+            "include_personal": include_personal,
         },
     )
