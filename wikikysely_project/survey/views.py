@@ -490,7 +490,10 @@ def answer_question(request, pk):
                                 "question_id": question.pk,
                             }
                         )
-                    return redirect("survey:survey_detail")
+                    return redirect("survey:answer_survey")
+                else:
+                    next_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
+                    return redirect(next_url)
         else:
             form = AnswerForm(instance=answer, initial={"question_id": question.pk})
         can_delete_question = (
