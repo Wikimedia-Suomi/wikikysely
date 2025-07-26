@@ -101,7 +101,7 @@
   <td>{{ row.yes }}</td>
   <td>{{ row.no }}</td>
   <td>{{ row.total }}</td>
-  <td>{% widthratio row.yes row.total 100 %}%</td>
+  <td>{{ row.agree_ratio|floatformat:1 }}%</td>
 </tr>
 {% endfor %}
 </tbody>
