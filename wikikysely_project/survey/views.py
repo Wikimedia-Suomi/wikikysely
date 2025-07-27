@@ -33,9 +33,13 @@ def get_user_answers(user, survey):
         )
         .annotate(
             agree_ratio=ExpressionWrapper(
-                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-                * 100.0
-                / NullIf(F("total_answers"), 0),
+                (
+                    Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                    * 100.0
+                    / NullIf(F("total_answers"), 0)
+                    - 50
+                )
+                * 2,
                 output_field=FloatField(),
             )
         )
@@ -49,7 +53,7 @@ def get_question_stats(question, user=None):
     no_count = question.answers.filter(answer="no").count()
     total = yes_count + no_count
     agree_ratio = (
-        max(yes_count, no_count) * 100.0 / total
+        (max(yes_count, no_count) * 100.0 / total - 50) * 2
     ) if total else 0
     user_answer = None
     if user and user.is_authenticated:
@@ -116,9 +120,13 @@ def survey_detail(request):
         )
         user_answers = user_answers.annotate(
             agree_ratio=ExpressionWrapper(
-                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-                * 100.0
-                / NullIf(F("total_answers"), 0),
+                (
+                    Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                    * 100.0
+                    / NullIf(F("total_answers"), 0)
+                    - 50
+                )
+                * 2,
                 output_field=FloatField(),
             )
         )
@@ -135,17 +143,25 @@ def survey_detail(request):
 
     questions = questions.annotate(
         agree_ratio=ExpressionWrapper(
-            Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-            * 100.0
-            / NullIf(F("total_answers"), 0),
+            (
+                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                * 100.0
+                / NullIf(F("total_answers"), 0)
+                - 50
+            )
+            * 2,
             output_field=FloatField(),
         )
     )
     unanswered_questions = unanswered_questions.annotate(
         agree_ratio=ExpressionWrapper(
-            Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-            * 100.0
-            / NullIf(F("total_answers"), 0),
+            (
+                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
+                * 100.0
+                / NullIf(F("total_answers"), 0)
+                - 50
+            )
+            * 2,
             output_field=FloatField(),
         )
     )
@@ -500,7 +516,7 @@ def answer_question(request, pk):
                         yes_count = question.answers.filter(answer="yes").count()
                         no_count = question.answers.filter(answer="no").count()
                         total = yes_count + no_count
-                        ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
+                        ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
                         return JsonResponse(
                             {
                                 "success": True,
@@ -643,7 +659,7 @@ def answer_edit(request, pk):
                 yes_count = question.answers.filter(answer="yes").count()
                 no_count = question.answers.filter(answer="no").count()
                 total = yes_count + no_count
-                ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
+                ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
                 return JsonResponse(
                     {
                         "success": True,
@@ -683,7 +699,7 @@ def answer_delete(request, pk):
         yes_count = question.answers.filter(answer="yes").count()
         no_count = question.answers.filter(answer="no").count()
         total = yes_count + no_count
-        ratio = int(max(yes_count, no_count) * 100 / total) if total else 0
+        ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
         # updated unanswered count after deleting the answer
         answered_ids = Answer.objects.filter(
             user=request.user,
@@ -746,7 +762,7 @@ def survey_results(request):
         yes_count = q.answers.filter(answer="yes").count()
         no_count = q.answers.filter(answer="no").count()
         total = yes_count + no_count
-        agree_ratio = (max(yes_count, no_count) * 100.0 / total) if total else 0
+        agree_ratio = ((max(yes_count, no_count) * 100.0 / total) - 50) * 2 if total else 0
         row = {
             "question": q,
             "published": q.created_at,
@@ -807,7 +823,7 @@ def survey_results_wikitext(request):
         yes_count = q.answers.filter(answer="yes").count()
         no_count = q.answers.filter(answer="no").count()
         total = yes_count + no_count
-        agree_ratio = (max(yes_count, no_count) * 100.0 / total) if total else 0
+        agree_ratio = ((max(yes_count, no_count) * 100.0 / total) - 50) * 2 if total else 0
         row = {
             "question": q,
             "published": q.created_at,
