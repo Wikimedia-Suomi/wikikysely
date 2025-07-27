@@ -180,6 +180,10 @@ msgstr "Yksimielisyys"
 msgid "Results as wikitext"
 msgstr "Tulokset wikitekstinä"
 
+#: templates/survey/results_wikitext.html:16
+msgid "Results as JSON"
+msgstr "Tulokset JSON-muodossa"
+
 #: templates/survey/results.html:16 templates/survey/results.html:21
 msgid "Print wikitext"
 msgstr "Tulosta wikitekstinä"

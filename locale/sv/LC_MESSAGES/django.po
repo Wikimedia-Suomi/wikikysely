@@ -180,6 +180,10 @@ msgstr "Instämmande"
 msgid "Results as wikitext"
 msgstr "Resultat som wikikod"
 
+#: templates/survey/results_wikitext.html:16
+msgid "Results as JSON"
+msgstr "Resultat som JSON"
+
 #: templates/survey/results.html:16 templates/survey/results.html:21
 msgid "Print wikitext"
 msgstr "Skriv ut wikikod"

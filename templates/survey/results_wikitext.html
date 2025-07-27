@@ -12,5 +12,7 @@
   <button type="submit" class="btn btn-primary">{% translate 'Update' %}</button>
 {% endif %}
 </form>
-<textarea class="form-control" rows="20" readonly>{{ wiki_text }}</textarea>
+<textarea class="form-control mb-3" rows="20" readonly>{{ wiki_text }}</textarea>
+<h2>{% translate 'Results as JSON' %}</h2>
+<textarea class="form-control" rows="20" readonly>{{ json_text }}</textarea>
 {% endblock %}
