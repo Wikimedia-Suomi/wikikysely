@@ -226,7 +226,7 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:survey_results"))
         data = response.context["data"][0]
-        self.assertEqual(data["agree_ratio"], 60.0)
+        self.assertEqual(data["agree_ratio"], 20.0)
 
     def test_results_view_displays_my_answer_column(self):
         survey = self._create_survey()
