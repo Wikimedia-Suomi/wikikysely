@@ -2,6 +2,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.translation import activate
 from django.contrib.auth import get_user_model
+import json
 
 from ..models import Survey, Question, Answer
 
@@ -238,6 +239,17 @@ class SurveyFlowTests(TransactionTestCase):
             "<td>Yes</td>",
             html=True,
         )
+
+    def test_results_wikitext_contains_json(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        Answer.objects.create(question=question, user=self.user, answer="yes")
+        response = self.client.get(reverse("survey:results_wikitext"))
+        self.assertEqual(response.status_code, 200)
+        json_text = response.context["json_text"]
+        data = json.loads(json_text)
+        self.assertEqual(data["survey"]["title"], survey.title)
+        self.assertEqual(len(data["data"]), 1)
 
     def test_answer_saved_to_correct_question_and_user(self):
         survey = self._create_survey()

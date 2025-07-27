@@ -855,12 +855,35 @@ def survey_results_wikitext(request):
         },
     )
 
+    json_data = {
+        "survey": {"title": survey.title, "description": survey.description},
+        "generated_at": generated_at.isoformat(),
+        "include_personal": include_personal,
+        "total_users": total_users,
+        "full_users": full_users,
+        "data": [
+            {
+                **{
+                    k: (v.text if k == "question" else v)
+                    for k, v in row.items()
+                    if k != "question"
+                },
+                "question": row["question"].text,
+                **({"my_answer": row["my_answer"]} if "my_answer" in row else {}),
+                "published": row["published"].isoformat(),
+            }
+            for row in data
+        ],
+    }
+    json_text = json.dumps(json_data, indent=2, ensure_ascii=False)
+
     return render(
         request,
         "survey/results_wikitext.html",
         {
             "survey": survey,
             "wiki_text": wiki_text,
+            "json_text": json_text,
             "include_personal": include_personal,
         },
     )
