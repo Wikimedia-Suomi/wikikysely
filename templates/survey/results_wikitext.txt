@@ -4,21 +4,25 @@
 ''{% translate 'Generated on' %}: {{ generated_at|date:"Y-m-d H:i" }}''
 
 === {% translate 'Bar charts' %} ===
-<table id="barChartTable" class="table">
+<table id="barChartTable" style="border-collapse:collapse;width:100%;">
   <tbody>
   {% for row in data %}
   <tr>
-    <td class="bar-chart-question">
+    <td style="vertical-align:middle;min-width:15rem;">
     {% if request.user.is_authenticated %}
       <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
     {% else %}
       {{ row.question.text }}
     {% endif %}
     </td>
-    <td class="w-100">
-      <div class="progress" style="height: 1.25rem;">
-        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
-        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%">{{ row.no }}</div>
+    <td style="vertical-align:middle;width:100%;">
+      <div style="height:1.25rem;display:flex;overflow:hidden;background-color:#e9ecef;border-radius:0.25rem;">
+        <div role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%;background-color:#198754;color:#000;display:flex;align-items:center;justify-content:center;">
+          {{ row.yes }}
+        </div>
+        <div role="progressbar" style="width: {% widthratio row.no total_users 100 %}%;background-color:#dc3545;color:#fff;display:flex;align-items:center;justify-content:center;">
+          {{ row.no }}
+        </div>
       </div>
     </td>
   </tr>
