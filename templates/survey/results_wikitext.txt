@@ -4,15 +4,27 @@
 ''{% translate 'Generated on' %}: {{ generated_at|date:"Y-m-d H:i" }}''
 
 === {% translate 'Bar charts' %} ===
-{% for row in data %}
-{| class="wikitable" style="text-align:center;margin-bottom:0.5em"
-|+ {{ row.question.text }}
-! {{ yes_label }} !! {{ no_label }}
-|-
-| style="background-color:#cfc;height:1.25em;width:{% widthratio row.yes full_users 100 %}%" | {{ row.yes }}
-| style="background-color:#fcc;height:1.25em;width:{% widthratio row.no full_users 100 %}%" | {{ row.no }}
-|}
-{% endfor %}
+<table id="barChartTable" class="table">
+  <tbody>
+  {% for row in data %}
+  <tr>
+    <td class="bar-chart-question">
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
+    {% else %}
+      {{ row.question.text }}
+    {% endif %}
+    </td>
+    <td class="w-100">
+      <div class="progress" style="height: 1.25rem;">
+        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
+        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%">{{ row.no }}</div>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
 
 === {% translate 'Answer table' %} ===
 {| class="wikitable"
