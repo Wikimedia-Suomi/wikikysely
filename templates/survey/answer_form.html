@@ -95,8 +95,8 @@
       <tr data-question-id="{{ a.question.pk }}">
         <td>{{ a.created_at|date:"Y-m-d" }}</td>
         <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
-        <td>{{ a.total_answers }}</td>
-        <td>{{ a.agree_ratio|floatformat:1 }}%</td>
+        <td class="total-answers">{{ a.total_answers }}</td>
+        <td class="agree-ratio">{{ a.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end">
           {% if a.question.survey.state == 'running' %}
           <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
