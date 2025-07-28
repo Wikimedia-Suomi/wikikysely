@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% translate 'Results' %}{% endblock %}
+{% block title %}{% translate 'Answers' %}{% endblock %}
 {% block content %}
 {% if not request.user.is_authenticated and data %}
   {% if request.GET.login_required %}
@@ -24,7 +24,7 @@
       <a href="{% url 'survey:results_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
   {% endif %}
-<h1>{% translate 'Results' %}</h1>
+<h1>{% translate 'Answers' %}</h1>
 <div class="mb-3">
   <div class="form-check form-check-inline">
     <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie" checked>
