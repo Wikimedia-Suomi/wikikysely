@@ -538,11 +538,26 @@ def answer_question(request, pk):
             if form.is_valid():
                 answer_value = form.cleaned_data["answer"]
                 if answer_value:
+                    old_value = answer.answer if answer else None
+                    old_display = answer.get_answer_display() if answer else None
                     Answer.objects.update_or_create(
                         user=request.user,
                         question=question,
                         defaults={"answer": answer_value},
                     )
+                    new_display = dict(Answer.ANSWER_CHOICES).get(answer_value)
+                    if old_value is not None and old_value != answer_value:
+                        messages.info(
+                            request,
+                            _(
+                                'The answer to question "%(question)s" was changed from %(old)s to %(new)s.'
+                            )
+                            % {
+                                "question": question.text,
+                                "old": old_display,
+                                "new": new_display,
+                            },
+                        )
                     messages.success(request, _("Answer saved"))
                     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                         yes_count = question.answers.filter(answer="yes").count()

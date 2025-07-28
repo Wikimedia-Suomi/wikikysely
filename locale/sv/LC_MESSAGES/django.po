@@ -383,6 +383,11 @@ msgstr "Svar kan redigeras endast när enkäten är igång"
 msgid "Answer updated"
 msgstr "Svar uppdaterat"
 
+#: wikikysely_project/survey/views.py:553
+#, python-format
+msgid "The answer to question \"%(question)s\" was changed from %(old)s to %(new)s."
+msgstr "Svaret på frågan \"%(question)s\" ändrades från %(old)s till %(new)s."
+
 #: wikikysely_project/survey/views.py:502
 msgid "Answer can only be removed while the survey is running"
 msgstr "Svar kan tas bort endast när enkäten är igång"

@@ -383,6 +383,11 @@ msgstr "Vastauksen voi muokata vain, kun kysely on käynnissä"
 msgid "Answer updated"
 msgstr "Vastaus päivitetty"
 
+#: wikikysely_project/survey/views.py:553
+#, python-format
+msgid "The answer to question \"%(question)s\" was changed from %(old)s to %(new)s."
+msgstr "Kysymyksen \"%(question)s\" vastaus muutettiin arvosta %(old)s arvoon %(new)s."
+
 #: wikikysely_project/survey/views.py:502
 msgid "Answer can only be removed while the survey is running"
 msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
