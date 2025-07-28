@@ -9,4 +9,7 @@
   <input type="hidden" name="next" value="{{ next }}" />
   <button type="submit" class="btn btn-primary">{% translate 'Login' %}</button>
 </form>
+<p class="mt-3">
+  <a class="btn btn-secondary" href="{% url 'social:begin' 'mediawiki' %}?next={{ next }}">{% translate 'Login with Wikimedia' %}</a>
+</p>
 {% endblock %}

@@ -7,6 +7,7 @@ description, manage questions and change the state (running, paused or closed).
 ## Requirements
 - Python 3.11
 - Django 4.x
+- social-auth-app-django
 
 ## Setup
 Guide is for Linux and OS X. With Windows you need to create and activate virtualenv differently
@@ -23,7 +24,12 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```   
 3. Install dependencies (requires internet access):
    ```bash
-   pip install django==4.2
+   pip install -r requirements.txt
+   ```
+   Create a Wikimedia OAuth consumer and set the following environment variables before running the server:
+   ```bash
+   export SOCIAL_AUTH_MEDIAWIKI_KEY=<consumer key>
+   export SOCIAL_AUTH_MEDIAWIKI_SECRET=<consumer secret>
    ```
 4. Apply migrations:
    ```bash

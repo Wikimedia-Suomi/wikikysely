@@ -30,6 +30,10 @@ msgstr "Kirjaudu ulos"
 msgid "Login"
 msgstr "Kirjaudu sisään"
 
+#: templates/base.html:49 templates/registration/login.html:13
+msgid "Login with Wikimedia"
+msgstr "Kirjaudu Wikimedian tunnuksilla"
+
 #: templates/base.html:50 templates/registration/register.html:3
 #: templates/registration/register.html:5
 #: templates/registration/register.html:10

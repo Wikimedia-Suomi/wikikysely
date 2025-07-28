@@ -30,6 +30,10 @@ msgstr "Logga ut"
 msgid "Login"
 msgstr "Logga in"
 
+#: templates/base.html:49 templates/registration/login.html:13
+msgid "Login with Wikimedia"
+msgstr "Logga in med Wikimedia"
+
 #: templates/base.html:50 templates/registration/register.html:3
 #: templates/registration/register.html:5
 #: templates/registration/register.html:10
