@@ -106,7 +106,14 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            # Specify backend explicitly as multiple authentication backends are
+            # configured. Without this Django cannot determine which backend
+            # authenticated the user and raises a ValueError.
+            login(
+                request,
+                user,
+                backend="django.contrib.auth.backends.ModelBackend",
+            )
             messages.success(request, _("Registration successful"))
             next_url = request.GET.get("next") or get_login_redirect_url(request)
             return redirect(next_url)
