@@ -15,7 +15,11 @@ urlpatterns = [
     path("question/<int:pk>/", views.answer_question, name="answer_question"),
     path("answer/<int:pk>/edit/", views.answer_edit, name="answer_edit"),
     path("answer/<int:pk>/delete/", views.answer_delete, name="answer_delete"),
-    path("answers/", views.answer_list, name="answer_list"),
-    path("results/", views.survey_results, name="survey_results"),
-    path("results/wikitext/", views.survey_results_wikitext, name="results_wikitext"),
+    path("my_answers/", views.answer_list, name="answer_list"),
+    path("answers/", views.survey_results, name="survey_results"),
+    path(
+        "answers/wikitext/",
+        views.survey_results_wikitext,
+        name="results_wikitext",
+    ),
 ]
