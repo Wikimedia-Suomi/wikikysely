@@ -168,6 +168,10 @@ msgstr "Svarstabell"
 msgid "Published"
 msgstr "Publicerad"
 
+#: templates/survey/answer_form.html:88
+msgid "Answer date"
+msgstr "Svarstid"
+
 #: templates/survey/results.html:61
 msgid "My answer"
 msgstr "Mitt svar"
