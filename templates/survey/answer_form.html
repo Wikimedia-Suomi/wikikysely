@@ -83,7 +83,7 @@
   <table class="table mb-3 survey-detail-table">
     <thead>
       <tr>
-        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Answer date' %}</th>
         <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
         <th>{% translate 'Agree' %}</th>
@@ -93,7 +93,7 @@
     <tbody>
       {% for a in user_answers %}
       <tr data-question-id="{{ a.question.pk }}">
-        <td>{{ a.question.created_at|date:"Y-m-d" }}</td>
+        <td>{{ a.created_at|date:"Y-m-d" }}</td>
         <td><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
         <td>{{ a.total_answers }}</td>
         <td>{{ a.agree_ratio|floatformat:1 }}%</td>

@@ -168,6 +168,10 @@ msgstr "Vastaustaulukko"
 msgid "Published"
 msgstr "Julkaistu"
 
+#: templates/survey/answer_form.html:88
+msgid "Answer date"
+msgstr "Vastauspäivä"
+
 #: templates/survey/results.html:61
 msgid "My answer"
 msgstr "Oma vastaus"
