@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
+from wikikysely_project.survey.views import SurveyLoginView
 from django.views.i18n import set_language
 
 urlpatterns = [
@@ -11,6 +12,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('oauth/', include('social_django.urls', namespace='social')),
+    path('accounts/login/', SurveyLoginView.as_view(), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('wikikysely_project.survey.urls')),
 )

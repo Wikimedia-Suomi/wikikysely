@@ -68,6 +68,27 @@ class SurveyFlowTests(TransactionTestCase):
             for i in range(1, count + 1)
         ]
 
+    def test_login_redirects_to_unanswered(self):
+        survey = self._create_survey()
+        self._create_question(survey)
+        self.client.logout()
+        response = self.client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": "pass"},
+        )
+        self.assertRedirects(response, reverse("survey:answer_survey"))
+
+    def test_login_redirects_to_detail_when_no_unanswered(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+        self.client.logout()
+        response = self.client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": "pass"},
+        )
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {

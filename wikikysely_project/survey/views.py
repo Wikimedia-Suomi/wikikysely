@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext
@@ -86,6 +87,20 @@ def get_question_stats(question, user=None):
     }
 
 
+def get_login_redirect_url(request):
+    """Return default post-login redirect based on unanswered questions."""
+    survey = Survey.get_main_survey()
+    answered_ids = Answer.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+    has_unanswered = survey.questions.filter(deleted=False).exclude(
+        id__in=answered_ids
+    ).exists()
+    if has_unanswered:
+        return reverse("survey:answer_survey")
+    return reverse("survey:survey_detail")
+
+
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -93,11 +108,21 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, _("Registration successful"))
-            next_url = request.GET.get("next", "/")
+            next_url = request.GET.get("next") or get_login_redirect_url(request)
             return redirect(next_url)
     else:
         form = UserCreationForm()
     return render(request, "registration/register.html", {"form": form})
+
+
+class SurveyLoginView(LoginView):
+    """Login view that redirects to unanswered questions if any."""
+
+    def get_success_url(self):
+        url = self.get_redirect_url()
+        if url:
+            return url
+        return get_login_redirect_url(self.request)
 
 
 def survey_detail(request):
