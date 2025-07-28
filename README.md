@@ -20,35 +20,40 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```bash
    cd wikikysely
    python3 -m venv venv
+   ```
+3. Add local secrets to venv/bin/activate
+   ```bash
+   export django_secret="very-secret-key"
+   export mediawiki_key="very-secret-mediawiki-key"
+   export mediawiki_secret="very-secret-mediawiki-secret"
+   export mediawiki_callback="http://127.0.0.1:8080/oauth/complete/mediawiki/"
+   ```
+4. Initialize virtualenv 
+   ```bash
    source venv/bin/activate
-   ```   
-3. Install dependencies (requires internet access):
+   ```
+5. Install dependencies (requires internet access):
    ```bash
    pip install -r requirements.txt
    ```
-   Create a Wikimedia OAuth consumer and set the following environment variables before running the server:
-   ```bash
-   export SOCIAL_AUTH_MEDIAWIKI_KEY=<consumer key>
-   export SOCIAL_AUTH_MEDIAWIKI_SECRET=<consumer secret>
-   ```
-4. Apply migrations:
+6. Apply migrations:
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
-5. Create a superuser:
+7. Create a superuser:
    ```bash
    python manage.py createsuperuser
    ```
-6. Compile translation messages:
+8. Compile translation messages:
    ```bash
    python manage.py compilemessages
    ```
-7. Run the development server:
+9. Run the development server:
    ```bash
    python manage.py runserver
    ```
-8. Access the site at `http://localhost:8000/`.
+10. Access the site at `http://localhost:8000/`.
 
 The UI supports Finnish, Swedish and English. You can change the language from the menu.
 If the selected language does not apply, ensure translation files have been compiled using `python manage.py compilemessages`.

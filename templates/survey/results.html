@@ -13,7 +13,9 @@
 <p>{{ survey.description }}</p>
 {% if request.user.is_authenticated %}
     {% if data and survey.state == 'running' %}
+      {% if unanswered_count %}
       <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
+      {% endif %}
       <a href="{% url 'survey:results_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
   {% else %}

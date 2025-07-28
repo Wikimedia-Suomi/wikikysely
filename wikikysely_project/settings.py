@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'replace-this-secret-key'
+SECRET_KEY = os.environ.get('django_secret')
 
 DEBUG = True
 
@@ -100,10 +100,13 @@ MESSAGE_TAGS = {
 
 # Social-auth settings for Wikimedia OAuth1 login
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.mediawiki.MediaWikiOAuth',
+    'social_core.backends.mediawiki.MediaWiki',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-SOCIAL_AUTH_MEDIAWIKI_URL = 'https://meta.wikimedia.org'
-SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('SOCIAL_AUTH_MEDIAWIKI_KEY', '')
-SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('SOCIAL_AUTH_MEDIAWIKI_SECRET', '')
+SOCIAL_AUTH_MEDIAWIKI_URL = 'https://meta.wikimedia.org/w/index.php'
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['groups']
+
+SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('mediawiki_key')
+SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('mediawiki_secret')
+SOCIAL_AUTH_MEDIAWIKI_CALLBACK = os.environ.get('mediawiki_callback')
