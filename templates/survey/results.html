@@ -100,7 +100,7 @@
     {% endif %}
   </td>
   {% if request.user.is_authenticated %}
-  <td>{{ row.my_answer }}</td>
+  <td>{{ row.my_answer | default:""}}</td>
   {% endif %}
   <td>{{ row.yes }}</td>
   <td>{{ row.no }}</td>
