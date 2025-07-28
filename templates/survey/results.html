@@ -229,6 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sortTable(i, current);
         });
     });
+
+    // Indicate default sorting by the Published column
+    directions[0] = 'desc';
+    headers[0].textContent = baseTexts[0] + ' \u2193';
+    sortTable(0, 'desc');
 });
 </script>
 {% endblock %}
