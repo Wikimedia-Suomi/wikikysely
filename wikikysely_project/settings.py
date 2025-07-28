@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -15,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'wikikysely_project.survey',
 ]
 
@@ -25,6 +27,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -43,6 +46,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'wikikysely_project.survey.context_processors.unanswered_count',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -92,3 +97,13 @@ from django.contrib.messages import constants as message_constants
 MESSAGE_TAGS = {
     message_constants.ERROR: 'danger',
 }
+
+# Social-auth settings for Wikimedia OAuth1 login
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.mediawiki.MediaWikiOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_MEDIAWIKI_URL = 'https://meta.wikimedia.org'
+SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('SOCIAL_AUTH_MEDIAWIKI_KEY', '')
+SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('SOCIAL_AUTH_MEDIAWIKI_SECRET', '')

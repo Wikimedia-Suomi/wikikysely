@@ -47,6 +47,7 @@
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
       {% else %}
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'social:begin' 'mediawiki' %}?next={{ request.path }}">{% translate 'Login with Wikimedia' %}</a></li>
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:register' %}?next={{ request.path }}">{% translate 'Register' %}</a></li>
       {% endif %}
       </ul>
