@@ -17,8 +17,9 @@ msgstr "Svara"
 
 #: templates/base.html:29 templates/survey/results.html:3
 #: templates/survey/results.html:5 templates/survey/survey_detail.html:26
-msgid "Results"
-msgstr "Resultat"
+#: templates/survey/survey_detail.html:43 templates/survey/survey_detail.html:78
+msgid "Answers"
+msgstr "Svar"
 
 #: templates/base.html:47
 msgid "Logout"
@@ -229,11 +230,6 @@ msgstr "Obesvarade frågor"
 #: wikikysely_project/survey/models.py:12
 msgid "Title"
 msgstr "Titel"
-
-#: templates/survey/survey_detail.html:43
-#: templates/survey/survey_detail.html:78
-msgid "Answers"
-msgstr "Svar"
 
 # UI strings
 #: templates/survey/survey_detail.html:113 templates/survey/survey_form.html:3
