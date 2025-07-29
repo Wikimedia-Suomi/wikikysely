@@ -616,7 +616,7 @@ def answer_question(request, pk):
 
 
 @login_required
-def answer_list(request):
+def userinfo(request):
     answers = Answer.objects.filter(
         user=request.user,
         question__deleted=False,
@@ -656,7 +656,7 @@ def answer_list(request):
 
     return render(
         request,
-        "survey/answer_list.html",
+        "survey/userinfo.html",
         {
             "answers": answers,
             "questions": questions_qs,
@@ -775,7 +775,7 @@ def answer_delete(request, pk):
     return redirect("survey:survey_detail")
 
 
-def survey_results(request):
+def survey_answers(request):
     survey = Survey.get_main_survey()
     questions = survey.questions.filter(deleted=False)
     data = []
@@ -811,7 +811,7 @@ def survey_results(request):
     no_answers_label = gettext("No answers")
     return render(
         request,
-        "survey/results.html",
+        "survey/answers.html",
         {
             "survey": survey,
             "data": data,
@@ -823,7 +823,7 @@ def survey_results(request):
     )
 
 
-def survey_results_wikitext(request):
+def survey_answers_wikitext(request):
     survey = Survey.get_main_survey()
     include_personal = (
         request.GET.get("include_personal") == "1" and request.user.is_authenticated
@@ -874,7 +874,7 @@ def survey_results_wikitext(request):
     generated_at = timezone.localtime()
 
     wiki_text = render_to_string(
-        "survey/results_wikitext.txt",
+        "survey/answers_wikitext.txt",
         {
             "survey": survey,
             "data": data,
@@ -911,7 +911,7 @@ def survey_results_wikitext(request):
 
     return render(
         request,
-        "survey/results_wikitext.html",
+        "survey/answers_wikitext.html",
         {
             "survey": survey,
             "wiki_text": wiki_text,
