@@ -751,6 +751,36 @@ def userinfo_download(request):
 
 
 @login_required
+def user_data_delete(request):
+    """Remove user's answers and questions that have no other answers."""
+    if request.method != "POST":
+        return redirect("survey:userinfo")
+
+    user = request.user
+
+    # Delete all answers by the user
+    Answer.objects.filter(user=user).delete()
+
+    # Delete visible questions created by the user that no longer have answers
+    for q in Question.objects.filter(creator=user, visible=True):
+        if not q.answers.exclude(user=user).exists():
+            q.delete()
+
+    # If nothing references the user anymore, remove the account
+    has_answers = Answer.objects.filter(user=user).exists()
+    has_questions = Question.objects.filter(creator=user).exists()
+
+    if not has_answers and not has_questions:
+        logout(request)
+        user.delete()
+        messages.success(request, _("Account removed"))
+        return redirect("survey:survey_detail")
+
+    messages.success(request, _("Data removed"))
+    return redirect("survey:userinfo")
+
+
+@login_required
 def user_delete(request):
     """Delete the current user account if no references exist."""
     if request.method != "POST":
