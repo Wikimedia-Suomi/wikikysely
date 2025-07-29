@@ -1,11 +1,17 @@
 from django.urls import path
+from django.conf import settings
 from . import views
 
 app_name = "survey"
 
 urlpatterns = [
     path("", views.survey_detail, name="survey_detail"),
-    path("register/", views.register, name="register"),
+]
+
+if settings.ENABLE_LOCAL_AUTH:
+    urlpatterns.append(path("register/", views.register, name="register"))
+
+urlpatterns += [
     path("survey/edit/", views.survey_edit, name="survey_edit"),
     path("survey/answer/", views.answer_survey, name="answer_survey"),
     path("survey/question/add/", views.question_add, name="question_add"),

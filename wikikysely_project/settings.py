@@ -7,6 +7,10 @@ SECRET_KEY = os.environ.get('django_secret')
 
 DEBUG = True
 
+# Local development uses Django's built-in username/password authentication.
+# In production ``DEBUG`` is False and only Wikimedia OAuth logins are enabled.
+ENABLE_LOCAL_AUTH = DEBUG
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -101,8 +105,9 @@ MESSAGE_TAGS = {
 # Social-auth settings for Wikimedia OAuth1 login
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.mediawiki.MediaWiki',
-    'django.contrib.auth.backends.ModelBackend',
 ]
+if ENABLE_LOCAL_AUTH:
+    AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
 
 SOCIAL_AUTH_MEDIAWIKI_URL = 'https://meta.wikimedia.org/w/index.php'
 SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['groups']

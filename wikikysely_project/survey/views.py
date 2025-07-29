@@ -1,6 +1,7 @@
 import random
 from django.contrib import messages
 from django.urls import reverse
+from django.conf import settings
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -101,7 +102,12 @@ def get_login_redirect_url(request):
     return reverse("survey:survey_detail")
 
 
+from django.http import Http404
+
+
 def register(request):
+    if not settings.ENABLE_LOCAL_AUTH:
+        raise Http404()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -124,6 +130,15 @@ def register(request):
 
 class SurveyLoginView(LoginView):
     """Login view that redirects to unanswered questions if any."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.ENABLE_LOCAL_AUTH:
+            next_url = request.GET.get("next") or ""
+            oauth_url = reverse("social:begin", args=["mediawiki"])
+            if next_url:
+                oauth_url += f"?next={next_url}"
+            return redirect(oauth_url)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         url = self.get_redirect_url()
