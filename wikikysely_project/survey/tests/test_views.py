@@ -357,7 +357,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
         self.assertContains(
             response,
-            "Could not remove 1 questions because they already had answers."
+            "Could not remove 1 question because it already had answers."
         )
         self.assertContains(
             response,
