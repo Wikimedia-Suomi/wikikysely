@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
           'X-CSRFToken': getCookie('csrftoken') || ''
         }
       }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
-        if (!data || !data.deleted) { window.location.reload(); return; }
+        if (!data || !data.hidden) { window.location.reload(); return; }
         const row = link.closest('tr');
         if (row) row.remove();
       }).catch(() => window.location.reload());

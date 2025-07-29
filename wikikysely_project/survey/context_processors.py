@@ -10,5 +10,5 @@ def unanswered_count(request):
         user=request.user,
         question__survey=survey,
     ).values_list('question_id', flat=True)
-    count = survey.questions.filter(deleted=False).exclude(id__in=answered_ids).count()
+    count = survey.questions.filter(visible=True).exclude(id__in=answered_ids).count()
     return {'unanswered_count': count}

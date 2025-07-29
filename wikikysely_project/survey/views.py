@@ -93,7 +93,7 @@ def get_login_redirect_url(request):
     answered_ids = Answer.objects.filter(
         user=request.user, question__survey=survey
     ).values_list("question_id", flat=True)
-    has_unanswered = survey.questions.filter(deleted=False).exclude(
+    has_unanswered = survey.questions.filter(visible=True).exclude(
         id__in=answered_ids
     ).exists()
     if has_unanswered:
@@ -134,7 +134,7 @@ class SurveyLoginView(LoginView):
 
 def survey_detail(request):
     survey = Survey.get_main_survey()
-    base_qs = survey.questions.filter(deleted=False)
+    base_qs = survey.questions.filter(visible=True)
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
     if request.user.is_authenticated:
@@ -236,8 +236,8 @@ def survey_edit(request):
             return redirect("survey:survey_detail")
     else:
         form = SurveyForm(instance=survey)
-    active_questions = survey.questions.filter(deleted=False)
-    deleted_questions = survey.questions.filter(deleted=True)
+    active_questions = survey.questions.filter(visible=True)
+    hidden_questions = survey.questions.filter(visible=False)
     return render(
         request,
         "survey/survey_form.html",
@@ -246,7 +246,7 @@ def survey_edit(request):
             "survey": survey,
             "is_edit": True,
             "active_questions": active_questions,
-            "deleted_questions": deleted_questions,
+            "hidden_questions": hidden_questions,
         },
     )
 
@@ -268,7 +268,7 @@ def question_add(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"].strip()
-            existing = survey.questions.filter(text__iexact=text, deleted=False).first()
+            existing = survey.questions.filter(text__iexact=text, visible=True).first()
             if existing:
                 yes_count = existing.answers.filter(answer="yes").count()
                 no_count = existing.answers.filter(answer="no").count()
@@ -304,19 +304,13 @@ def question_add(request):
 
 
 @login_required
-def question_delete(request, pk):
-    question = get_object_or_404(Question, pk=pk, deleted=False)
+def question_hide(request, pk):
+    """Hide a question without deleting it."""
+    question = get_object_or_404(Question, pk=pk, visible=True)
     survey = question.survey
 
-    can_creator_delete = (
-        request.user == question.creator
-        and not question.answers.exclude(user=request.user).exists()
-    )
-
     if not (
-        request.user == survey.creator
-        or request.user.is_superuser
-        or can_creator_delete
+        request.user == survey.creator or request.user.is_superuser
     ):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
@@ -325,11 +319,11 @@ def question_delete(request, pk):
         messages.error(request, _("Cannot remove questions from a closed survey"))
         return redirect("survey:survey_detail")
 
-    question.deleted = True
+    question.visible = False
     question.save()
-    messages.success(request, _("Question removed"))
+    messages.success(request, _("Question hidden"))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        return JsonResponse({"deleted": True})
+        return JsonResponse({"hidden": True})
 
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
     if next_url:
@@ -341,8 +335,8 @@ def question_delete(request, pk):
 
 
 @login_required
-def question_restore(request, pk):
-    question = get_object_or_404(Question, pk=pk, deleted=True)
+def question_show(request, pk):
+    question = get_object_or_404(Question, pk=pk, visible=False)
     survey = question.survey
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _("No permission"))
@@ -350,21 +344,51 @@ def question_restore(request, pk):
     if survey.state == "closed":
         messages.error(request, _("Cannot restore questions in a closed survey"))
         return redirect("survey:survey_edit")
-    question.deleted = False
+    question.visible = True
     question.save()
-    messages.success(request, _("Question restored"))
+    messages.success(request, _("Question visible"))
     return redirect("survey:survey_edit")
 
 
 @login_required
+def question_delete(request, pk):
+    """Permanently delete a question if only the creator has answered."""
+    question = get_object_or_404(Question, pk=pk, visible=True)
+    survey = question.survey
+
+    if request.user != question.creator:
+        messages.error(request, _("No permission"))
+        return redirect("survey:survey_detail")
+
+    if question.answers.exclude(user=request.user).exists():
+        messages.error(request, _("No permission"))
+        return redirect("survey:survey_detail")
+
+    if survey.state == "closed":
+        messages.error(request, _("Cannot remove questions from a closed survey"))
+        return redirect("survey:survey_detail")
+
+    question.delete()
+    messages.success(request, _("Question removed"))
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse({"deleted": True})
+
+    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
+    if next_url:
+        return redirect(next_url)
+    return redirect("survey:survey_detail")
+
+
+@login_required
 def question_edit(request, pk):
-    question = get_object_or_404(Question, pk=pk, deleted=False)
+    question = get_object_or_404(Question, pk=pk, visible=True)
     survey = question.survey
 
     can_creator_edit = (
         request.user == question.creator
         and not question.answers.exclude(user=request.user).exists()
     )
+    can_delete_question = can_creator_edit
 
     if not (
         request.user == survey.creator or request.user.is_superuser or can_creator_edit
@@ -381,7 +405,7 @@ def question_edit(request, pk):
         if form.is_valid():
             text = form.cleaned_data["text"].strip()
             existing = (
-                survey.questions.filter(text__iexact=text, deleted=False)
+                survey.questions.filter(text__iexact=text, visible=True)
                 .exclude(pk=question.pk)
                 .first()
             )
@@ -417,7 +441,7 @@ def question_edit(request, pk):
     return render(
         request,
         "survey/question_form.html",
-        {"form": form, "survey": survey, "is_edit": True},
+        {"form": form, "survey": survey, "is_edit": True, "can_delete_question": can_delete_question},
     )
 
 
@@ -436,7 +460,7 @@ def answer_survey(request):
             Question,
             pk=form.data.get("question_id"),
             survey=survey,
-            deleted=False,
+            visible=True,
         )
         if form.is_valid():
             answer_value = form.cleaned_data["answer"]
@@ -456,7 +480,7 @@ def answer_survey(request):
             user=request.user,
             question__survey=survey,
         ).values_list("question_id", flat=True)
-        remaining = survey.questions.filter(deleted=False).exclude(
+        remaining = survey.questions.filter(visible=True).exclude(
             id__in=answered_questions
         )
         skip_id = request.GET.get("skip")
@@ -473,7 +497,7 @@ def answer_survey(request):
         user_answers = user_answers.exclude(question=question)
     question_stats = get_question_stats(question, request.user) if question else None
     max_total = (
-        survey.questions.filter(deleted=False)
+        survey.questions.filter(visible=True)
         .annotate(total=Count("answers"))
         .aggregate(max_total=Max("total"))
         .get("max_total")
@@ -505,7 +529,7 @@ def answer_question(request, pk):
     question = get_object_or_404(
         Question,
         pk=pk,
-        deleted=False,
+        visible=True,
         survey__deleted=False,
     )
     survey = question.survey
@@ -582,7 +606,7 @@ def answer_question(request, pk):
         user_answers = user_answers.exclude(question=question)
     question_stats = get_question_stats(question, request.user)
     max_total = (
-        survey.questions.filter(deleted=False)
+        survey.questions.filter(visible=True)
         .annotate(total=Count("answers"))
         .aggregate(max_total=Max("total"))
         .get("max_total")
@@ -619,7 +643,7 @@ def answer_question(request, pk):
 def userinfo(request):
     answers = Answer.objects.filter(
         user=request.user,
-        question__deleted=False,
+        question__visible=True,
         question__survey__deleted=False,
     )
 
@@ -628,7 +652,7 @@ def userinfo(request):
     questions_qs = (
         Question.objects.filter(
             creator=request.user,
-            deleted=False,
+            visible=True,
             survey__deleted=False,
         )
         .select_related("survey")
@@ -643,19 +667,25 @@ def userinfo(request):
 
     total_questions = Question.objects.filter(creator=request.user).count()
 
-    deletable_questions = []
+    hard_deletable_questions = []
     editable_questions = []
     for q in questions_qs:
         can_creator_modify = q.other_answers == 0
+        if (
+            q.creator == request.user
+            and can_creator_modify
+            and q.survey.state != "closed"
+        ):
+            hard_deletable_questions.append(q.pk)
+
         can_modify = (
             request.user == q.survey.creator
             or request.user.is_superuser
-            or can_creator_modify
+            or (q.creator == request.user and can_creator_modify)
         )
         if q.survey.state == "closed":
             can_modify = False
         if can_modify:
-            deletable_questions.append(q.pk)
             editable_questions.append(q.pk)
 
     return render(
@@ -664,7 +694,7 @@ def userinfo(request):
         {
             "answers": answers,
             "questions": questions_qs,
-            "deletable_questions": deletable_questions,
+            "hard_deletable_questions": hard_deletable_questions,
             "editable_questions": editable_questions,
             "total_answers": total_answers,
             "total_questions": total_questions,
@@ -700,7 +730,7 @@ def userinfo_download(request):
                 "text": q.text,
                 "survey": q.survey.title if q.survey else None,
                 "created_at": q.created_at.isoformat(),
-                "deleted": q.deleted,
+                "visible": q.visible,
             }
             for q in questions
         ],
@@ -750,7 +780,7 @@ def answer_edit(request, pk):
         pk=pk,
         user=request.user,
         question__survey__deleted=False,
-        question__deleted=False,
+        question__visible=True,
     )
     survey = answer.question.survey
     if survey.state != "running":
@@ -814,7 +844,7 @@ def answer_delete(request, pk):
             user=request.user,
             question__survey=survey,
         ).values_list("question_id", flat=True)
-        unanswered_count = survey.questions.filter(deleted=False).exclude(id__in=answered_ids).count()
+        unanswered_count = survey.questions.filter(visible=True).exclude(id__in=answered_ids).count()
 
         can_edit = (
             request.user == question.creator
@@ -854,7 +884,7 @@ def answer_delete(request, pk):
 
 def survey_answers(request):
     survey = Survey.get_main_survey()
-    questions = survey.questions.filter(deleted=False)
+    questions = survey.questions.filter(visible=True)
     data = []
     total_users = (
         Answer.objects.filter(question__survey=survey).values("user").distinct().count()
@@ -906,7 +936,7 @@ def survey_answers_wikitext(request):
         request.GET.get("include_personal") == "1" and request.user.is_authenticated
     )
 
-    questions = survey.questions.filter(deleted=False)
+    questions = survey.questions.filter(visible=True)
     data = []
     total_users = (
         Answer.objects.filter(question__survey=survey).values("user").distinct().count()
