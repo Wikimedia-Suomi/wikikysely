@@ -13,7 +13,10 @@
   <hr>
   <p>{% translate "Add any question related to the survey's topic, but phrase it so it can only be answered 'Yes' or 'No'. You may also add a statement, provided the respondent can similarly answer whether they agree or disagree - yes or no." %}</p>
   <p>{% translate "You can edit or delete the question you added as long as nobody has answered it." %}</p>
-  <p><a href="https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet" target="_blank">{% translate 'Read more instructions' %}</a></p>
+  {% get_current_language as LANGUAGE_CODE %}
+  <p>
+    <a href="{% if LANGUAGE_CODE == 'en' %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet/en{% elif LANGUAGE_CODE == 'sv' %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet/sv{% else %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet{% endif %}" target="_blank">{% translate 'Read more instructions' %}</a>
+  </p>
   {% endif %}
 </div>
 {% endblock %}
