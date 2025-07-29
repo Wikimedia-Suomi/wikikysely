@@ -109,7 +109,7 @@
               <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
             </div>
           </form>
-          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}">{% translate 'Remove answer' %}</a>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
           {% endif %}
         </td>
       </tr>

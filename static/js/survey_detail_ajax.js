@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ev.preventDefault();
       const unansweredHeader = document.getElementById('unanswered-header');
       const unansweredTable = document.getElementById('unanswered-table');
-      const reloadNeeded = !unansweredHeader || !unansweredTable;
+      const updateUnanswered = unansweredHeader && unansweredTable;
+      const noReload = link.dataset.noReload !== undefined;
       fetch(link.href, {
         method: 'POST',
         headers: {
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navCount && typeof data.unanswered_count !== 'undefined') {
           navCount.textContent = data.unanswered_count;
         }
-        if (!reloadNeeded) {
+        if (updateUnanswered) {
           const tbody = unansweredTable.tBodies[0];
           if (tbody) {
             const tr = document.createElement('tr');
@@ -127,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tbody.appendChild(tr);
           }
-        } else {
+        } else if (!noReload) {
           window.location.reload();
         }
       }).catch(() => window.location.reload());
