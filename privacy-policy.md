@@ -9,7 +9,7 @@ This prototype survey tool stores limited personal data to operate the https://w
 
 ## Survey data
 - Your submitted questions and answers are kept in the database. They may be shown with your username and included in aggregated statistics or data exports. 
-- Note: Currently username or answers are not visible to others. However, user can select the export which include answers by user. This may change in future.
+  - Note: Currently username or answers are not visible to others. However, user can select the export which include answers by user. This may change in future.
 - In Toolforge all data in database can be accessed by admin users in Wikikysely Toolforge project. Data is used for debugging and developing the app and are not shared.
 
 ## Cookies
