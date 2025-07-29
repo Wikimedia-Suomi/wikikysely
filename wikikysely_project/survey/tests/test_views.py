@@ -354,3 +354,30 @@ class SurveyFlowTests(TransactionTestCase):
         User = get_user_model()
         self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
         self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_user_data_delete_removes_answers_and_questions(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        q2 = self._create_question(survey)
+        other = self.users[1]
+        Answer.objects.create(question=q1, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=other, answer="yes")
+
+        response = self.client.post(reverse("survey:user_data_delete"))
+        self.assertRedirects(response, reverse("survey:userinfo"))
+        self.assertFalse(Answer.objects.filter(user=self.user).exists())
+        self.assertFalse(Question.objects.filter(pk=q1.pk).exists())
+        self.assertTrue(Question.objects.filter(pk=q2.pk).exists())
+        User = get_user_model()
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
+    def test_user_data_delete_removes_account_when_no_references(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+
+        response = self.client.post(reverse("survey:user_data_delete"))
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+        User = get_user_model()
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
