@@ -57,11 +57,16 @@
 <tbody>
 {% for answer in answers %}
   <tr>
-    <td>{{ answer.question.text }}</td>
+    <td>
+      {% if answer.question.survey.state == 'running' %}
+        <a href="{% url 'survey:answer_edit' answer.pk %}?next={{ request.get_full_path|urlencode }}">{{ answer.question.text }}</a>
+      {% else %}
+        {{ answer.question.text }}
+      {% endif %}
+    </td>
     <td>{{ answer.get_answer_display }}</td>
     <td class="text-end">
       {% if answer.question.survey.state == 'running' %}
-      <a href="{% url 'survey:answer_edit' answer.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
       <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
       {% endif %}
     </td>
