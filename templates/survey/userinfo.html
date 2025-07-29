@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ request.user.username }}{% endblock %}
 {% block content %}
-<h2>{% translate 'My questions' %}</h2>
+<h2>{% translate 'My data' %}</h2>
+<ul>
+  <li>{% translate 'Username' %}: {{ request.user.username }}</li>
+  <li>{% translate 'Date joined' %}: {{ request.user.date_joined|date:'Y-m-d' }}</li>
+  <li>{% blocktrans with n=total_questions %}{{ n }} questions{% endblocktrans %}</li>
+  <li>{% blocktrans with n=total_answers %}{{ n }} answers{% endblocktrans %}</li>
+</ul>
+<p>
+  <form method="post" action="{% url 'survey:user_data_delete' %}" class="d-inline" onsubmit="return confirm('{% translate 'This action cannot be undone. Delete your data?' %}');">
+    {% csrf_token %}
+    <a href="{% url 'survey:userinfo_download' %}" class="btn btn-primary">{% translate 'Download my data (JSON)' %}</a>
+    <button type="submit" class="btn btn-danger ms-2">{% translate 'Delete my data' %}</button>
+  </form>
+
+</p>
+
+<h2 class="mt-4">{% translate 'My questions' %}</h2>
 <table class="table mb-4">
   <thead>
     <tr>
@@ -18,7 +34,7 @@
         {% if question.pk in editable_questions %}
         <a href="{% url 'survey:question_edit' question.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
         {% endif %}
-        {% if question.pk in deletable_questions %}
+        {% if question.pk in hard_deletable_questions %}
         <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
         {% endif %}
       </td>
@@ -41,12 +57,17 @@
 <tbody>
 {% for answer in answers %}
   <tr>
-    <td>{{ answer.question.text }}</td>
+    <td>
+      {% if answer.question.survey.state == 'running' %}
+        <a href="{% url 'survey:answer_question' answer.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ answer.question.text }}</a>
+      {% else %}
+        {{ answer.question.text }}
+      {% endif %}
+    </td>
     <td>{{ answer.get_answer_display }}</td>
     <td class="text-end">
       {% if answer.question.survey.state == 'running' %}
-      <a href="{% url 'survey:answer_edit' answer.pk %}" class="btn btn-sm btn-warning">{% translate 'Edit' %}</a>
-      <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
       {% endif %}
     </td>
   </tr>
@@ -55,4 +76,8 @@
 {% endfor %}
 </tbody>
 </table>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/survey_detail_ajax.js' %}"></script>
 {% endblock %}

@@ -414,6 +414,68 @@ msgstr "Källkod"
 #: templates/base.html:74
 msgid "Privacy policy"
 msgstr "Integritetspolicy"
+#: templates/survey/userinfo.html:5
+msgid "My data"
+msgstr "Mina uppgifter"
+
+#: templates/survey/userinfo.html:7
+msgid "Username"
+msgstr "Anv\xC3\xA4ndarnamn"
+
+#: templates/survey/userinfo.html:8
+msgid "Date joined"
+msgstr "Registreringsdatum"
+
+#: templates/survey/userinfo.html:9
+#, python-format
+msgid "%(n)s questions"
+msgstr "%(n)s fr\xC3\xA5gor"
+
+#: templates/survey/userinfo.html:10
+#, python-format
+msgid "%(n)s answers"
+msgstr "%(n)s svar"
+
+#: templates/survey/userinfo.html:13
+msgid "This action cannot be undone. Delete your data?"
+msgstr "Detta g\xC3\xA5r inte att \xC3\xA5ngra. Ta bort dina uppgifter?"
+
+#: templates/survey/userinfo.html:15
+msgid "Download my data (JSON)"
+msgstr "Ladda ner mina uppgifter (JSON)"
+
+#: templates/survey/userinfo.html:16
+msgid "Delete my data"
+msgstr "Ta bort mina uppgifter"
+
+#: wikikysely_project/survey/views.py:782
+#, python-format
+msgid "Removed %(removed)d/%(total)d answer."
+msgid_plural "Removed %(removed)d/%(total)d answers."
+msgstr[0] "Tog bort %(removed)d/%(total)d svar."
+msgstr[1] "Tog bort %(removed)d/%(total)d svar."
+
+#: wikikysely_project/survey/views.py:784
+#, python-format
+msgid "Removed %(removed)d/%(total)d question."
+msgid_plural "Removed %(removed)d/%(total)d questions."
+msgstr[0] "Tog bort %(removed)d/%(total)d fråga."
+msgstr[1] "Tog bort %(removed)d/%(total)d frågor."
+
+#: wikikysely_project/survey/views.py:791
+#, python-format
+msgid "Could not remove %(count)d question because it already had answers."
+msgid_plural "Could not remove %(count)d questions because they already had answers."
+msgstr[0] "Kunde inte ta bort %(count)d fråga eftersom den redan hade svar."
+msgstr[1] "Kunde inte ta bort %(count)d frågor eftersom de redan hade svar."
+
+#: wikikysely_project/survey/views.py:799
+msgid "Account removed."
+msgstr "Konto borttaget."
+
+#: wikikysely_project/survey/views.py:809
+msgid "Account not removed because all your questions could not be deleted."
+msgstr "Konto togs inte bort eftersom alla dina frågor inte kunde tas bort."
 
 #~ msgid "Start date"
 #~ msgstr "Startdatum"

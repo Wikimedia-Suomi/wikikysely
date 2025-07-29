@@ -106,7 +106,7 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         data = {"text": "What do you think?"}
         response = self.client.post(reverse("survey:question_add"), data)
-        self.assertEqual(survey.questions.filter(deleted=False).count(), 1)
+        self.assertEqual(survey.questions.filter(visible=True).count(), 1)
         question = survey.questions.first()
         self.assertEqual(question.text, "What do you think?")
         self.assertRedirects(response, reverse("survey:survey_detail"))
@@ -116,18 +116,38 @@ class SurveyFlowTests(TransactionTestCase):
         question = self._create_question(survey)
         # delete
         response = self.client.post(
+            reverse("survey:question_hide", kwargs={"pk": question.pk})
+        )
+        question.refresh_from_db()
+        self.assertFalse(question.visible)
+        self.assertRedirects(response, reverse("survey:survey_edit"))
+
+        response = self.client.post(
+            reverse("survey:question_show", kwargs={"pk": question.pk})
+        )
+        question.refresh_from_db()
+        self.assertTrue(question.visible)
+        self.assertRedirects(response, reverse("survey:survey_edit"))
+
+    def test_hard_delete_question(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        response = self.client.post(
             reverse("survey:question_delete", kwargs={"pk": question.pk})
         )
-        question.refresh_from_db()
-        self.assertTrue(question.deleted)
-        self.assertRedirects(response, reverse("survey:survey_edit"))
-        # restore
+        self.assertFalse(Question.objects.filter(pk=question.pk).exists())
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+
+    def test_hard_delete_fails_with_other_answers(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        other = self.users[1]
+        Answer.objects.create(question=question, user=other, answer="yes")
         response = self.client.post(
-            reverse("survey:question_restore", kwargs={"pk": question.pk})
+            reverse("survey:question_delete", kwargs={"pk": question.pk})
         )
-        question.refresh_from_db()
-        self.assertFalse(question.deleted)
-        self.assertRedirects(response, reverse("survey:survey_edit"))
+        self.assertTrue(Question.objects.filter(pk=question.pk).exists())
+        self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_edit_question(self):
         survey = self._create_survey()
@@ -305,3 +325,55 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:survey_detail"))
         self.assertContains(response, "This survey is currently paused.")
+
+    def test_userinfo_download_returns_json(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+
+        response = self.client.get(reverse("survey:userinfo_download"))
+        self.assertEqual(response.status_code, 200)
+        cd_header = response["Content-Disposition"]
+        pattern = rf"attachment; filename={self.user.username}_\d{{14}}\.json"
+        self.assertRegex(cd_header, pattern)
+        data = json.loads(response.content.decode())
+        self.assertEqual(data["user"]["username"], self.user.username)
+        self.assertEqual(len(data["answers"]), 1)
+        self.assertEqual(len(data["questions"]), 1)
+
+
+    def test_user_data_delete_removes_answers_and_questions(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        q2 = self._create_question(survey)
+        other = self.users[1]
+        Answer.objects.create(question=q1, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=other, answer="yes")
+
+        response = self.client.post(reverse("survey:user_data_delete"), follow=True)
+        self.assertRedirects(response, reverse("survey:userinfo"))
+        self.assertFalse(Answer.objects.filter(user=self.user).exists())
+        self.assertFalse(Question.objects.filter(pk=q1.pk).exists())
+        self.assertTrue(Question.objects.filter(pk=q2.pk).exists())
+        User = get_user_model()
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+        self.assertContains(
+            response,
+            "Could not remove 1 question because it already had answers."
+        )
+        self.assertContains(
+            response,
+            "Account not removed because all your questions could not be deleted."
+        )
+
+    def test_user_data_delete_removes_account_when_no_references(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+
+        response = self.client.post(reverse("survey:user_data_delete"), follow=True)
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+        User = get_user_model()
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        self.assertContains(response, "Account removed.")

@@ -414,6 +414,68 @@ msgstr "Lähdekoodi"
 #: templates/base.html:74
 msgid "Privacy policy"
 msgstr "Tietosuojakäytäntö"
+#: templates/survey/userinfo.html:5
+msgid "My data"
+msgstr "Omat tiedot"
+
+#: templates/survey/userinfo.html:7
+msgid "Username"
+msgstr "K\xC3\xA4ytt\xC3\xA4j\xC3\xA4tunnus"
+
+#: templates/survey/userinfo.html:8
+msgid "Date joined"
+msgstr "Liittymisp\xC3\xA4iv\xC3\xA4"
+
+#: templates/survey/userinfo.html:9
+#, python-format
+msgid "%(n)s questions"
+msgstr "%(n)s kysymyst\xC3\xA4"
+
+#: templates/survey/userinfo.html:10
+#, python-format
+msgid "%(n)s answers"
+msgstr "%(n)s vastausta"
+
+#: templates/survey/userinfo.html:13
+msgid "This action cannot be undone. Delete your data?"
+msgstr "T\xC3\xA4t\xC3\xA4 toimintoa ei voi perua. Poista tietosi?"
+
+#: templates/survey/userinfo.html:15
+msgid "Download my data (JSON)"
+msgstr "Lataa tietoni (JSON)"
+
+#: templates/survey/userinfo.html:16
+msgid "Delete my data"
+msgstr "Poista tietoni"
+
+#: wikikysely_project/survey/views.py:782
+#, python-format
+msgid "Removed %(removed)d/%(total)d answer."
+msgid_plural "Removed %(removed)d/%(total)d answers."
+msgstr[0] "Poistettu %(removed)d/%(total)d vastaus."
+msgstr[1] "Poistettu %(removed)d/%(total)d vastausta."
+
+#: wikikysely_project/survey/views.py:784
+#, python-format
+msgid "Removed %(removed)d/%(total)d question."
+msgid_plural "Removed %(removed)d/%(total)d questions."
+msgstr[0] "Poistettu %(removed)d/%(total)d kysymys."
+msgstr[1] "Poistettu %(removed)d/%(total)d kysymystä."
+
+#: wikikysely_project/survey/views.py:791
+#, python-format
+msgid "Could not remove %(count)d question because it already had answers."
+msgid_plural "Could not remove %(count)d questions because they already had answers."
+msgstr[0] "Ei voitu poistaa %(count)d kysymystä, koska siihen oli jo vastauksia."
+msgstr[1] "Ei voitu poistaa %(count)d kysymystä, koska niihin oli jo vastauksia."
+
+#: wikikysely_project/survey/views.py:799
+msgid "Account removed."
+msgstr "Tili poistettu."
+
+#: wikikysely_project/survey/views.py:809
+msgid "Account not removed because all your questions could not be deleted."
+msgstr "Tiliä ei poistettu, koska kaikkia kysymyksiäsi ei voitu poistaa."
 
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
