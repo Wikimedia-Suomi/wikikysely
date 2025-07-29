@@ -321,9 +321,9 @@ def question_hide(request, pk):
 
     question.visible = False
     question.save()
-    messages.success(request, _("Question hidden"))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return JsonResponse({"hidden": True})
+    messages.success(request, _("Question hidden"))
 
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
     if next_url:
@@ -369,9 +369,9 @@ def question_delete(request, pk):
         return redirect("survey:survey_detail")
 
     question.delete()
-    messages.success(request, _("Question removed"))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return JsonResponse({"deleted": True})
+    messages.success(request, _("Question removed"))
 
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
     if next_url:
@@ -798,7 +798,6 @@ def answer_edit(request, pk):
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():
             form.save()
-            messages.success(request, _("Answer updated"))
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 question = answer.question
                 yes_count = question.answers.filter(answer="yes").count()
@@ -813,6 +812,7 @@ def answer_edit(request, pk):
                         "agree_ratio": ratio,
                     }
                 )
+            messages.success(request, _("Answer updated"))
             return redirect("survey:survey_detail")
     else:
         form = AnswerForm(instance=answer, initial={"question_id": answer.question_id})
@@ -839,7 +839,6 @@ def answer_delete(request, pk):
         return redirect("survey:survey_detail")
     question = answer.question
     answer.delete()
-    messages.success(request, _("Answer removed"))
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         yes_count = question.answers.filter(answer="yes").count()
         no_count = question.answers.filter(answer="no").count()
@@ -881,6 +880,7 @@ def answer_delete(request, pk):
                 "agree_label": gettext("Agree"),
             }
         )
+    messages.success(request, _("Answer removed"))
 
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
     if next_url:
