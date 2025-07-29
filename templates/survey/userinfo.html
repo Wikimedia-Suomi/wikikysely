@@ -37,7 +37,7 @@
         {% if question.pk in editable_questions %}
         <a href="{% url 'survey:question_edit' question.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
         {% endif %}
-        {% if question.pk in deletable_questions %}
+        {% if question.pk in hard_deletable_questions %}
         <a href="{% url 'survey:question_delete' question.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove question' %}</a>
         {% endif %}
       </td>
