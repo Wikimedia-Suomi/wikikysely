@@ -1,7 +1,7 @@
 import random
 from django.contrib import messages
 from django.urls import reverse
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -623,6 +623,8 @@ def userinfo(request):
         question__survey__deleted=False,
     )
 
+    total_answers = Answer.objects.filter(user=request.user).count()
+
     questions_qs = (
         Question.objects.filter(
             creator=request.user,
@@ -638,6 +640,8 @@ def userinfo(request):
             )
         )
     )
+
+    total_questions = Question.objects.filter(creator=request.user).count()
 
     deletable_questions = []
     editable_questions = []
@@ -662,8 +666,81 @@ def userinfo(request):
             "questions": questions_qs,
             "deletable_questions": deletable_questions,
             "editable_questions": editable_questions,
+            "total_answers": total_answers,
+            "total_questions": total_questions,
+            "can_delete_account": total_answers == 0 and total_questions == 0,
         },
     )
+
+
+@login_required
+def userinfo_download(request):
+    """Return all data stored about the current user as JSON."""
+    user = request.user
+    answers = (
+        Answer.objects.filter(user=user)
+        .select_related("question")
+        .order_by("created_at")
+    )
+    questions = (
+        Question.objects.filter(creator=user)
+        .select_related("survey")
+        .order_by("created_at")
+    )
+
+    data = {
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "date_joined": user.date_joined.isoformat(),
+        },
+        "questions": [
+            {
+                "id": q.id,
+                "text": q.text,
+                "survey": q.survey.title if q.survey else None,
+                "created_at": q.created_at.isoformat(),
+                "deleted": q.deleted,
+            }
+            for q in questions
+        ],
+        "answers": [
+            {
+                "id": a.id,
+                "question_id": a.question_id,
+                "question": a.question.text,
+                "answer": a.answer,
+                "created_at": a.created_at.isoformat(),
+            }
+            for a in answers
+        ],
+    }
+    response = JsonResponse(data, json_dumps_params={"indent": 2, "ensure_ascii": False})
+    response["Content-Disposition"] = "attachment; filename=userinfo.json"
+    return response
+
+
+@login_required
+def user_delete(request):
+    """Delete the current user account if no references exist."""
+    if request.method != "POST":
+        return redirect("survey:userinfo")
+
+    user = request.user
+    has_answers = Answer.objects.filter(user=user).exists()
+    has_questions = Question.objects.filter(creator=user).exists()
+
+    if has_answers or has_questions:
+        messages.error(
+            request,
+            _("Account cannot be removed while there are answers or questions referencing it."),
+        )
+        return redirect("survey:userinfo")
+
+    logout(request)
+    user.delete()
+    messages.success(request, _("Account removed"))
+    return redirect("survey:survey_detail")
 
 
 @login_required

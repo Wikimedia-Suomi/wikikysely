@@ -16,6 +16,8 @@ urlpatterns = [
     path("answer/<int:pk>/edit/", views.answer_edit, name="answer_edit"),
     path("answer/<int:pk>/delete/", views.answer_delete, name="answer_delete"),
     path("my_answers/", views.userinfo, name="userinfo"),
+    path("my_answers/download/", views.userinfo_download, name="userinfo_download"),
+    path("my_answers/delete_account/", views.user_delete, name="user_delete"),
     path("answers/", views.survey_answers, name="survey_answers"),
     path(
         "answers/wikitext/",
