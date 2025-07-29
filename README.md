@@ -21,36 +21,38 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    cd wikikysely
    python3 -m venv venv
    ```
-3. OPTIONAL: Add local secrets to venv/bin/activate. This is not required for local development.
+3. OPTIONAL: Add local secrets to venv/bin/activate.
+  
+   This is not required for local development. See [Wikimedia Oauth consumer registration](https://wikitech.wikimedia.org/wiki/Help:Toolforge/My_first_Django_OAuth_tool#Oauth_consumer_registration_(Wikimedia)) for more info. 
    ```bash
    export django_secret="very-secret-key"
    export mediawiki_key="very-secret-mediawiki-key"
    export mediawiki_secret="very-secret-mediawiki-secret"
    export mediawiki_callback="http://127.0.0.1:8080/oauth/complete/mediawiki/"
    ```
-5. Initialize virtualenv 
+6. Initialize virtualenv 
    ```bash
    source venv/bin/activate
    ```
-6. Install dependencies (requires internet access):
+7. Install dependencies (requires internet access):
    ```bash
    pip install -r requirements.txt
    ```
-7. Apply migrations:
+8. Apply migrations:
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
    The initial migration automatically creates a default survey.
-8. Create a superuser:
+9. Create a superuser:
    ```bash
    python manage.py createsuperuser
    ```
-9. Compile translation messages:
+10. Compile translation messages:
    ```bash
    python manage.py compilemessages
    ```
-10. Run the development server:
+11. Run the development server:
    ```bash
    python manage.py runserver
    ```
