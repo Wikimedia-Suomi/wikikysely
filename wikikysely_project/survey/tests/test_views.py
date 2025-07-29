@@ -355,8 +355,14 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertTrue(Question.objects.filter(pk=q2.pk).exists())
         User = get_user_model()
         self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
-        self.assertContains(response, "Could not remove 1 questions")
-        self.assertContains(response, "Account not removed")
+        self.assertContains(
+            response,
+            "Could not remove 1 questions because they already had answers."
+        )
+        self.assertContains(
+            response,
+            "Account not removed because all your questions could not be deleted."
+        )
 
     def test_user_data_delete_removes_account_when_no_references(self):
         survey = self._create_survey()
@@ -367,4 +373,4 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertRedirects(response, reverse("survey:survey_detail"))
         User = get_user_model()
         self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
-        self.assertContains(response, "Account removed")
+        self.assertContains(response, "Account removed.")

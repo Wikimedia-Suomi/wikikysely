@@ -761,6 +761,7 @@ def user_data_delete(request):
     answers_qs = Answer.objects.filter(user=user)
     removed_answers = answers_qs.count()
     answers_qs.delete()
+    total_answers = removed_answers
 
     removed_questions = 0
     kept_questions = 0
@@ -772,25 +773,30 @@ def user_data_delete(request):
             removed_questions += 1
         else:
             kept_questions += 1
+    total_questions = removed_questions + kept_questions
 
     # If nothing references the user anymore, remove the account
     has_questions = Question.objects.filter(creator=user).exists()
 
     lines = [
-        _("Removed %(count)d answers") % {"count": removed_answers},
-        _("Removed %(count)d questions") % {"count": removed_questions},
+        _("Removed %(removed)d/%(total)d answers.")
+        % {"removed": removed_answers, "total": total_answers},
+        _("Removed %(removed)d/%(total)d questions.")
+        % {"removed": removed_questions, "total": total_questions},
     ]
 
     if kept_questions:
         lines.append(
-            _("Could not remove %(count)d questions because they already had answers")
+            _(
+                "Could not remove %(count)d questions because they already had answers."
+            )
             % {"count": kept_questions}
         )
 
     if not has_questions:
         logout(request)
         user.delete()
-        lines.append(_("Account removed"))
+        lines.append(_("Account removed."))
         message = format_html(
             "<ul>{}</ul>",
             format_html_join("", "<li>{}</li>", ((line,) for line in lines)),
@@ -800,7 +806,7 @@ def user_data_delete(request):
 
     lines.append(
         _(
-            "Account not removed because your questions could not be deleted"
+            "Account not removed because all your questions could not be deleted."
         )
     )
 
