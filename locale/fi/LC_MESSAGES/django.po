@@ -414,6 +414,39 @@ msgstr "Lähdekoodi"
 #: templates/base.html:74
 msgid "Privacy policy"
 msgstr "Tietosuojakäytäntö"
+#: templates/survey/userinfo.html:5
+msgid "My data"
+msgstr "Omat tiedot"
+
+#: templates/survey/userinfo.html:7
+msgid "Username"
+msgstr "K\xC3\xA4ytt\xC3\xA4j\xC3\xA4tunnus"
+
+#: templates/survey/userinfo.html:8
+msgid "Date joined"
+msgstr "Liittymisp\xC3\xA4iv\xC3\xA4"
+
+#: templates/survey/userinfo.html:9
+#, python-format
+msgid "%(n)s questions"
+msgstr "%(n)s kysymyst\xC3\xA4"
+
+#: templates/survey/userinfo.html:10
+#, python-format
+msgid "%(n)s answers"
+msgstr "%(n)s vastausta"
+
+#: templates/survey/userinfo.html:13
+msgid "This action cannot be undone. Delete your data?"
+msgstr "T\xC3\xA4t\xC3\xA4 toimintoa ei voi perua. Poista tietosi?"
+
+#: templates/survey/userinfo.html:15
+msgid "Download my data (JSON)"
+msgstr "Lataa tietoni (JSON)"
+
+#: templates/survey/userinfo.html:16
+msgid "Delete my data"
+msgstr "Poista tietoni"
 
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
