@@ -15,15 +15,8 @@
     {% csrf_token %}
     <button type="submit" class="btn btn-warning ms-2">{% translate 'Delete my data' %}</button>
   </form>
+
 </p>
-{% if can_delete_account %}
-<form method="post" action="{% url 'survey:user_delete' %}" onsubmit="return confirm('{% translate 'This action cannot be undone. Delete your account?' %}');">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-danger">{% translate 'Delete my account' %}</button>
-</form>
-{% else %}
-<p class="text-muted">{% translate 'You must remove your questions and answers before deleting your account.' %}</p>
-{% endif %}
 
 <h2 class="mt-4">{% translate 'My questions' %}</h2>
 <table class="table mb-4">
