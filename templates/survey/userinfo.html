@@ -2,7 +2,26 @@
 {% load i18n %}
 {% block title %}{{ request.user.username }}{% endblock %}
 {% block content %}
-<h2>{% translate 'My questions' %}</h2>
+<h2>{% translate 'My data' %}</h2>
+<ul>
+  <li>{% translate 'Username' %}: {{ request.user.username }}</li>
+  <li>{% translate 'Date joined' %}: {{ request.user.date_joined|date:'Y-m-d' }}</li>
+  <li>{% blocktrans with n=total_questions %}{{ n }} questions{% endblocktrans %}</li>
+  <li>{% blocktrans with n=total_answers %}{{ n }} answers{% endblocktrans %}</li>
+</ul>
+<p>
+  <a href="{% url 'survey:userinfo_download' %}" class="btn btn-primary">{% translate 'Download my data (JSON)' %}</a>
+</p>
+{% if can_delete_account %}
+<form method="post" action="{% url 'survey:user_delete' %}" onsubmit="return confirm('{% translate 'This action cannot be undone. Delete your account?' %}');">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">{% translate 'Delete my account' %}</button>
+</form>
+{% else %}
+<p class="text-muted">{% translate 'You must remove your questions and answers before deleting your account.' %}</p>
+{% endif %}
+
+<h2 class="mt-4">{% translate 'My questions' %}</h2>
 <table class="table mb-4">
   <thead>
     <tr>
