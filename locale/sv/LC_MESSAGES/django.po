@@ -403,6 +403,18 @@ msgstr "Svarsfördelning"
 msgid "Answers over time"
 msgstr "Antal svar över tid"
 
+#: templates/base.html:72
+msgid "Project page"
+msgstr "Projectsida"
+
+#: templates/base.html:73
+msgid "Source code"
+msgstr "Källkod"
+
+#: templates/base.html:74
+msgid "Privacy policy"
+msgstr "Integritetspolicy"
+
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 

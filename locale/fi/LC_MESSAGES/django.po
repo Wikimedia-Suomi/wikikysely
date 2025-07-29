@@ -403,6 +403,18 @@ msgstr "Vastausjakauma"
 msgid "Answers over time"
 msgstr "Vastausten määrä ajan kuluessa"
 
+#: templates/base.html:72
+msgid "Project page"
+msgstr "Projektisivu"
+
+#: templates/base.html:73
+msgid "Source code"
+msgstr "Lähdekoodi"
+
+#: templates/base.html:74
+msgid "Privacy policy"
+msgstr "Tietosuojakäytäntö"
+
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 
