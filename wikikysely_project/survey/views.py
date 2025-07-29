@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext
-from django.utils.html import format_html
+from django.utils.html import format_html, format_html_join
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
 from django.db.models.functions import NullIf, TruncDate, Greatest
 from django.http import JsonResponse
@@ -758,24 +758,57 @@ def user_data_delete(request):
     user = request.user
 
     # Delete all answers by the user
-    Answer.objects.filter(user=user).delete()
+    answers_qs = Answer.objects.filter(user=user)
+    removed_answers = answers_qs.count()
+    answers_qs.delete()
+
+    removed_questions = 0
+    kept_questions = 0
 
     # Delete visible questions created by the user that no longer have answers
     for q in Question.objects.filter(creator=user, visible=True):
         if not q.answers.exclude(user=user).exists():
             q.delete()
+            removed_questions += 1
+        else:
+            kept_questions += 1
 
     # If nothing references the user anymore, remove the account
-    has_answers = Answer.objects.filter(user=user).exists()
     has_questions = Question.objects.filter(creator=user).exists()
 
-    if not has_answers and not has_questions:
+    lines = [
+        _("Removed %(count)d answers") % {"count": removed_answers},
+        _("Removed %(count)d questions") % {"count": removed_questions},
+    ]
+
+    if kept_questions:
+        lines.append(
+            _("Could not remove %(count)d questions because they already had answers")
+            % {"count": kept_questions}
+        )
+
+    if not has_questions:
         logout(request)
         user.delete()
-        messages.success(request, _("Account removed"))
+        lines.append(_("Account removed"))
+        message = format_html(
+            "<ul>{}</ul>",
+            format_html_join("", "<li>{}</li>", ((line,) for line in lines)),
+        )
+        messages.success(request, message)
         return redirect("survey:survey_detail")
 
-    messages.success(request, _("Data removed"))
+    lines.append(
+        _(
+            "Account not removed because your questions could not be deleted"
+        )
+    )
+
+    message = format_html(
+        "<ul>{}</ul>",
+        format_html_join("", "<li>{}</li>", ((line,) for line in lines)),
+    )
+    messages.success(request, message)
     return redirect("survey:userinfo")
 
 
