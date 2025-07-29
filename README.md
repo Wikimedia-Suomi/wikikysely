@@ -41,6 +41,7 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    python manage.py makemigrations
    python manage.py migrate
    ```
+   The initial migration automatically creates a default survey.
 8. Create a superuser:
    ```bash
    python manage.py createsuperuser
