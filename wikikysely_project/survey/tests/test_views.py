@@ -220,7 +220,7 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer="yes")
-        response = self.client.get(reverse("survey:survey_results"))
+        response = self.client.get(reverse("survey:survey_answers"))
         self.assertEqual(response.status_code, 200)
         data = response.context["data"][0]
         self.assertEqual(data["yes"], 1)
@@ -246,7 +246,7 @@ class SurveyFlowTests(TransactionTestCase):
         Answer.objects.create(question=question, user=extra_users[2], answer="no")
         Answer.objects.create(question=question, user=extra_users[3], answer="no")
 
-        response = self.client.get(reverse("survey:survey_results"))
+        response = self.client.get(reverse("survey:survey_answers"))
         data = response.context["data"][0]
         self.assertEqual(data["agree_ratio"], 20.0)
 
@@ -254,18 +254,18 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer="yes")
-        response = self.client.get(reverse("survey:survey_results"))
+        response = self.client.get(reverse("survey:survey_answers"))
         self.assertContains(
             response,
             "<td>Yes</td>",
             html=True,
         )
 
-    def test_results_wikitext_contains_json(self):
+    def test_answers_wikitext_contains_json(self):
         survey = self._create_survey()
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer="yes")
-        response = self.client.get(reverse("survey:results_wikitext"))
+        response = self.client.get(reverse("survey:survey_answers_wikitext"))
         self.assertEqual(response.status_code, 200)
         json_text = response.context["json_text"]
         data = json.loads(json_text)

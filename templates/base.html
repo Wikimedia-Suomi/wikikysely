@@ -18,8 +18,8 @@
     <div class="collapse navbar-collapse">
       {% url 'survey:survey_detail' as survey_detail_url %}
       {% url 'survey:answer_survey' as answer_survey_url %}
-      {% url 'survey:survey_results' as survey_results_url %}
-      {% url 'survey:answer_list' as answer_list_url %}
+      {% url 'survey:survey_answers' as survey_answers_url %}
+      {% url 'survey:userinfo' as userinfo_url %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
         {% if unanswered_count %}
@@ -27,7 +27,7 @@
         {% else %}
         <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %} (<span id="unanswered-count">0</span>)</span></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link{% if request.path == survey_results_url %} active{% endif %}" href="{{ survey_results_url }}">{% translate 'Answers' %}</a></li>
+        <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
       </ul>
       <ul id="userbar" class="navbar-nav ms-auto">
       <li class="nav-item">
@@ -44,7 +44,7 @@
       </form>
       </li>
         {% if request.user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link ms-3{% if request.path == answer_list_url %} active{% endif %}" href="{{ answer_list_url }}">{{ request.user.username }}</a></li>
+          <li class="nav-item"><a class="nav-link ms-3{% if request.path == userinfo_url %} active{% endif %}" href="{{ userinfo_url }}">{{ request.user.username }}</a></li>
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
       {% else %}
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a></li>
