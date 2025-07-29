@@ -10,10 +10,10 @@
   <li>{% blocktrans with n=total_answers %}{{ n }} answers{% endblocktrans %}</li>
 </ul>
 <p>
-  <a href="{% url 'survey:userinfo_download' %}" class="btn btn-primary">{% translate 'Download my data (JSON)' %}</a>
   <form method="post" action="{% url 'survey:user_data_delete' %}" class="d-inline" onsubmit="return confirm('{% translate 'This action cannot be undone. Delete your data?' %}');">
     {% csrf_token %}
-    <button type="submit" class="btn btn-warning ms-2">{% translate 'Delete my data' %}</button>
+    <a href="{% url 'survey:userinfo_download' %}" class="btn btn-primary">{% translate 'Download my data (JSON)' %}</a>
+    <button type="submit" class="btn btn-danger ms-2">{% translate 'Delete my data' %}</button>
   </form>
 
 </p>
