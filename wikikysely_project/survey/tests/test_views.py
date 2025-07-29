@@ -338,22 +338,6 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(len(data["answers"]), 1)
         self.assertEqual(len(data["questions"]), 1)
 
-    def test_user_delete_requires_no_references(self):
-        survey = self._create_survey()
-        q = self._create_question(survey)
-        Answer.objects.create(question=q, user=self.user, answer="yes")
-
-        response = self.client.post(reverse("survey:user_delete"))
-        self.assertEqual(response.status_code, 302)
-        User = get_user_model()
-        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
-
-    def test_user_delete_success(self):
-        response = self.client.post(reverse("survey:user_delete"))
-        self.assertRedirects(response, reverse("survey:survey_detail"))
-        User = get_user_model()
-        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
-        self.assertNotIn("_auth_user_id", self.client.session)
 
     def test_user_data_delete_removes_answers_and_questions(self):
         survey = self._create_survey()

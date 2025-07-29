@@ -698,7 +698,6 @@ def userinfo(request):
             "editable_questions": editable_questions,
             "total_answers": total_answers,
             "total_questions": total_questions,
-            "can_delete_account": total_answers == 0 and total_questions == 0,
         },
     )
 
@@ -778,29 +777,6 @@ def user_data_delete(request):
 
     messages.success(request, _("Data removed"))
     return redirect("survey:userinfo")
-
-
-@login_required
-def user_delete(request):
-    """Delete the current user account if no references exist."""
-    if request.method != "POST":
-        return redirect("survey:userinfo")
-
-    user = request.user
-    has_answers = Answer.objects.filter(user=user).exists()
-    has_questions = Question.objects.filter(creator=user).exists()
-
-    if has_answers or has_questions:
-        messages.error(
-            request,
-            _("Account cannot be removed while there are answers or questions referencing it."),
-        )
-        return redirect("survey:userinfo")
-
-    logout(request)
-    user.delete()
-    messages.success(request, _("Account removed"))
-    return redirect("survey:survey_detail")
 
 
 @login_required
