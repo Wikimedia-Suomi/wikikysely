@@ -2,8 +2,6 @@
 {% load i18n %}
 {% block title %}{{ request.user.username }}{% endblock %}
 {% block content %}
-<h1>{{ request.user.username }}</h1>
-
 <h2>{% translate 'My questions' %}</h2>
 <table class="table mb-4">
   <thead>
