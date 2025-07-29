@@ -59,7 +59,7 @@
   <tr>
     <td>
       {% if answer.question.survey.state == 'running' %}
-        <a href="{% url 'survey:answer_edit' answer.pk %}?next={{ request.get_full_path|urlencode }}">{{ answer.question.text }}</a>
+        <a href="{% url 'survey:answer_question' answer.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ answer.question.text }}</a>
       {% else %}
         {{ answer.question.text }}
       {% endif %}

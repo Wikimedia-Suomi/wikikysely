@@ -76,6 +76,7 @@
   </table>
   </div>
 {% endif %}
+{% if user_answers %}
   <h2 class="mt-4">
     <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
@@ -117,6 +118,7 @@
     </tbody>
   </table>
   </div>
+{% endif %}
 {% endif %}
 {% endblock %}
 
