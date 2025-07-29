@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _, gettext
+from django.utils.translation import gettext_lazy as _, gettext, ngettext
 from django.utils.html import format_html, format_html_join
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max
 from django.db.models.functions import NullIf, TruncDate, Greatest
@@ -779,16 +779,26 @@ def user_data_delete(request):
     has_questions = Question.objects.filter(creator=user).exists()
 
     lines = [
-        _("Removed %(removed)d/%(total)d answers.")
+        ngettext(
+            "Removed %(removed)d/%(total)d answer.",
+            "Removed %(removed)d/%(total)d answers.",
+            total_answers,
+        )
         % {"removed": removed_answers, "total": total_answers},
-        _("Removed %(removed)d/%(total)d questions.")
+        ngettext(
+            "Removed %(removed)d/%(total)d question.",
+            "Removed %(removed)d/%(total)d questions.",
+            total_questions,
+        )
         % {"removed": removed_questions, "total": total_questions},
     ]
 
     if kept_questions:
         lines.append(
-            _(
-                "Could not remove %(count)d questions because they already had answers."
+            ngettext(
+                "Could not remove %(count)d question because it already had answers.",
+                "Could not remove %(count)d questions because they already had answers.",
+                kept_questions,
             )
             % {"count": kept_questions}
         )

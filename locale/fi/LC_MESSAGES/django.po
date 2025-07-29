@@ -450,18 +450,24 @@ msgstr "Poista tietoni"
 
 #: wikikysely_project/survey/views.py:782
 #, python-format
-msgid "Removed %(removed)d/%(total)d answers."
-msgstr "Poistettu %(removed)d/%(total)d vastausta."
+msgid "Removed %(removed)d/%(total)d answer."
+msgid_plural "Removed %(removed)d/%(total)d answers."
+msgstr[0] "Poistettu %(removed)d/%(total)d vastaus."
+msgstr[1] "Poistettu %(removed)d/%(total)d vastausta."
 
 #: wikikysely_project/survey/views.py:784
 #, python-format
-msgid "Removed %(removed)d/%(total)d questions."
-msgstr "Poistettu %(removed)d/%(total)d kysymystä."
+msgid "Removed %(removed)d/%(total)d question."
+msgid_plural "Removed %(removed)d/%(total)d questions."
+msgstr[0] "Poistettu %(removed)d/%(total)d kysymys."
+msgstr[1] "Poistettu %(removed)d/%(total)d kysymystä."
 
 #: wikikysely_project/survey/views.py:791
 #, python-format
-msgid "Could not remove %(count)d questions because they already had answers."
-msgstr "Ei voitu poistaa %(count)d kysymystä, koska niihin oli jo vastauksia."
+msgid "Could not remove %(count)d question because it already had answers."
+msgid_plural "Could not remove %(count)d questions because they already had answers."
+msgstr[0] "Ei voitu poistaa %(count)d kysymystä, koska siihen oli jo vastauksia."
+msgstr[1] "Ei voitu poistaa %(count)d kysymystä, koska niihin oli jo vastauksia."
 
 #: wikikysely_project/survey/views.py:799
 msgid "Account removed."
