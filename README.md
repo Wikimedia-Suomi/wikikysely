@@ -71,3 +71,18 @@ python manage.py test -v 2
 ```
 
 The command will create a temporary database and execute the test suite.
+
+## Resetting the local environment
+
+To return the repository to a clean state, remove the local SQLite database,
+generated migrations and cached Python files. The commands below perform a
+complete reset:
+
+   ```bash
+   rm db.sqlite3
+   rm  wikikysely_project/survey/migrations/00*.py
+   find ./wikikysely_project -name "*.pyc" -delete 
+   ```
+
+
+
