@@ -448,6 +448,29 @@ msgstr "Lataa tietoni (JSON)"
 msgid "Delete my data"
 msgstr "Poista tietoni"
 
+#: wikikysely_project/survey/views.py:782
+#, python-format
+msgid "Removed %(removed)d/%(total)d answers."
+msgstr "Poistettu %(removed)d/%(total)d vastausta."
+
+#: wikikysely_project/survey/views.py:784
+#, python-format
+msgid "Removed %(removed)d/%(total)d questions."
+msgstr "Poistettu %(removed)d/%(total)d kysymystä."
+
+#: wikikysely_project/survey/views.py:791
+#, python-format
+msgid "Could not remove %(count)d questions because they already had answers."
+msgstr "Ei voitu poistaa %(count)d kysymystä, koska niihin oli jo vastauksia."
+
+#: wikikysely_project/survey/views.py:799
+msgid "Account removed."
+msgstr "Tili poistettu."
+
+#: wikikysely_project/survey/views.py:809
+msgid "Account not removed because all your questions could not be deleted."
+msgstr "Tiliä ei poistettu, koska kaikkia kysymyksiäsi ei voitu poistaa."
+
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 
