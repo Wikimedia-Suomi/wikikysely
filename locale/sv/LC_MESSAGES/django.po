@@ -448,6 +448,29 @@ msgstr "Ladda ner mina uppgifter (JSON)"
 msgid "Delete my data"
 msgstr "Ta bort mina uppgifter"
 
+#: wikikysely_project/survey/views.py:782
+#, python-format
+msgid "Removed %(removed)d/%(total)d answers."
+msgstr "Tog bort %(removed)d/%(total)d svar."
+
+#: wikikysely_project/survey/views.py:784
+#, python-format
+msgid "Removed %(removed)d/%(total)d questions."
+msgstr "Tog bort %(removed)d/%(total)d frågor."
+
+#: wikikysely_project/survey/views.py:791
+#, python-format
+msgid "Could not remove %(count)d questions because they already had answers."
+msgstr "Kunde inte ta bort %(count)d frågor eftersom de redan hade svar."
+
+#: wikikysely_project/survey/views.py:799
+msgid "Account removed."
+msgstr "Konto borttaget."
+
+#: wikikysely_project/survey/views.py:809
+msgid "Account not removed because all your questions could not be deleted."
+msgstr "Konto togs inte bort eftersom alla dina frågor inte kunde tas bort."
+
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 
