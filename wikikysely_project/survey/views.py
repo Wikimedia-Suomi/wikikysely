@@ -744,8 +744,13 @@ def userinfo_download(request):
             for a in answers
         ],
     }
-    response = JsonResponse(data, json_dumps_params={"indent": 2, "ensure_ascii": False})
-    response["Content-Disposition"] = "attachment; filename=userinfo.json"
+    response = JsonResponse(
+        data,
+        json_dumps_params={"indent": 2, "ensure_ascii": False},
+    )
+    timestamp = timezone.now().strftime("%Y%m%d%H%M%S")
+    filename = f"{user.username}_{timestamp}.json"
+    response["Content-Disposition"] = f"attachment; filename={filename}"
     return response
 
 

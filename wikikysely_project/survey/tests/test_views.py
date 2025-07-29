@@ -333,6 +333,9 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:userinfo_download"))
         self.assertEqual(response.status_code, 200)
+        cd_header = response["Content-Disposition"]
+        pattern = rf"attachment; filename={self.user.username}_\d{{14}}\.json"
+        self.assertRegex(cd_header, pattern)
         data = json.loads(response.content.decode())
         self.assertEqual(data["user"]["username"], self.user.username)
         self.assertEqual(len(data["answers"]), 1)
