@@ -3,11 +3,11 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('django_secret')
+SECRET_KEY = os.environ.get('DJANGO_SECRET')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wikikysely.toolforge.org']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,7 +80,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # Use a separate collection directory for production builds
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static'
 # Allow the development server to find project level static assets
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
@@ -107,6 +107,6 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_MEDIAWIKI_URL = 'https://meta.wikimedia.org/w/index.php'
 SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['groups']
 
-SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('mediawiki_key')
-SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('mediawiki_secret')
-SOCIAL_AUTH_MEDIAWIKI_CALLBACK = os.environ.get('mediawiki_callback')
+SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('MEDIAWIKI_KEY')
+SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('MEDIAWIKI_SECRET')
+SOCIAL_AUTH_MEDIAWIKI_CALLBACK = os.environ.get('MEDIAWIKI_CALLBACK')
