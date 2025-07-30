@@ -25,7 +25,7 @@ class Survey(models.Model):
                 title=_('Main Survey'),
                 description='',
                 creator=None,
-                state='paused',
+                state='running',
             )
         return survey
 
