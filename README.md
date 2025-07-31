@@ -25,10 +25,11 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
   
    This is not required for local development. See [Wikimedia Oauth consumer registration](https://wikitech.wikimedia.org/wiki/Help:Toolforge/My_first_Django_OAuth_tool#Oauth_consumer_registration_(Wikimedia)) for more info. 
    ```bash
-   export django_secret="very-secret-key"
-   export mediawiki_key="very-secret-mediawiki-key"
-   export mediawiki_secret="very-secret-mediawiki-secret"
-   export mediawiki_callback="http://127.0.0.1:8080/oauth/complete/mediawiki/"
+   export DJANGO_SECRET="very-secret-key"
+   export MEDIAWIKI_KEY="very-secret-mediawiki-key"
+   export MEDIAWIKI_SECRET="very-secret-mediawiki-secret"
+   export MEDIAWIKI_CALLBACK="http://127.0.0.1:8080/oauth/complete/mediawiki/"
+   export DJANGO_DEV_SERVER=1
    ```
 6. Initialize virtualenv 
    ```bash

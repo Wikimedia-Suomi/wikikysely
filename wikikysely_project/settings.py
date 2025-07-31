@@ -5,17 +5,16 @@ import sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET')
-
 # Toggle development features via an environment variable
 DEV_SERVER = os.environ.get("DJANGO_DEV_SERVER") == "1"
 
-# DEBUG defaults to False but can be enabled by setting DJANGO_DEV_SERVER=1
-DEBUG = DEV_SERVER
+DEBUG = False
+LOCAL_LOGIN_ENABLED = False
+ALLOWED_HOSTS = ['127.0.0.1', 'wikikysely.toolforge.org']
 
-# Allow username/password logins only when the development server flag is set.
-LOCAL_LOGIN_ENABLED = DEV_SERVER
-
-ALLOWED_HOSTS = ['wikikysely.toolforge.org']
+if DEV_SERVER:
+    DEBUG = True
+    LOCAL_LOGIN_ENABLED = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
