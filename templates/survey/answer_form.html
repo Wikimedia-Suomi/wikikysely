@@ -54,6 +54,7 @@
       <canvas id="answerTimelineChart"></canvas>
     </div>
   </div-->
+  <div class="table-responsive">
   <table class="table mb-3">
     <thead>
       <tr>
@@ -75,12 +76,14 @@
     </tbody>
   </table>
   </div>
+  </div>
 {% endif %}
 {% if user_answers %}
   <h2 class="mt-4">
     <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
   <div id="myAnswers" class="collapse">
+  <div class="table-responsive">
   <table class="table mb-3 survey-detail-table">
     <thead>
       <tr>
@@ -117,6 +120,7 @@
       {% endfor %}
     </tbody>
   </table>
+  </div>
   </div>
 {% endif %}
 {% endif %}
