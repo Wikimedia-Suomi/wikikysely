@@ -54,8 +54,9 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    ```
 11. Run the development server:
    ```bash
-   python manage.py runserver
+   DJANGO_DEV_SERVER=1 python manage.py runserver
    ```
+   Setting `DJANGO_DEV_SERVER=1` enables debug mode and local username/password logins.
 11. Access the site at `http://localhost:8000/`.
 
 The UI supports Finnish, Swedish and English. You can change the language from the menu.
@@ -67,7 +68,7 @@ Unit tests use Django's built-in test runner. After installing the dependencies
 and setting up the virtual environment, run:
 
 ```bash
-python manage.py test -v 2
+DJANGO_DEV_SERVER=1 python manage.py test -v 2
 ```
 
 The command will create a temporary database and execute the test suite.
