@@ -110,7 +110,12 @@ body {
   .yes-no-group {
     display: inline-flex !important;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: 1rem;
     align-items: center;
   }
+  .yes-no-group label {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
 }
