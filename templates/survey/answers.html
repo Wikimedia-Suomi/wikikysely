@@ -39,6 +39,7 @@
     <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
   </div>
 </div>
+<div class="table-responsive">
 <table id="barChartTable" class="table" style="display:none">
   <tbody>
   {% for row in data %}
@@ -60,6 +61,7 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
 <div id="pieChartsContainer" style="display:none">
   <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
 {% for row in data %}
@@ -78,6 +80,7 @@
 </div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <h2>{% translate 'Answer table' %}</h2>
+<div class="table-responsive">
 <table id="answerTable" class="table">
 <thead>
 <tr>
@@ -114,6 +117,7 @@
 {% endfor %}
 </tbody>
 </table>
+</div>
 {% endblock %}
 {% block scripts %}
 <script>

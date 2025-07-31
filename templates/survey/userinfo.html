@@ -19,7 +19,8 @@
 </p>
 
 <h2 class="mt-4">{% translate 'My questions' %}</h2>
-<table class="table mb-4">
+<div class="table-responsive mb-4">
+<table class="table mb-0">
   <thead>
     <tr>
       <th>{% translate 'Question' %}</th>
@@ -44,9 +45,11 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
 
 <h2>{% translate 'My answers' %}</h2>
-<table class="table">
+<div class="table-responsive">
+<table class="table mb-0">
 <thead>
   <tr>
     <th>{% translate 'Question' %}</th>
@@ -76,6 +79,7 @@
 {% endfor %}
 </tbody>
 </table>
+</div>
 {% endblock %}
 
 {% block scripts %}

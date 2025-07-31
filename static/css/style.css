@@ -59,3 +59,13 @@ body {
   gap: 0.5rem;
   justify-content: center;
 }
+
+/* Allow tables to shrink on small screens */
+@media (max-width: 576px) {
+  .survey-detail-table th,
+  .survey-detail-table td,
+  #answerTable th,
+  #answerTable td {
+    width: auto !important;
+  }
+}
