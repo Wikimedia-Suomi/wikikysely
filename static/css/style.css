@@ -94,3 +94,14 @@ body {
     margin-right: 1rem;
   }
 }
+
+.mobile-sort {
+  display: none;
+}
+@media (max-width: 800px) {
+  .mobile-sort {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
