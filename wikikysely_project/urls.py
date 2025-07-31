@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path, include
 from wikikysely_project.survey.views import SurveyLoginView
 from django.views.i18n import set_language
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('set-language/', set_language, name='set_language'),
@@ -17,6 +18,4 @@ urlpatterns += i18n_patterns(
     path('', include('wikikysely_project.survey.urls')),
 )
 
-if settings.DEBUG:
-    from django.conf.urls.static import static
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
