@@ -47,6 +47,10 @@ function initSortableTables(selector, defaultIndex = 0, defaultDirection = 'desc
         }
 
         headers.forEach((header, i) => {
+            if (!baseTexts[i]) {
+                mobileButtons.push(null);
+                return;
+            }
             header.style.cursor = 'pointer';
             header.addEventListener('click', () => toggleSort(i));
             const btn = document.createElement('button');
@@ -60,7 +64,7 @@ function initSortableTables(selector, defaultIndex = 0, defaultDirection = 'desc
 
         table.parentNode.insertBefore(container, table);
 
-        if (defaultIndex < headers.length) {
+        if (defaultIndex < headers.length && baseTexts[defaultIndex]) {
             directions[defaultIndex] = defaultDirection;
             updateLabels();
             sortTable(defaultIndex, defaultDirection);
