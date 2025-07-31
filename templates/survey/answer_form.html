@@ -127,60 +127,10 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'js/sort_tables.js' %}"></script>
 <script>
-// Enable sorting on survey detail tables
-document.addEventListener('DOMContentLoaded', () => {
-    const tables = document.querySelectorAll('.survey-detail-table');
-    tables.forEach(table => {
-        const headers = table.querySelectorAll('th');
-        const directions = Array.from(headers, () => null);
-        const baseTexts = Array.from(headers, h => h.textContent.trim());
-
-        function clearArrows() {
-            headers.forEach((h, i) => {
-                h.textContent = baseTexts[i];
-            });
-        }
-
-        function sortTable(index, direction) {
-            const tbody = table.tBodies[0];
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const multiplier = direction === 'asc' ? 1 : -1;
-            rows.sort((a, b) => {
-                const aText = a.children[index].textContent.trim();
-                const bText = b.children[index].textContent.trim();
-                const aDate = Date.parse(aText);
-                const bDate = Date.parse(bText);
-                if (!isNaN(aDate) && !isNaN(bDate)) {
-                    return (aDate - bDate) * multiplier;
-                }
-                const aNum = parseFloat(aText);
-                const bNum = parseFloat(bText);
-                if (!isNaN(aNum) && !isNaN(bNum)) {
-                    return (aNum - bNum) * multiplier;
-                }
-                return aText.localeCompare(bText, undefined, {numeric: true}) * multiplier;
-            });
-            rows.forEach(r => tbody.appendChild(r));
-        }
-
-        headers.forEach((header, i) => {
-            header.style.cursor = 'pointer';
-            header.addEventListener('click', () => {
-                const current = directions[i] === 'asc' ? 'desc' : 'asc';
-                directions.fill(null);
-                directions[i] = current;
-                clearArrows();
-                header.textContent = baseTexts[i] + (current === 'asc' ? ' \u2191' : ' \u2193');
-                sortTable(i, current);
-            });
-        });
-
-        // Indicate default sorting by the Answer date column
-        directions[0] = 'desc';
-        headers[0].textContent = baseTexts[0] + ' \u2193';
-        sortTable(0, 'desc');
-    });
+document.addEventListener("DOMContentLoaded", () => {
+    initSortableTables(".survey-detail-table");
 });
 </script>
 <script>
