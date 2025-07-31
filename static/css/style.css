@@ -105,3 +105,16 @@ body {
     gap: 0.5rem;
   }
 }
+
+@media (max-width: 800px) {
+  .yes-no-group {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .yes-no-group > .btn,
+  .yes-no-group > label.btn {
+    width: 100%;
+  }
+}
