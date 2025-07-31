@@ -12,7 +12,11 @@
   {% if request.GET.login_required %}
     <p class="alert alert-info">
       {% translate 'You must be logged in to answer questions' %}.
+      {% if local_login_enabled %}
       <a href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a>
+      {% else %}
+      <a href="{% url 'social:begin' 'mediawiki' %}?next={{ request.path }}">{% translate 'Login with Wikimedia' %}</a>
+      {% endif %}
     </p>
   {% endif %}
 {% endif %}

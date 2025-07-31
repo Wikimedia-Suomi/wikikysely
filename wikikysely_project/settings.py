@@ -1,11 +1,19 @@
 from pathlib import Path
 import os
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET')
 
-DEBUG = True
+# Toggle development features via an environment variable
+DEV_SERVER = os.environ.get("DJANGO_DEV_SERVER") == "1"
+
+# DEBUG defaults to False but can be enabled by setting DJANGO_DEV_SERVER=1
+DEBUG = DEV_SERVER
+
+# Allow username/password logins only when the development server flag is set.
+LOCAL_LOGIN_ENABLED = DEV_SERVER
 
 ALLOWED_HOSTS = ['wikikysely.toolforge.org']
 
@@ -80,7 +88,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # Use a separate collection directory for production builds
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Allow the development server to find project level static assets
 STATICFILES_DIRS = [BASE_DIR / 'static']
 

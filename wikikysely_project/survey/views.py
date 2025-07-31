@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
+from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext, ngettext
 from django.utils.html import format_html, format_html_join
@@ -102,6 +104,8 @@ def get_login_redirect_url(request):
 
 
 def register(request):
+    if not settings.LOCAL_LOGIN_ENABLED:
+        raise Http404()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -124,6 +128,11 @@ def register(request):
 
 class SurveyLoginView(LoginView):
     """Login view that redirects to unanswered questions if any."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.LOCAL_LOGIN_ENABLED:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         url = self.get_redirect_url()
