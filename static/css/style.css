@@ -69,3 +69,28 @@ body {
     width: auto !important;
   }
 }
+@media (max-width: 576px) {
+  .stacked-table thead {
+    display: none;
+  }
+  .stacked-table,
+  .stacked-table tbody,
+  .stacked-table tr,
+  .stacked-table td {
+    display: block;
+    width: 100%;
+  }
+  .stacked-table tr {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--bs-table-border-color, #dee2e6);
+  }
+  .stacked-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+  .stacked-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 1rem;
+  }
+}
