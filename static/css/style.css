@@ -61,7 +61,7 @@ body {
 }
 
 /* Allow tables to shrink on small screens */
-@media (max-width: 576px) {
+@media (max-width: 800px) {
   .survey-detail-table th,
   .survey-detail-table td,
   #answerTable th,
@@ -69,7 +69,7 @@ body {
     width: auto !important;
   }
 }
-@media (max-width: 576px) {
+@media (max-width: 800px) {
   .stacked-table thead {
     display: none !important;
   }
