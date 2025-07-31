@@ -71,21 +71,21 @@ body {
 }
 @media (max-width: 576px) {
   .stacked-table thead {
-    display: none;
+    display: none !important;
   }
   .stacked-table,
   .stacked-table tbody,
   .stacked-table tr,
   .stacked-table td {
-    display: block;
-    width: 100%;
+    display: block !important;
+    width: 100% !important;
   }
   .stacked-table tr {
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--bs-table-border-color, #dee2e6);
   }
   .stacked-table td {
-    display: flex;
+    display: flex !important;
     justify-content: space-between;
   }
   .stacked-table td::before {
