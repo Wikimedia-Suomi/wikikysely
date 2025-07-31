@@ -20,7 +20,7 @@
 
 <h2 class="mt-4">{% translate 'My questions' %}</h2>
 <div class="table-responsive mb-4">
-<table class="table mb-0">
+<table class="table mb-0 stacked-table">
   <thead>
     <tr>
       <th>{% translate 'Question' %}</th>
@@ -30,8 +30,8 @@
   <tbody>
   {% for question in questions %}
     <tr>
-      <td>{{ question.text }}</td>
-      <td class="text-end">
+      <td data-label="{% translate 'Question' %}">{{ question.text }}</td>
+      <td class="text-end" data-label="">
         {% if question.pk in editable_questions %}
         <a href="{% url 'survey:question_edit' question.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
         {% endif %}
@@ -49,7 +49,7 @@
 
 <h2>{% translate 'My answers' %}</h2>
 <div class="table-responsive">
-<table class="table mb-0">
+<table class="table mb-0 stacked-table">
 <thead>
   <tr>
     <th>{% translate 'Question' %}</th>
@@ -60,15 +60,15 @@
 <tbody>
 {% for answer in answers %}
   <tr>
-    <td>
+    <td data-label="{% translate 'Question' %}">
       {% if answer.question.survey.state == 'running' %}
         <a href="{% url 'survey:answer_question' answer.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ answer.question.text }}</a>
       {% else %}
         {{ answer.question.text }}
       {% endif %}
     </td>
-    <td>{{ answer.get_answer_display }}</td>
-    <td class="text-end">
+    <td data-label="{% translate 'Answer' %}">{{ answer.get_answer_display }}</td>
+    <td class="text-end" data-label="">
       {% if answer.question.survey.state == 'running' %}
       <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
       {% endif %}

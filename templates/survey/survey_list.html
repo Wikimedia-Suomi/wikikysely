@@ -4,13 +4,13 @@
 {% block content %}
 <h1>{% translate 'Surveys' %}</h1>
 <div class="table-responsive">
-<table class="table">
+<table class="table stacked-table">
 <thead><tr><th>{% translate 'Title' %}</th><th>{% translate 'State' %}</th></tr></thead>
 <tbody>
 {% for survey in surveys %}
-<tr><td><a href="{% url 'survey:survey_detail' %}">{{ survey.title }}</a></td><td>{{ survey.get_state_display }}</td></tr>
+<tr><td data-label="{% translate 'Title' %}"><a href="{% url 'survey:survey_detail' %}">{{ survey.title }}</a></td><td data-label="{% translate 'State' %}">{{ survey.get_state_display }}</td></tr>
 {% empty %}
-<tr><td colspan="2">{% translate 'No surveys' %}</td></tr>
+<tr><td colspan="2" data-label="">{% translate 'No surveys' %}</td></tr>
 {% endfor %}
 </tbody>
 </table>
