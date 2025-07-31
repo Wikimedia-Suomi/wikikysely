@@ -63,7 +63,7 @@
 </table>
 </div>
 <div id="pieChartsContainer" style="display:none">
-  <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4">
+  <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4 justify-content-center">
 {% for row in data %}
   <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
     <canvas></canvas>
