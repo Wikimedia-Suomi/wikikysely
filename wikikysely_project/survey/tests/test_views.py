@@ -277,7 +277,7 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse("survey:survey_answers"))
         self.assertContains(
             response,
-            "<td>Yes</td>",
+            '<td data-label="My answer">Yes</td>',
             html=True,
         )
 
