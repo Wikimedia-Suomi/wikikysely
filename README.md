@@ -87,16 +87,17 @@ complete reset:
    ```
 
 ## Runnin code on toolforge
+Note: Using sqlite as database backend is too slow in toolforge. In practice mariadb backend is required.
 
 ```bash
 $ ssh YOUR_USER_NAME@login.toolforge.org
 (login.toolforge.org):~$ become YOUR_TOOL_NAME
-tools.wikikysely@tools-sgebastion-10:~$ mkdir www
-tools.wikikysely@tools-sgebastion-10:~$ mkdir www/python
-tools.wikikysely@tools-sgebastion-10:~$ cd www/python
-tools.wikikysely@tools-sgebastion-10:~$ echo "static-map = /static=/data/project/wikikysely/www/python/src/staticfiles"> uwsgi.ini
-tools.wikikysely@tools-sgebastion-10:~$ git clone https://github.com/Wikimedia-Suomi/wikikysely.git
-tools.wikikysely@tools-sgebastion-10:~$ ln -s wikikysely src
+tools.wikikysely@...:~$ mkdir www
+tools.wikikysely@...:~$ mkdir www/python
+tools.wikikysely@...:~$ cd www/python
+tools.wikikysely@...:~$ echo "static-map = /static=/data/project/wikikysely/www/python/src/staticfiles"> uwsgi.ini
+tools.wikikysely@...:~$ git clone https://github.com/Wikimedia-Suomi/wikikysely.git
+tools.wikikysely@...:~$ ln -s wikikysely src
 
 Then you are ready to request your production keys (which you need to be even more careful about not committing):
 - https://wikitech.wikimedia.org/wiki/Help:Toolforge/My_first_Django_OAuth_tool#Oauth_consumer_registration_(Wikimedia)
@@ -110,19 +111,19 @@ Then you are ready to request your production keys (which you need to be even mo
 * Types of grants being requested: Choose "User identity verification only, no ability to read pages or act on a user's behalf."
 * Public RSA key: You can leave this empty at the moment.
 
-tools.wikikysely@tools-sgebastion-10:~$ toolforge envvars create DJANGO_SECRET
+tools.wikikysely@...:~$ toolforge envvars create DJANGO_SECRET
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "very-secret-key"
 
-tools.wikikysely@tools-sgebastion-10:~$ toolforge envvars create MEDIAWIKI_KEY
+tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_KEY
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "very-secret-mediawiki-key"
 
-tools.wikikysely@tools-sgebastion-10:~$ toolforge envvars create MEDIAWIKI_SECRET
+tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_SECRET
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "very-secret-mediawiki-secret"
 
-tools.wikikysely@tools-sgebastion-10:~$ toolforge envvars create MEDIAWIKI_CALLBACK
+tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_CALLBACK
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "http://127.0.0.1:8080/oauth/complete/mediawiki/"
 
-tools.wikikysely@tools-sgebastion-10:~$ webservice --backend=kubernetes python3.11 shell
+tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 shell
 
 (webservice):~$ python3 -m venv venv
 (webservice):~$ source venv/bin/activate
@@ -134,7 +135,7 @@ tools.wikikysely@tools-sgebastion-10:~$ webservice --backend=kubernetes python3.
 (venv):$ deactivate
 (webservice):~$ exit
 
-tools.wikikysely@tools-sgebastion-10:~$ webservice --backend=kubernetes python3.11 start
+tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 start
    ```
 
 
