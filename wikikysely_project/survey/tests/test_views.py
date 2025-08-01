@@ -2,6 +2,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.translation import activate
 from django.contrib.auth import get_user_model
+from django.db.models import ProtectedError
 import json
 
 from ..models import Survey, Question, Answer
@@ -423,3 +424,9 @@ class SurveyFlowTests(TransactionTestCase):
         )
         self.assertRedirects(response, reverse("survey:survey_answers"))
         self.assertContains(response, "Logged out")
+
+    def test_cannot_delete_survey_with_questions(self):
+        survey = self._create_survey()
+        self._create_question(survey)
+        with self.assertRaises(ProtectedError):
+            survey.delete()

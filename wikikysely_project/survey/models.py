@@ -36,7 +36,9 @@ class Survey(models.Model):
 
 
 class Question(models.Model):
-    survey = models.ForeignKey(Survey, related_name='questions', on_delete=models.CASCADE)
+    survey = models.ForeignKey(
+        Survey, related_name="questions", on_delete=models.PROTECT
+    )
     text = models.CharField(max_length=500)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
