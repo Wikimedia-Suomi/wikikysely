@@ -477,6 +477,10 @@ msgstr "Konto borttaget."
 msgid "Account not removed because all your questions could not be deleted."
 msgstr "Konto togs inte bort eftersom alla dina frågor inte kunde tas bort."
 
+#: wikikysely_project/survey/views.py:150
+msgid "Logged out"
+msgstr "Du loggades ut"
+
 #~ msgid "Start date"
 #~ msgstr "Startdatum"
 
