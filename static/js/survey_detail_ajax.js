@@ -127,6 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.appendChild(tdActions);
 
             tbody.appendChild(tr);
+            if (unansweredHeader.style.display === 'none') {
+              unansweredHeader.style.display = '';
+            }
+            if (unansweredTable.style.display === 'none') {
+              unansweredTable.style.display = '';
+            }
           }
         } else if (!noReload) {
           window.location.reload();
