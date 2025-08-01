@@ -17,7 +17,6 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="{% translate 'Toggle navigation' %}">
       <span class="navbar-toggler-icon"></span>
     </button>
-    {# Removed "Add question" button - now located on the survey detail page #}
     <div class="collapse navbar-collapse" id="navbar-main">
       {% url 'survey:survey_detail' as survey_detail_url %}
       {% url 'survey:answer_survey' as answer_survey_url %}
@@ -28,7 +27,7 @@
         {% if unanswered_count %}
         <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} (<span id="unanswered-count">{{ unanswered_count }}</span>)</a></li>
         {% else %}
-        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %} (<span id="unanswered-count">0</span>)</span></li>
+        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %}{% if request.user.is_authenticated %}(<span id="unanswered-count">0</span>){% endif %}</span></li>
         {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
       </ul>
@@ -51,10 +50,10 @@
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey_logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
       {% else %}
         {% if local_login_enabled %}
-        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a></li>
-        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:register' %}?next={{ request.path }}">{% translate 'Register' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={% url 'login_redirect' %}">{% translate 'Login' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey:register' %}?next={% url 'login_redirect' %}">{% translate 'Register' %}</a></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'social:begin' 'mediawiki' %}?next={{ request.path }}">{% translate 'Login with Wikimedia' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'social:begin' 'mediawiki' %}?next={% url 'login_redirect' %}">{% translate 'Login with Wikimedia' %}</a></li>
       {% endif %}
       </ul>
 
