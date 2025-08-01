@@ -838,6 +838,33 @@ def userinfo_download(request):
         .select_related("survey")
         .order_by("created_at")
     )
+    created_surveys = Survey.objects.filter(creator=user)
+    secretary_surveys = Survey.objects.filter(secretaries=user)
+
+    surveys_dict = {}
+    for s in created_surveys:
+        surveys_dict[s.id] = {
+            "id": s.id,
+            "title": s.title,
+            "description": s.description,
+            "state": s.state,
+            "deleted": s.deleted,
+            "creator": True,
+            "secretary": False,
+        }
+    for s in secretary_surveys:
+        if s.id in surveys_dict:
+            surveys_dict[s.id]["secretary"] = True
+        else:
+            surveys_dict[s.id] = {
+                "id": s.id,
+                "title": s.title,
+                "description": s.description,
+                "state": s.state,
+                "deleted": s.deleted,
+                "creator": False,
+                "secretary": True,
+            }
 
     data = {
         "user": {
@@ -855,6 +882,7 @@ def userinfo_download(request):
             }
             for q in questions
         ],
+        "surveys": list(surveys_dict.values()),
         "answers": [
             {
                 "id": a.id,
