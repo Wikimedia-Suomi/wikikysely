@@ -240,11 +240,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(Answer.objects.count(), 1)
         answer = Answer.objects.get(question=questions[0], user=self.user)
         self.assertEqual(answer.answer, "yes")
-        self.assertRedirects(
-            response,
-            reverse("survey:answer_survey"),
-            fetch_redirect_response=False,
-        )
+        self.assertEqual(response.status_code, 200)
 
         # answer by second and third users
         for idx, user in enumerate(self.users[1:], start=1):

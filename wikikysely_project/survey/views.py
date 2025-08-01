@@ -606,10 +606,23 @@ def answer_survey(request):
                     defaults={"answer": answer_value},
                 )
                 messages.success(request, _("Answer saved"))
-                return redirect("survey:answer_survey")
             else:
-                next_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
-                return redirect(next_url)
+                messages.info(request, _("Question skipped"))
+
+            answered_questions = Answer.objects.filter(
+                user=request.user,
+                question__survey=survey,
+            ).values_list("question_id", flat=True)
+            remaining = survey.questions.filter(visible=True).exclude(
+                id__in=answered_questions
+            )
+            if not answer_value:
+                remaining = remaining.exclude(id=question.pk)
+            question = random.choice(list(remaining)) if remaining else None
+            if not question:
+                messages.info(request, _("No more questions"))
+                return redirect("survey:survey_detail")
+            form = AnswerForm(initial={"question_id": question.pk})
     else:
         answered_questions = Answer.objects.filter(
             user=request.user,
