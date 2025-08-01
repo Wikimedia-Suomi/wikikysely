@@ -28,10 +28,8 @@ class PostMigrateSignalTests(TransactionTestCase):
             connection.enable_constraint_checking()
         super().tearDownClass()
 
-    def test_default_survey_created_after_migrate(self):
+    def test_no_survey_created_after_migrate(self):
         self.assertEqual(Survey.objects.count(), 0)
         config = apps.get_app_config('survey')
         post_migrate.send(sender=config, app_config=config, using='default', plan=())
-        self.assertEqual(Survey.objects.count(), 1)
-        survey = Survey.objects.first()
-        self.assertEqual(survey.state, 'running')
+        self.assertEqual(Survey.objects.count(), 0)

@@ -7,6 +7,8 @@ def unanswered_count(request):
     if not request.user.is_authenticated:
         return {"local_login_enabled": settings.LOCAL_LOGIN_ENABLED}
     survey = Survey.get_main_survey()
+    if survey is None:
+        return {"unanswered_count": 0, "local_login_enabled": settings.LOCAL_LOGIN_ENABLED}
     answered_ids = Answer.objects.filter(
         user=request.user,
         question__survey=survey,

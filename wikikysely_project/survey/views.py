@@ -107,6 +107,8 @@ def get_question_stats(question, user=None):
 def get_login_redirect_url(request):
     """Return default post-login redirect based on unanswered questions."""
     survey = Survey.get_main_survey()
+    if survey is None:
+        return reverse("survey:survey_create")
     answered_ids = Answer.objects.filter(
         user=request.user, question__survey=survey
     ).values_list("question_id", flat=True)
@@ -174,6 +176,11 @@ def survey_logout(request):
 
 def survey_detail(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        if request.user.is_authenticated:
+            return redirect("survey:survey_create")
+        messages.info(request, _("No surveys"))
+        return render(request, "survey/survey_list.html", {"surveys": []})
     base_qs = survey.questions.filter(visible=True)
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
@@ -263,8 +270,28 @@ def survey_detail(request):
 
 
 @login_required
+def survey_create(request):
+    """Create a new survey when none exists."""
+    if Survey.objects.filter(deleted=False).exists():
+        return redirect("survey:survey_detail")
+    if request.method == "POST":
+        form = SurveyForm(request.POST)
+        if form.is_valid():
+            survey = form.save(commit=False)
+            survey.creator = request.user
+            survey.save()
+            messages.success(request, _("Survey created"))
+            return redirect("survey:survey_detail")
+    else:
+        form = SurveyForm()
+    return render(request, "survey/survey_form.html", {"form": form, "is_edit": False})
+
+
+@login_required
 def survey_edit(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
     if request.user != survey.creator and not request.user.is_superuser:
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
@@ -294,6 +321,8 @@ def survey_edit(request):
 @login_required
 def question_add(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
     if survey.state == "closed":
         messages.error(request, _("Cannot add questions to a closed survey"))
         return redirect("survey:survey_detail")
@@ -488,6 +517,8 @@ def question_edit(request, pk):
 @login_required
 def answer_survey(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
     if survey.state == "paused":
         messages.error(request, _("Survey not active"))
         return redirect("survey:survey_detail")
@@ -984,6 +1015,8 @@ def answer_delete(request, pk):
 
 def survey_answers(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
     questions = survey.questions.filter(visible=True)
     data = []
     total_users = (
@@ -1032,6 +1065,8 @@ def survey_answers(request):
 
 def survey_answers_wikitext(request):
     survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
     include_personal = (
         request.GET.get("include_personal") == "1" and request.user.is_authenticated
     )
