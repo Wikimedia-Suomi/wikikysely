@@ -93,9 +93,11 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# After logging in, redirect users to the Finnish index page instead of the
-# nonexistent ``/accounts/profile/`` path provided by Django's defaults.
-LOGIN_REDIRECT_URL = '/fi/'
+# After logging in, redirect users based on unanswered questions. ``reverse_lazy``
+# allows resolving the URL without importing the root URL configuration during
+# settings initialization.
+from django.urls import reverse_lazy
+LOGIN_REDIRECT_URL = reverse_lazy('login_redirect')
 
 from django.contrib.messages import constants as message_constants
 
