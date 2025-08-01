@@ -167,6 +167,11 @@ class SurveyLoginView(LoginView):
         return get_login_redirect_url(self.request)
 
 
+@login_required
+def login_redirect(request):
+    """Redirect the user after login based on unanswered questions."""
+    return redirect(get_login_redirect_url(request))
+
 def survey_logout(request):
     """Log the user out and redirect appropriately."""
     next_url = request.GET.get("next")
