@@ -4,7 +4,7 @@ import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET')
+SECRET_KEY = os.environ.get('DJANGO_SECRET', 'local_development_key')
 # Toggle development features via an environment variable
 DEV_SERVER = os.environ.get("DJANGO_DEV_SERVER") == "1"
 
@@ -12,9 +12,11 @@ DEBUG = False
 LOCAL_LOGIN_ENABLED = False
 ALLOWED_HOSTS = ['127.0.0.1', 'wikikysely.toolforge.org']
 
-if DEV_SERVER:
+if DEV_SERVER or (SECRET_KEY == 'local_development_key'):
     DEBUG = True
     LOCAL_LOGIN_ENABLED = True
+    ALLOWED_HOSTS = ['127.0.0.1']
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
