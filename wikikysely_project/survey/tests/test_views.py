@@ -369,6 +369,14 @@ class SurveyFlowTests(TransactionTestCase):
         q = self._create_question(survey)
         Answer.objects.create(question=q, user=self.user, answer="yes")
 
+        other_survey = Survey.objects.create(
+            title="Other Survey",
+            description="desc",
+            creator=self.users[1],
+            state="running",
+        )
+        other_survey.secretaries.add(self.user)
+
         response = self.client.get(reverse("survey:userinfo_download"))
         self.assertEqual(response.status_code, 200)
         cd_header = response["Content-Disposition"]
@@ -378,6 +386,17 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data["user"]["username"], self.user.username)
         self.assertEqual(len(data["answers"]), 1)
         self.assertEqual(len(data["questions"]), 1)
+        self.assertEqual(len(data["surveys"]), 2)
+        self.assertNotIn("secretary_surveys", data)
+        surveys_by_title = {s["title"]: s for s in data["surveys"]}
+        self.assertIn("Test Survey", surveys_by_title)
+        self.assertIn("Other Survey", surveys_by_title)
+        self.assertTrue(surveys_by_title["Test Survey"]["creator"])
+        self.assertFalse(surveys_by_title["Test Survey"].get("secretary", False))
+        self.assertTrue(surveys_by_title["Other Survey"]["secretary"])
+        self.assertFalse(surveys_by_title["Other Survey"].get("creator", False))
+        self.assertEqual(surveys_by_title["Test Survey"]["description"], "desc")
+        self.assertEqual(surveys_by_title["Other Survey"]["description"], "desc")
 
 
     def test_user_data_delete_removes_answers_and_questions(self):
