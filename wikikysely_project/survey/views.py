@@ -21,6 +21,15 @@ from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
 
 
+def is_survey_editor(user, survey):
+    """Return True if user can edit the given survey."""
+    return (
+        user == survey.creator
+        or user.is_superuser
+        or user.username in settings.SURVEY_EDITOR_USERNAMES
+    )
+
+
 def get_user_answers(user, survey):
     """Return user's answers for the survey with aggregated stats."""
     return (
@@ -211,7 +220,7 @@ def survey_detail(request):
     questions = questions.order_by("pk")
     unanswered_questions = unanswered_questions.order_by("pk")
 
-    can_edit = request.user == survey.creator or request.user.is_superuser
+    can_edit = is_survey_editor(request.user, survey)
 
     unanswered_count = (
         unanswered_questions.count() if request.user.is_authenticated else 0
@@ -234,7 +243,7 @@ def survey_detail(request):
 @login_required
 def survey_edit(request):
     survey = Survey.get_main_survey()
-    if request.user != survey.creator and not request.user.is_superuser:
+    if not is_survey_editor(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
     if request.method == "POST":
@@ -266,11 +275,7 @@ def question_add(request):
     if survey.state == "closed":
         messages.error(request, _("Cannot add questions to a closed survey"))
         return redirect("survey:survey_detail")
-    if (
-        survey.state != "running"
-        and request.user != survey.creator
-        and not request.user.is_superuser
-    ):
+    if survey.state != "running" and not is_survey_editor(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
     if request.method == "POST":
@@ -318,9 +323,7 @@ def question_hide(request, pk):
     question = get_object_or_404(Question, pk=pk, visible=True)
     survey = question.survey
 
-    if not (
-        request.user == survey.creator or request.user.is_superuser
-    ):
+    if not is_survey_editor(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
 
@@ -338,7 +341,7 @@ def question_hide(request, pk):
     if next_url:
         return redirect(next_url)
 
-    if request.user == survey.creator or request.user.is_superuser:
+    if is_survey_editor(request.user, survey):
         return redirect("survey:survey_edit")
     return redirect("survey:survey_detail")
 
@@ -347,7 +350,7 @@ def question_hide(request, pk):
 def question_show(request, pk):
     question = get_object_or_404(Question, pk=pk, visible=False)
     survey = question.survey
-    if request.user != survey.creator and not request.user.is_superuser:
+    if not is_survey_editor(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_edit")
     if survey.state == "closed":
@@ -399,9 +402,7 @@ def question_edit(request, pk):
     )
     can_delete_question = can_creator_edit
 
-    if not (
-        request.user == survey.creator or request.user.is_superuser or can_creator_edit
-    ):
+    if not (is_survey_editor(request.user, survey) or can_creator_edit):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
 
@@ -441,7 +442,7 @@ def question_edit(request, pk):
             else:
                 form.save()
                 messages.success(request, _("Question updated"))
-                if request.user == survey.creator or request.user.is_superuser:
+                if is_survey_editor(request.user, survey):
                     return redirect("survey:survey_edit")
                 return redirect("survey:survey_detail")
     else:
@@ -688,8 +689,7 @@ def userinfo(request):
             hard_deletable_questions.append(q.pk)
 
         can_modify = (
-            request.user == q.survey.creator
-            or request.user.is_superuser
+            is_survey_editor(request.user, q.survey)
             or (q.creator == request.user and can_creator_modify)
         )
         if q.survey.state == "closed":

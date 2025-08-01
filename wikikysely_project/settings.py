@@ -117,3 +117,13 @@ SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['groups']
 SOCIAL_AUTH_MEDIAWIKI_KEY = os.environ.get('MEDIAWIKI_KEY')
 SOCIAL_AUTH_MEDIAWIKI_SECRET = os.environ.get('MEDIAWIKI_SECRET')
 SOCIAL_AUTH_MEDIAWIKI_CALLBACK = os.environ.get('MEDIAWIKI_CALLBACK')
+
+# Comma separated list of Wikipedia OAuth usernames that are allowed to edit
+# survey data even if they are not the original creator. These users have the
+# same rights as the survey creator when modifying survey questions and
+# settings.
+SURVEY_EDITOR_USERNAMES = [
+    u.strip()
+    for u in os.environ.get("SURVEY_EDITOR_USERNAMES", "").split(",")
+    if u.strip()
+]

@@ -1,4 +1,4 @@
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import activate
 from django.contrib.auth import get_user_model
@@ -100,6 +100,22 @@ class SurveyFlowTests(TransactionTestCase):
         survey.refresh_from_db()
         self.assertEqual(survey.title, "Edited Survey")
         self.assertEqual(survey.state, "paused")
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+
+    @override_settings(SURVEY_EDITOR_USERNAMES=["tester2"])
+    def test_survey_edit_by_authorized_username(self):
+        survey = self._create_survey()
+        other = self.users[1]
+        self.client.logout()
+        self.client.login(username=other.username, password="pass")
+        data = {
+            "title": "Edited Survey",
+            "description": "changed",
+            "state": "paused",
+        }
+        response = self.client.post(reverse("survey:survey_edit"), data)
+        survey.refresh_from_db()
+        self.assertEqual(survey.title, "Edited Survey")
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_add_question(self):

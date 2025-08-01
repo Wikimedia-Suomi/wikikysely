@@ -29,6 +29,7 @@ Guide is for Linux and OS X. With Windows you need to create and activate virtua
    export MEDIAWIKI_KEY="very-secret-mediawiki-key"
    export MEDIAWIKI_SECRET="very-secret-mediawiki-secret"
    export MEDIAWIKI_CALLBACK="http://127.0.0.1:8080/oauth/complete/mediawiki/"
+   export SURVEY_EDITOR_USERNAMES="user1,user2"
    export DJANGO_DEV_SERVER=1
    ```
 6. Initialize virtualenv 
