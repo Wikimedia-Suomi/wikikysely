@@ -716,29 +716,46 @@ def answer_question(request, pk):
                         defaults={"answer": answer_value},
                     )
                     messages.success(request, _("Answer saved"))
-                    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                        yes_count = question.answers.filter(answer="yes").count()
-                        no_count = question.answers.filter(answer="no").count()
-                        total = yes_count + no_count
-                        ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
-                        return JsonResponse(
-                            {
-                                "success": True,
-                                "yes_count": yes_count,
-                                "total": total,
-                                "agree_ratio": ratio,
-                                "question_id": question.pk,
-                            }
-                        )
-                    if answer is not None and next_url:
-                        from urllib.parse import urlparse
-
-                        if urlparse(next_url).path != request.path:
-                            return redirect(next_url)
-                    return redirect("survey:answer_survey")
                 else:
-                    skip_url = f"{reverse('survey:answer_survey')}?skip={question.pk}"
-                    return redirect(skip_url)
+                    messages.info(request, _("Question skipped"))
+
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    yes_count = question.answers.filter(answer="yes").count()
+                    no_count = question.answers.filter(answer="no").count()
+                    total = yes_count + no_count
+                    ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+                    return JsonResponse(
+                        {
+                            "success": True,
+                            "yes_count": yes_count,
+                            "total": total,
+                            "agree_ratio": ratio,
+                            "question_id": question.pk,
+                        }
+                    )
+
+                if answer is not None and next_url:
+                    from urllib.parse import urlparse
+
+                    if urlparse(next_url).path != request.path:
+                        return redirect(next_url)
+
+                answered_questions = Answer.objects.filter(
+                    user=request.user, question__survey=survey
+                ).values_list("question_id", flat=True)
+                remaining = survey.questions.filter(visible=True).exclude(
+                    id__in=answered_questions
+                )
+                if not answer_value:
+                    remaining = remaining.exclude(id=question.pk)
+                question = random.choice(list(remaining)) if remaining else None
+                if not question:
+                    messages.info(request, _("No more questions"))
+                    return redirect("survey:survey_detail")
+                answer = None
+                form = AnswerForm(initial={"question_id": question.pk})
+            else:
+                form = AnswerForm(instance=answer, initial={"question_id": question.pk})
         else:
             form = AnswerForm(instance=answer, initial={"question_id": question.pk})
         can_delete_question = (
