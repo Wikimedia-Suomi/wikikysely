@@ -691,8 +691,7 @@ def answer_question(request, pk):
     answer = None
     can_delete_question = False
     next_url = request.GET.get("next") or request.POST.get("next")
-    if not next_url:
-        next_url = request.META.get("HTTP_REFERER")
+
     if not request.user.is_authenticated:
         login_url = f"{reverse('login')}?next={request.path}"
         messages.info(
@@ -736,19 +735,19 @@ def answer_question(request, pk):
 
                 if answer is not None and next_url:
                     from urllib.parse import urlparse
+                    print(next_url)
 
                     if urlparse(next_url).path != request.path:
+                        print("REDIRECT")
                         return redirect(next_url)
 
                 answered_questions = Answer.objects.filter(
                     user=request.user, question__survey=survey
                 ).values_list("question_id", flat=True)
-                remaining = survey.questions.filter(visible=True).exclude(
+                question = survey.questions.filter(visible=True).exclude(
                     id__in=answered_questions
-                )
-                if not answer_value:
-                    remaining = remaining.exclude(id=question.pk)
-                question = random.choice(list(remaining)) if remaining else None
+                ).exclude(id=question.pk).order_by('?').first()
+
                 if not question:
                     messages.info(request, _("No more questions"))
                     return redirect("survey:survey_detail")
