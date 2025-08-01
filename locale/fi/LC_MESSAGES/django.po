@@ -486,6 +486,20 @@ msgid_plural "Removed %(removed)d/%(total)d questions."
 msgstr[0] "Poistettu %(removed)d/%(total)d kysymys."
 msgstr[1] "Poistettu %(removed)d/%(total)d kysymystä."
 
+#: wikikysely_project/survey/views.py:934
+#, python-format
+msgid "Removed %(removed)d/%(total)d survey."
+msgid_plural "Removed %(removed)d/%(total)d surveys."
+msgstr[0] "Poistettu %(removed)d/%(total)d kysely."
+msgstr[1] "Poistettu %(removed)d/%(total)d kyselyä."
+
+#: wikikysely_project/survey/views.py:951
+#, python-format
+msgid "Could not remove %(count)d survey because it already had questions."
+msgid_plural "Could not remove %(count)d surveys because they already had questions."
+msgstr[0] "Ei voitu poistaa %(count)d kyselyä, koska siinä oli jo kysymyksiä."
+msgstr[1] "Ei voitu poistaa %(count)d kyselyä, koska niissä oli jo kysymyksiä."
+
 #: wikikysely_project/survey/views.py:791
 #, python-format
 msgid "Could not remove %(count)d question because it already had answers."
