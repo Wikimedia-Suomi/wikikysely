@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 import random
 
 from wikikysely_project.survey.models import Survey, Question, Answer
@@ -24,9 +25,17 @@ class Command(BaseCommand):
 
             # ensure main survey exists and has a creator
             survey = Survey.get_main_survey()
-            survey.creator = users[0]
-            survey.state = "running"
-            survey.save()
+            if survey is None:
+                survey = Survey.objects.create(
+                    title=_('Main Survey'),
+                    description='',
+                    creator=users[0],
+                    state='running',
+                )
+            else:
+                survey.creator = users[0]
+                survey.state = "running"
+                survey.save()
 
             question_texts = [
                 "Are elephants found in Asia?",

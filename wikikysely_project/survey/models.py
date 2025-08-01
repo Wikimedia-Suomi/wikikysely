@@ -19,15 +19,8 @@ class Survey(models.Model):
 
     @classmethod
     def get_main_survey(cls):
-        survey = cls.objects.filter(deleted=False).first()
-        if not survey:
-            survey = cls.objects.create(
-                title=_('Main Survey'),
-                description='',
-                creator=None,
-                state='running',
-            )
-        return survey
+        """Return the first non-deleted survey if it exists."""
+        return cls.objects.filter(deleted=False).first()
 
     def is_active(self):
         return self.state == 'running' and not self.deleted
