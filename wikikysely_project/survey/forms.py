@@ -22,6 +22,10 @@ class SurveyForm(BootstrapMixin, forms.ModelForm):
         fields = ['title', 'description', 'state']
 
 
+class SecretaryAddForm(BootstrapMixin, forms.Form):
+    username = forms.CharField(label=_('Username'))
+
+
 class QuestionForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         model = Question

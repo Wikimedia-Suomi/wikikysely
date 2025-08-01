@@ -258,6 +258,30 @@ msgstr "Poistetut kysymykset"
 msgid "Restore"
 msgstr "Palauta"
 
+#: templates/survey/survey_form.html:19
+msgid "Secretaries"
+msgstr "Sihteerit"
+
+#: templates/survey/survey_form.html:21
+msgid "No secretaries"
+msgstr "Ei sihteereitä"
+
+#: templates/survey/survey_form.html:27
+msgid "Add secretary"
+msgstr "Lisää sihteeri"
+
+#: wikikysely_project/survey/views.py:468
+msgid "Secretary added"
+msgstr "Sihteeri lisätty"
+
+#: wikikysely_project/survey/views.py:487
+msgid "Secretary removed"
+msgstr "Sihteeri poistettu"
+
+#: wikikysely_project/survey/views.py:471 wikikysely_project/survey/views.py:490
+msgid "User not found"
+msgstr "Käyttäjää ei löytynyt"
+
 #: templates/survey/survey_list.html:3 templates/survey/survey_list.html:5
 msgid "Surveys"
 msgstr "Kyselyt"
