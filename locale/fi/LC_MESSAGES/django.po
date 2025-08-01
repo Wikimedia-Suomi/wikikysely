@@ -477,6 +477,10 @@ msgstr "Tili poistettu."
 msgid "Account not removed because all your questions could not be deleted."
 msgstr "Tiliä ei poistettu, koska kaikkia kysymyksiäsi ei voitu poistaa."
 
+#: wikikysely_project/survey/views.py:150
+msgid "Logged out"
+msgstr "Kirjauduit ulos"
+
 #~ msgid "Start date"
 #~ msgstr "Aloituspäivä"
 

@@ -377,3 +377,12 @@ class SurveyFlowTests(TransactionTestCase):
         User = get_user_model()
         self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
         self.assertContains(response, "Account removed.")
+
+    def test_logout_from_protected_page_redirects_to_answers(self):
+        self._create_survey()
+        url = reverse("survey:survey_edit")
+        response = self.client.get(
+            reverse("survey_logout") + f"?next={url}", follow=True
+        )
+        self.assertRedirects(response, reverse("survey:survey_answers"))
+        self.assertContains(response, "Logged out")

@@ -1,6 +1,6 @@
 import random
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, resolve, Resolver404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -19,6 +19,21 @@ from django.utils import timezone
 import json
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm
+
+LOGIN_REQUIRED_VIEWS = {
+    "survey_edit",
+    "question_add",
+    "question_hide",
+    "question_show",
+    "question_delete",
+    "question_edit",
+    "answer_survey",
+    "answer_edit",
+    "answer_delete",
+    "userinfo",
+    "userinfo_download",
+    "user_data_delete",
+}
 
 
 def get_user_answers(user, survey):
@@ -139,6 +154,22 @@ class SurveyLoginView(LoginView):
         if url:
             return url
         return get_login_redirect_url(self.request)
+
+
+def survey_logout(request):
+    """Log the user out and redirect appropriately."""
+    next_url = request.GET.get("next")
+    logout(request)
+    messages.info(request, _("Logged out"))
+
+    if next_url:
+        try:
+            match = resolve(next_url)
+        except Resolver404:
+            match = None
+        if match and match.url_name not in LOGIN_REQUIRED_VIEWS:
+            return redirect(next_url)
+    return redirect("survey:survey_answers")
 
 
 def survey_detail(request):

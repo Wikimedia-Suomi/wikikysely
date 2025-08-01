@@ -48,7 +48,7 @@
       </li>
         {% if request.user.is_authenticated %}
           <li class="nav-item"><a class="nav-link ms-3{% if request.path == userinfo_url %} active{% endif %}" href="{{ userinfo_url }}">{{ request.user.username }}</a></li>
-        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
+        <li class="nav-item"><a class="nav-link ms-3" href="{% url 'survey_logout' %}?next={{ request.path }}">{% translate 'Logout' %}</a></li>
       {% else %}
         {% if local_login_enabled %}
         <li class="nav-item"><a class="nav-link ms-3" href="{% url 'login' %}?next={{ request.path }}">{% translate 'Login' %}</a></li>
