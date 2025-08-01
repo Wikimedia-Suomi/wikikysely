@@ -486,6 +486,20 @@ msgid_plural "Removed %(removed)d/%(total)d questions."
 msgstr[0] "Tog bort %(removed)d/%(total)d fråga."
 msgstr[1] "Tog bort %(removed)d/%(total)d frågor."
 
+#: wikikysely_project/survey/views.py:934
+#, python-format
+msgid "Removed %(removed)d/%(total)d survey."
+msgid_plural "Removed %(removed)d/%(total)d surveys."
+msgstr[0] "Tog bort %(removed)d/%(total)d enkät."
+msgstr[1] "Tog bort %(removed)d/%(total)d enkäter."
+
+#: wikikysely_project/survey/views.py:951
+#, python-format
+msgid "Could not remove %(count)d survey because it already had questions."
+msgid_plural "Could not remove %(count)d surveys because they already had questions."
+msgstr[0] "Kunde inte ta bort %(count)d enkät eftersom den redan hade frågor."
+msgstr[1] "Kunde inte ta bort %(count)d enkäter eftersom de redan hade frågor."
+
 #: wikikysely_project/survey/views.py:791
 #, python-format
 msgid "Could not remove %(count)d question because it already had answers."

@@ -902,6 +902,18 @@ def user_data_delete(request):
             kept_questions += 1
     total_questions = removed_questions + kept_questions
 
+    removed_surveys = 0
+    kept_surveys = 0
+
+    # Delete surveys created by the user that do not have questions
+    for s in Survey.objects.filter(creator=user):
+        if s.questions.exists():
+            kept_surveys += 1
+        else:
+            s.delete()
+            removed_surveys += 1
+    total_surveys = removed_surveys + kept_surveys
+
     # If nothing references the user anymore, remove the account
     has_questions = Question.objects.filter(creator=user).exists()
 
@@ -918,6 +930,12 @@ def user_data_delete(request):
             total_questions,
         )
         % {"removed": removed_questions, "total": total_questions},
+        ngettext(
+            "Removed %(removed)d/%(total)d survey.",
+            "Removed %(removed)d/%(total)d surveys.",
+            total_surveys,
+        )
+        % {"removed": removed_surveys, "total": total_surveys},
     ]
 
     if kept_questions:
@@ -928,6 +946,16 @@ def user_data_delete(request):
                 kept_questions,
             )
             % {"count": kept_questions}
+        )
+
+    if kept_surveys:
+        lines.append(
+            ngettext(
+                "Could not remove %(count)d survey because it already had questions.",
+                "Could not remove %(count)d surveys because they already had questions.",
+                kept_surveys,
+            )
+            % {"count": kept_surveys}
         )
 
     if not has_questions:

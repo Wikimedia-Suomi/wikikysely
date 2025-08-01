@@ -416,6 +416,20 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
         self.assertContains(response, "Account removed.")
 
+    def test_user_data_delete_removes_empty_surveys(self):
+        empty_survey = self._create_survey()
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        other = self.users[1]
+        Answer.objects.create(question=q, user=other, answer="yes")
+
+        response = self.client.post(reverse("survey:user_data_delete"), follow=True)
+        self.assertRedirects(response, reverse("survey:userinfo"))
+        self.assertFalse(Survey.objects.filter(pk=empty_survey.pk).exists())
+        self.assertTrue(Survey.objects.filter(pk=survey.pk).exists())
+        User = get_user_model()
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
     def test_logout_from_protected_page_redirects_to_answers(self):
         self._create_survey()
         url = reverse("survey:survey_edit")
