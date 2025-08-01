@@ -460,7 +460,15 @@ def question_delete(request, pk):
 
     next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
     if next_url:
-        return redirect(next_url)
+        from urllib.parse import urlparse
+
+        try:
+            match = resolve(urlparse(next_url).path)
+        except Resolver404:
+            match = None
+
+        if not (match and match.url_name == "question_edit" and match.kwargs.get("pk") == pk):
+            return redirect(next_url)
     return redirect("survey:survey_detail")
 
 
