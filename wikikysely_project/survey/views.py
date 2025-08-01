@@ -854,12 +854,11 @@ def userinfo_download(request):
             "description": s.description,
             "state": s.state,
             "deleted": s.deleted,
-            "creator": True,
-            "secretary": False,
+            "creator": user.username,
         }
     for s in secretary_surveys:
         if s.id in surveys_dict:
-            surveys_dict[s.id]["secretary"] = True
+            surveys_dict[s.id]["secretary"] = user.username
         else:
             surveys_dict[s.id] = {
                 "id": s.id,
@@ -867,8 +866,7 @@ def userinfo_download(request):
                 "description": s.description,
                 "state": s.state,
                 "deleted": s.deleted,
-                "creator": False,
-                "secretary": True,
+                "secretary": user.username,
             }
 
     data = {
@@ -877,23 +875,25 @@ def userinfo_download(request):
             "username": user.username,
             "date_joined": user.date_joined.isoformat(),
         },
+        "surveys": list(surveys_dict.values()),
         "questions": [
             {
                 "id": q.id,
                 "text": q.text,
                 "survey": q.survey.title if q.survey else None,
+                "creator": user.username,
                 "created_at": q.created_at.isoformat(),
                 "visible": q.visible,
             }
             for q in questions
         ],
-        "surveys": list(surveys_dict.values()),
         "answers": [
             {
                 "id": a.id,
                 "question_id": a.question_id,
                 "question": a.question.text,
                 "answer": a.answer,
+                "creator": user.username,
                 "created_at": a.created_at.isoformat(),
             }
             for a in answers

@@ -12,7 +12,7 @@ class Survey(models.Model):
     title = models.CharField(_('Title'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
     creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True
     )
     secretaries = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -22,6 +22,8 @@ class Survey(models.Model):
     )
     state = models.CharField(_('State'), max_length=7, choices=STATE_CHOICES, default='paused')
     deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
     @classmethod
     def get_main_survey(cls):
@@ -40,7 +42,7 @@ class Question(models.Model):
         Survey, related_name="questions", on_delete=models.PROTECT
     )
     text = models.CharField(max_length=500)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     visible = models.BooleanField(default=True)
 
@@ -53,8 +55,8 @@ class Answer(models.Model):
         ('yes', _('Yes')),
         ('no', _('No')),
     ]
-    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', on_delete=models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     answer = models.CharField(max_length=3, choices=ANSWER_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
