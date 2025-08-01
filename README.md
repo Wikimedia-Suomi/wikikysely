@@ -89,6 +89,20 @@ complete reset:
 ## Runnin code on toolforge
 Note: Using sqlite as database backend is too slow in toolforge. In practice mariadb backend is required.
 
+### Howto request production Oauth keys
+- See [Wikimedia Oauth consumer registration](https://wikitech.wikimedia.org/wiki/Help:Toolforge/My_first_Django_OAuth_tool#Oauth_consumer_registration_(Wikimedia)) for more info. 
+
+* Application name: use a name that indicates that this is production
+* Contact email address: Use a valid email where you can be reached.
+* Applicable project: All is fine
+* OAuth "callback" URL: https://wikikysely.toolforge.org/
+* Select: Allow consumer to specify a callback in requests and use "callback" URL above as a required prefix.
+* Types of grants being requested: Choose "User identity verification only, no ability to read pages or act on a user's behalf."
+* Public RSA key: You can leave this empty at the moment.
+
+Keep the registration window open so you dont lose mediawiki key and secret as these are saved to envvars.
+
+### Installing
 ```bash
 $ ssh YOUR_USER_NAME@login.toolforge.org
 (login.toolforge.org):~$ become YOUR_TOOL_NAME
@@ -98,18 +112,6 @@ tools.wikikysely@...:~$ cd www/python
 tools.wikikysely@...:~$ echo "static-map = /static=/data/project/wikikysely/www/python/src/staticfiles"> uwsgi.ini
 tools.wikikysely@...:~$ git clone https://github.com/Wikimedia-Suomi/wikikysely.git
 tools.wikikysely@...:~$ ln -s wikikysely src
-
-Then you are ready to request your production keys (which you need to be even more careful about not committing):
-- https://wikitech.wikimedia.org/wiki/Help:Toolforge/My_first_Django_OAuth_tool#Oauth_consumer_registration_(Wikimedia)
-
-
-* Application name: use a name that indicates that this is production
-* Contact email address: Use a valid email where you can be reached.
-* Applicable project: All is fine
-* OAuth "callback" URL: https://wikikysely.toolforge.org/
-* Select: Allow consumer to specify a callback in requests and use "callback" URL above as a required prefix.
-* Types of grants being requested: Choose "User identity verification only, no ability to read pages or act on a user's behalf."
-* Public RSA key: You can leave this empty at the moment.
 
 tools.wikikysely@...:~$ toolforge envvars create DJANGO_SECRET
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "very-secret-key"
