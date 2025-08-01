@@ -14,6 +14,12 @@ class Survey(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
     )
+    secretaries = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="secretary_surveys",
+        verbose_name=_("Secretaries"),
+        blank=True,
+    )
     state = models.CharField(_('State'), max_length=7, choices=STATE_CHOICES, default='paused')
     deleted = models.BooleanField(default=False)
 

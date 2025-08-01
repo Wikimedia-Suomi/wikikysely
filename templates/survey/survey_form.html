@@ -12,6 +12,22 @@
   {% endif %}
 </form>
 {% if is_edit %}
+  <h2 class="mt-4">{% translate 'Secretaries' %}</h2>
+  <ul class="list-group mb-3">
+    {% for u in secretaries %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ u.username }}</span>
+        <a href="{% url 'survey:secretary_remove' u.pk %}" class="btn btn-sm btn-danger">{% translate 'Remove' %}</a>
+      </li>
+    {% empty %}
+      <li class="list-group-item">{% translate 'No secretaries' %}</li>
+    {% endfor %}
+  </ul>
+  <form method="post" action="{% url 'survey:secretary_add' %}" class="d-flex mb-4">
+    {% csrf_token %}
+    {{ secretary_form.username }}
+    <button type="submit" class="btn btn-secondary ms-2">{% translate 'Add secretary' %}</button>
+  </form>
   <h2 class="mt-4">{% translate 'Questions' %}</h2>
   <ul class="list-group mb-3">
     {% for q in active_questions %}

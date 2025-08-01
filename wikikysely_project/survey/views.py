@@ -18,7 +18,8 @@ from datetime import timedelta
 from django.utils import timezone
 import json
 from .models import Survey, Question, Answer
-from .forms import SurveyForm, QuestionForm, AnswerForm
+from .forms import SurveyForm, QuestionForm, AnswerForm, SecretaryAddForm
+from django.contrib.auth import get_user_model
 
 LOGIN_REQUIRED_VIEWS = {
     "survey_edit",
@@ -34,6 +35,14 @@ LOGIN_REQUIRED_VIEWS = {
     "userinfo_download",
     "user_data_delete",
 }
+
+
+def can_edit_survey(user, survey):
+    return (
+        user == survey.creator
+        or user.is_superuser
+        or survey.secretaries.filter(pk=user.pk).exists()
+    )
 
 
 def get_user_answers(user, survey):
@@ -249,7 +258,7 @@ def survey_detail(request):
     questions = questions.order_by("pk")
     unanswered_questions = unanswered_questions.order_by("pk")
 
-    can_edit = request.user == survey.creator or request.user.is_superuser
+    can_edit = can_edit_survey(request.user, survey)
 
     unanswered_count = (
         unanswered_questions.count() if request.user.is_authenticated else 0
@@ -292,7 +301,7 @@ def survey_edit(request):
     survey = Survey.get_main_survey()
     if survey is None:
         return redirect("survey:survey_create")
-    if request.user != survey.creator and not request.user.is_superuser:
+    if not can_edit_survey(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
     if request.method == "POST":
@@ -305,6 +314,8 @@ def survey_edit(request):
         form = SurveyForm(instance=survey)
     active_questions = survey.questions.filter(visible=True)
     hidden_questions = survey.questions.filter(visible=False)
+    secretaries = survey.secretaries.all()
+    secretary_form = SecretaryAddForm()
     return render(
         request,
         "survey/survey_form.html",
@@ -314,6 +325,8 @@ def survey_edit(request):
             "is_edit": True,
             "active_questions": active_questions,
             "hidden_questions": hidden_questions,
+            "secretaries": secretaries,
+            "secretary_form": secretary_form,
         },
     )
 
@@ -378,9 +391,7 @@ def question_hide(request, pk):
     question = get_object_or_404(Question, pk=pk, visible=True)
     survey = question.survey
 
-    if not (
-        request.user == survey.creator or request.user.is_superuser
-    ):
+    if not can_edit_survey(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
 
@@ -398,7 +409,7 @@ def question_hide(request, pk):
     if next_url:
         return redirect(next_url)
 
-    if request.user == survey.creator or request.user.is_superuser:
+    if can_edit_survey(request.user, survey):
         return redirect("survey:survey_edit")
     return redirect("survey:survey_detail")
 
@@ -407,7 +418,7 @@ def question_hide(request, pk):
 def question_show(request, pk):
     question = get_object_or_404(Question, pk=pk, visible=False)
     survey = question.survey
-    if request.user != survey.creator and not request.user.is_superuser:
+    if not can_edit_survey(request.user, survey):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_edit")
     if survey.state == "closed":
@@ -446,6 +457,46 @@ def question_delete(request, pk):
     if next_url:
         return redirect(next_url)
     return redirect("survey:survey_detail")
+
+
+@login_required
+def secretary_add(request):
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
+    if not can_edit_survey(request.user, survey):
+        messages.error(request, _("No permission"))
+        return redirect("survey:survey_detail")
+    if request.method == "POST":
+        form = SecretaryAddForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"].strip()
+            User = get_user_model()
+            try:
+                user = User.objects.get(username=username)
+                survey.secretaries.add(user)
+                messages.success(request, _("Secretary added"))
+            except User.DoesNotExist:
+                messages.error(request, _("User not found"))
+    return redirect("survey:survey_edit")
+
+
+@login_required
+def secretary_remove(request, user_id):
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
+    if not can_edit_survey(request.user, survey):
+        messages.error(request, _("No permission"))
+        return redirect("survey:survey_detail")
+    User = get_user_model()
+    try:
+        user = User.objects.get(pk=user_id)
+        survey.secretaries.remove(user)
+        messages.success(request, _("Secretary removed"))
+    except User.DoesNotExist:
+        messages.error(request, _("User not found"))
+    return redirect("survey:survey_edit")
 
 
 @login_required

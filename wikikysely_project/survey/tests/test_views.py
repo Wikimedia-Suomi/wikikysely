@@ -102,6 +102,43 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(survey.state, "paused")
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
+    def test_secretary_can_edit_survey(self):
+        survey = self._create_survey()
+        secretary = self.users[1]
+        survey.secretaries.add(secretary)
+        self.client.logout()
+        self.client.login(username=secretary.username, password="pass")
+        data = {
+            "title": "Sec Edit",
+            "description": "changed",
+            "state": "paused",
+        }
+        response = self.client.post(reverse("survey:survey_edit"), data)
+        survey.refresh_from_db()
+        self.assertEqual(survey.title, "Sec Edit")
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+
+    def test_secretaries_listed_on_edit_page(self):
+        survey = self._create_survey()
+        secretary = self.users[1]
+        survey.secretaries.add(secretary)
+        response = self.client.get(reverse("survey:survey_edit"))
+        self.assertContains(response, secretary.username)
+
+    def test_secretary_add_and_remove(self):
+        survey = self._create_survey()
+        secretary = self.users[1]
+        response = self.client.post(
+            reverse("survey:secretary_add"), {"username": secretary.username}
+        )
+        self.assertRedirects(response, reverse("survey:survey_edit"))
+        self.assertIn(secretary, survey.secretaries.all())
+        response = self.client.post(
+            reverse("survey:secretary_remove", args=[secretary.pk])
+        )
+        self.assertRedirects(response, reverse("survey:survey_edit"))
+        self.assertNotIn(secretary, survey.secretaries.all())
+
     def test_add_question(self):
         survey = self._create_survey()
         data = {"text": "What do you think?"}
