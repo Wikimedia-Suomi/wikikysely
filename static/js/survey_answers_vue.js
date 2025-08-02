@@ -11,12 +11,55 @@ function mountAnswersApp() {
   const wikitextUrl = root.dataset.wikitextUrl;
   const auth = root.dataset.auth === 'true';
   const answerUrlTemplate = root.dataset.answerUrlTemplate;
+  const yesLabel = root.dataset.yesLabel;
+  const noLabel = root.dataset.noLabel;
 
   const app = createApp({
     setup() {
       const rows = ref([]);
       const totalUsers = ref(0);
       const loading = ref(true);
+      const pieChart = ref(null);
+      const barChart = ref(null);
+
+      function renderCharts() {
+        if (typeof Chart === 'undefined') return;
+        const yesTotal = rows.value.reduce((sum, r) => sum + r.yes, 0);
+        const noTotal = rows.value.reduce((sum, r) => sum + r.no, 0);
+        const pieCtx = document.getElementById('answerPieChart');
+        if (pieCtx) {
+          if (pieChart.value) pieChart.value.destroy();
+          pieChart.value = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+              labels: [yesLabel, noLabel],
+              datasets: [{
+                data: [yesTotal, noTotal],
+                backgroundColor: ['#198754', '#dc3545']
+              }]
+            }
+          });
+        }
+        const barCtx = document.getElementById('answerBarChart');
+        if (barCtx) {
+          if (barChart.value) barChart.value.destroy();
+          barChart.value = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+              labels: [yesLabel, noLabel],
+              datasets: [{
+                data: [yesTotal, noTotal],
+                backgroundColor: ['#198754', '#dc3545']
+              }]
+            },
+            options: {
+              plugins: {
+                legend: { display: false }
+              }
+            }
+          });
+        }
+      }
 
       function fetchData() {
         loading.value = true;
@@ -42,6 +85,7 @@ function mountAnswersApp() {
               if (typeof initSortableTables === 'function') {
                 initSortableTables('#answerTable');
               }
+              renderCharts();
             });
           });
       }

@@ -200,7 +200,9 @@
      data-page-url="{% url 'survey:survey_answers' %}"
      data-wikitext-url="{% url 'survey:survey_answers_wikitext' %}"
      data-answer-url-template="{% url 'survey:answer_question' 0 %}"
-     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}">
+     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+     data-yes-label="{% translate 'Yes' %}"
+     data-no-label="{% translate 'No' %}">
 </div>
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>

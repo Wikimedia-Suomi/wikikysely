@@ -7,12 +7,18 @@
      data-page-url="{% url 'survey:survey_answers' %}"
      data-wikitext-url="{% url 'survey:survey_answers_wikitext' %}"
      data-answer-url-template="{% url 'survey:answer_question' 0 %}"
-     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}">
+     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+     data-yes-label="{% translate 'Yes' %}"
+     data-no-label="{% translate 'No' %}">
   <div v-if="loading">{% translate 'Loading...' %}</div>
   <template v-else>
     <h1>{% translate 'Answers' %}</h1>
     <p class="mt-3">{% translate 'Total respondents' %}: [[ totalUsers ]]</p>
-    <h2>{% translate 'Answer table' %}</h2>
+    <h2 class="mt-4">{% translate 'Pie chart' %}</h2>
+    <canvas id="answerPieChart"></canvas>
+    <h2 class="mt-4">{% translate 'Bar chart' %}</h2>
+    <canvas id="answerBarChart"></canvas>
+    <h2 class="mt-4">{% translate 'Answer table' %}</h2>
     <div class="table-responsive">
       <table id="answerTable" class="table stacked-table">
         <thead>
