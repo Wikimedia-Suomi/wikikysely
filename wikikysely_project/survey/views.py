@@ -740,20 +740,21 @@ def answer_question(request, pk):
                         }
                     )
 
-                if answer is not None and next_url:
-                    from urllib.parse import urlparse
-                    print(next_url)
-
-                    if urlparse(next_url).path != request.path:
-                        print("REDIRECT")
+                if answer is not None:
+                    if next_url:
                         return redirect(next_url)
+                    return redirect(request.path)
 
                 answered_questions = Answer.objects.filter(
                     user=request.user, question__survey=survey
                 ).values_list("question_id", flat=True)
-                question = survey.questions.filter(visible=True).exclude(
-                    id__in=answered_questions
-                ).exclude(id=question.pk).order_by('?').first()
+                question = (
+                    survey.questions.filter(visible=True)
+                    .exclude(id__in=answered_questions)
+                    .exclude(id=question.pk)
+                    .order_by("?")
+                    .first()
+                )
 
                 if not question:
                     messages.info(request, _("No more questions"))

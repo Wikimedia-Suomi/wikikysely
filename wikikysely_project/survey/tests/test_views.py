@@ -259,24 +259,25 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.post(
             reverse("survey:answer_question", kwargs={"pk": questions[0].pk}),
             edit_data,
+            follow=True,
         )
         answer.refresh_from_db()
         self.assertEqual(answer.answer, "no")
         self.assertEqual(response.status_code, 200)
-        self.assertIn("question", response.context)
-        self.assertNotEqual(response.context["question"].pk, questions[0].pk)
+        self.assertEqual(response.context["question"].pk, questions[0].pk)
 
-    def test_redirects_to_next_unanswered_when_next_same_page(self):
+    def test_edit_returns_to_same_page_when_next_same_page(self):
         survey = self._create_survey()
         questions = self._create_questions(survey, 2)
-        Answer.objects.create(question=questions[0], user=self.user, answer="yes")
+        answer = Answer.objects.create(question=questions[0], user=self.user, answer="yes")
         edit_url = reverse("survey:answer_question", args=[questions[0].pk])
         response = self.client.post(
             f"{edit_url}?next={edit_url}",
             {"question_id": questions[0].pk, "answer": "no"},
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["question"].pk, questions[1].pk)
+        answer.refresh_from_db()
+        self.assertEqual(answer.answer, "no")
+        self.assertRedirects(response, edit_url)
 
     def test_results_view(self):
         survey = self._create_survey()
