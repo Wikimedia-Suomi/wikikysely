@@ -277,7 +277,14 @@ def questions_json(request):
             item["my_answer_id"] = ans.id
         data.append(item)
 
-    return JsonResponse({"questions": data})
+    total_users = (
+        Answer.objects.filter(question__survey=survey)
+        .values("user")
+        .distinct()
+        .count()
+    )
+
+    return JsonResponse({"questions": data, "total_users": total_users})
 
 
 @login_required
@@ -1034,7 +1041,7 @@ def survey_answers(request):
             "data": data,
             "total_users": total_users,
             "yes_label": yes_label,
-            "no_label": no_label,
+        "no_label": no_label,
         "no_answers_label": no_answers_label,
         },
     )

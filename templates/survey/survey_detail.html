@@ -195,6 +195,13 @@
     </div>
   </template>
 </div>
+<div id="survey-answers-app" class="d-none"
+     data-json-url="{% url 'survey:questions_json' %}"
+     data-page-url="{% url 'survey:survey_answers' %}"
+     data-wikitext-url="{% url 'survey:survey_answers_wikitext' %}"
+     data-answer-url-template="{% url 'survey:answer_question' 0 %}"
+     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}">
+</div>
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
 {% endif %}
@@ -207,4 +214,5 @@
   window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
 </script>
 <script src="{% static 'js/survey_detail_vue.js' %}"></script>
+<script src="{% static 'js/survey_answers_vue.js' %}"></script>
 {% endblock %}
