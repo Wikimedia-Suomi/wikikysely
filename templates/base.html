@@ -17,23 +17,30 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="{% translate 'Toggle navigation' %}">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbar-main">
-      {% url 'survey:survey_detail' as survey_detail_url %}
-      {% url 'survey:survey_answers' as survey_answers_url %}
-      {% url 'survey:userinfo' as userinfo_url %}
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
-        <li id="nav-answer-app" class="nav-item"
-            data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
-            data-answer-url="{{ survey_detail_url }}"
-            data-is-active="{% if request.path == survey_detail_url %}true{% else %}false{% endif %}">
-          {% translate 'Answer survey' as answer_label %}
-          <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
-          <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>
-        </li>
-        <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
-      </ul>
-      <ul id="userbar" class="navbar-nav ms-auto">
+      <div class="collapse navbar-collapse" id="navbar-main">
+        {% url 'survey:survey_detail' as survey_detail_url %}
+        {% url 'survey:survey_answers' as survey_answers_url %}
+        {% url 'survey:userinfo' as userinfo_url %}
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
+          <li id="nav-answer-app" class="nav-item"
+              data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+              data-answer-url="{{ survey_detail_url }}"
+              data-is-active="{% if request.path == survey_detail_url %}true{% else %}false{% endif %}">
+            {% translate 'Answer survey' as answer_label %}
+            <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
+            <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>
+          </li>
+          {% translate 'Answers' as answers_label %}
+          <li id="nav-answers-app" class="nav-item"
+              data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+              data-page-url="{{ survey_answers_url }}"
+              data-is-active="{% if request.path == survey_answers_url %}true{% else %}false{% endif %}"
+              data-label="{{ answers_label }}">
+            <a class="nav-link" :class="{ active: isActive }" :href="pageUrl" @click.prevent="open">[[ label ]]</a>
+          </li>
+        </ul>
+        <ul id="userbar" class="navbar-nav ms-auto">
       <li class="nav-item">
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}

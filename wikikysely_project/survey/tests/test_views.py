@@ -269,11 +269,7 @@ class SurveyFlowTests(TransactionTestCase):
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer="yes")
         response = self.client.get(reverse("survey:survey_answers"))
-        self.assertContains(
-            response,
-            '<td data-label="My answer">Yes</td>',
-            html=True,
-        )
+        self.assertEqual(response.context["data"][0]["my_answer"], "Yes")
 
     def test_answers_wikitext_contains_json(self):
         survey = self._create_survey()
@@ -404,13 +400,15 @@ class SurveyFlowTests(TransactionTestCase):
         self.client.logout()
         response = self.client.get(reverse("survey:questions_json"))
         self.assertEqual(response.status_code, 200)
-        data = response.json()["questions"][0]
+        body = response.json()
+        data = body["questions"][0]
         self.assertEqual(data["yes_count"], 1)
         self.assertEqual(data["no_count"], 1)
         self.assertEqual(data["total_answers"], 2)
         self.assertNotIn("my_answer", data)
         self.assertNotIn("my_answer_id", data)
         self.assertFalse(data["is_creator"])
+        self.assertEqual(body["total_users"], 2)
 
     def test_questions_json_authenticated(self):
         survey = self._create_survey()
@@ -419,11 +417,13 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:questions_json"))
         self.assertEqual(response.status_code, 200)
-        data = response.json()["questions"][0]
+        body = response.json()
+        data = body["questions"][0]
         self.assertEqual(data["my_answer"], "yes")
         self.assertIsNotNone(data.get("my_answered_at"))
         self.assertEqual(data["my_answer_id"], ans.id)
         self.assertTrue(data["is_creator"])
+        self.assertEqual(body["total_users"], 1)
 
     def test_api_answer_create_edit_delete(self):
         survey = self._create_survey()

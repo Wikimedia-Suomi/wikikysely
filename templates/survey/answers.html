@@ -2,197 +2,52 @@
 {% load i18n static %}
 {% block title %}{% translate 'Answers' %}{% endblock %}
 {% block content %}
-{% if not request.user.is_authenticated and data %}
-  {% if request.GET.login_required %}
-    <p class="alert alert-info">
-      {% translate 'You must be logged in to answer questions' %}.
-      {% if local_login_enabled %}
-      <a href="{% url 'login' %}?next={% url 'login_redirect' %}">{% translate 'Login' %}</a>
-      {% else %}
-      <a href="{% url 'social:begin' 'mediawiki' %}?next={% url 'login_redirect' %}">{% translate 'Login with Wikimedia' %}</a>
-      {% endif %}
-    </p>
-  {% endif %}
-{% endif %}
-<p>{{ survey.description }}</p>
-{% if request.user.is_authenticated %}
-    {% if data and survey.state == 'running' %}
-      {% if unanswered_count %}
-      <a href="{% url 'survey:survey_detail' %}" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
-      {% endif %}
-      <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
-    {% endif %}
-  {% else %}
-    {% if data %}
-      <a href="?login_required=1" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
-      <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
-    {% endif %}
-  {% endif %}
-<h1>{% translate 'Answers' %}</h1>
-<div class="mb-3">
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie" checked>
-    <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar">
-    <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
-  </div>
-</div>
-<div class="table-responsive">
-<table id="barChartTable" class="table" style="display:none">
-  <tbody>
-  {% for row in data %}
-  <tr>
-    <td class="bar-chart-question">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
-    </td>
-    <td class="w-100">
-      <div class="progress" style="height: 1.25rem;">
-        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
-        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%">{{ row.no }}</div>
-      </div>
-    </td>
-  </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
-<div id="pieChartsContainer" style="display:none">
-  <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4 justify-content-center">
-{% for row in data %}
-  <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
-    <canvas></canvas>
-    <p class="mt-2">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
-    </p>
-  </div>
-{% endfor %}
-</div>
-</div>
-<p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
-<h2>{% translate 'Answer table' %}</h2>
-<div class="table-responsive">
-<table id="answerTable" class="table stacked-table">
-<thead>
-<tr>
-  <th>{% translate 'Published' %}</th>
-  <th>{% translate 'Question' %}</th>
-  {% if request.user.is_authenticated %}
-  <th>{% translate 'My answer' %}</th>
-  {% endif %}
-  <th>{% translate 'Yes' %}</th>
-  <th>{% translate 'No' %}</th>
-  <th>{% translate 'Total' %}</th>
-  <th>{% translate 'Agree' %}</th>
-</tr>
-</thead>
-<tbody>
-{% for row in data %}
-<tr>
-  <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
-  <td data-label="{% translate 'Question' %}">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
-  </td>
-  {% if request.user.is_authenticated %}
-  <td data-label="{% translate 'My answer' %}">{{ row.my_answer | default:""}}</td>
-  {% endif %}
-  <td data-label="{% translate 'Yes' %}">{{ row.yes }}</td>
-  <td data-label="{% translate 'No' %}">{{ row.no }}</td>
-  <td data-label="{% translate 'Total' %}">{{ row.total }}</td>
-  <td data-label="{% translate 'Agree' %}">{{ row.agree_ratio|floatformat:1 }}%</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<div id="survey-answers-app"
+     data-json-url="{% url 'survey:questions_json' %}"
+     data-page-url="{% url 'survey:survey_answers' %}"
+     data-wikitext-url="{% url 'survey:survey_answers_wikitext' %}"
+     data-answer-url-template="{% url 'survey:answer_question' 0 %}"
+     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}">
+  <div v-if="loading">{% translate 'Loading...' %}</div>
+  <template v-else>
+    <h1>{% translate 'Answers' %}</h1>
+    <p class="mt-3">{% translate 'Total respondents' %}: [[ totalUsers ]]</p>
+    <h2>{% translate 'Answer table' %}</h2>
+    <div class="table-responsive">
+      <table id="answerTable" class="table stacked-table">
+        <thead>
+        <tr>
+          <th>{% translate 'Published' %}</th>
+          <th>{% translate 'Question' %}</th>
+          <th v-if="auth">{% translate 'My answer' %}</th>
+          <th>{% translate 'Yes' %}</th>
+          <th>{% translate 'No' %}</th>
+          <th>{% translate 'Total' %}</th>
+          <th>{% translate 'Agree' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="row in rows" :key="row.id">
+          <td data-label="{% translate 'Published' %}">[[ row.published.slice(0,10) ]]</td>
+          <td data-label="{% translate 'Question' %}">
+            <a v-if="auth" :href="answerUrl(row.id)">[[ row.text ]]</a>
+            <span v-else>[[ row.text ]]</span>
+          </td>
+          <td v-if="auth" data-label="{% translate 'My answer' %}">[[ row.my_answer || '' ]]</td>
+          <td data-label="{% translate 'Yes' %}">[[ row.yes ]]</td>
+          <td data-label="{% translate 'No' %}">[[ row.no ]]</td>
+          <td data-label="{% translate 'Total' %}">[[ row.total ]]</td>
+          <td data-label="{% translate 'Agree' %}">[[ row.agree_ratio.toFixed(1) ]]%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
-const yesLabel = '{{ yes_label|escapejs }}';
-const noLabel = '{{ no_label|escapejs }}';
-const noAnswersLabel = '{{ no_answers_label|escapejs }}';
-const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
-const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
-const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
-    getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary').trim() || 'gray';
-
-// Pie charts
-const pieContainers = document.querySelectorAll('#pieCharts .pie-chart');
-const totals = Array.from(pieContainers, el => parseInt(el.dataset.total));
-const maxTotal = Math.max(...totals, 1);
-const maxSize = 200;
-pieContainers.forEach(el => {
-    const yes = parseInt(el.dataset.yes);
-    const no = parseInt(el.dataset.no);
-    const total = parseInt(el.dataset.total);
-    const placeholderSize = 100;
-    const size = total === 0 ? placeholderSize : maxSize * Math.sqrt(total / maxTotal);
-    const canvas = el.querySelector('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const data = total === 0 ? [1] : [yes, no];
-    const colors = total === 0 ? [placeholderColor] : [successColor, dangerColor];
-    new Chart(canvas, {
-        type: 'pie',
-        data: {
-            labels: total === 0 ? [noAnswersLabel] : [yesLabel, noLabel],
-            datasets: [{
-                data: data,
-                backgroundColor: colors
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-});
-
-function updateChartVisibility(type) {
-    const barEl = document.getElementById('barChartTable');
-    const pieEl = document.getElementById('pieChartsContainer');
-    if (type === 'bar') {
-        barEl.style.display = '';
-        pieEl.style.display = 'none';
-    } else {
-        barEl.style.display = 'none';
-        pieEl.style.display = '';
-    }
-}
-
-const chartTypeKey = 'resultsChartType';
-let savedType = localStorage.getItem(chartTypeKey) || 'pie';
-document.getElementById(savedType + 'ChartRadio').checked = true;
-updateChartVisibility(savedType);
-
-document.querySelectorAll('input[name="chartType"]').forEach(radio => {
-    radio.addEventListener('change', e => {
-        const type = e.target.value;
-        localStorage.setItem(chartTypeKey, type);
-        updateChartVisibility(type);
-    });
-});
-</script>
 <script src="{% static 'js/sort_tables.js' %}"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables("#answerTable");
-});
-</script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="{% static 'js/survey_answers_vue.js' %}"></script>
 {% endblock %}
+
