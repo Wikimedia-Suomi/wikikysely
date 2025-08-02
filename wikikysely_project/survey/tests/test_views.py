@@ -484,6 +484,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data["total_answers"], 2)
         self.assertNotIn("my_answer", data)
         self.assertNotIn("my_answer_id", data)
+        self.assertFalse(data["is_creator"])
 
     def test_questions_json_authenticated(self):
         survey = self._create_survey()
@@ -496,3 +497,4 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data["my_answer"], "yes")
         self.assertIsNotNone(data.get("my_answered_at"))
         self.assertEqual(data["my_answer_id"], ans.id)
+        self.assertTrue(data["is_creator"])
