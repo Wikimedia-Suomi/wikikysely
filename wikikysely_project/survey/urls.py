@@ -9,7 +9,6 @@ urlpatterns = [
     path("survey/create/", views.survey_create, name="survey_create"),
     path("register/", views.register, name="register"),
     path("survey/edit/", views.survey_edit, name="survey_edit"),
-    path("survey/answer/", views.answer_survey, name="answer_survey"),
     path("survey/question/add/", views.question_add, name="question_add"),
     path("question/<int:pk>/edit/", views.question_edit, name="question_edit"),
     path("question/<int:pk>/hide/", views.question_hide, name="question_hide"),
@@ -22,7 +21,6 @@ urlpatterns = [
         name="secretary_remove",
     ),
     path("question/<int:pk>/", views.answer_question, name="answer_question"),
-    path("answer/<int:pk>/edit/", views.answer_edit, name="answer_edit"),
     path("answer/<int:pk>/delete/", views.answer_delete, name="answer_delete"),
     path(
         "api/question/<int:pk>/answer/",

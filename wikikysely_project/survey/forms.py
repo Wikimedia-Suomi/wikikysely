@@ -1,5 +1,5 @@
 from django import forms
-from .models import Survey, Question, Answer
+from .models import Survey, Question
 from django.utils.translation import gettext_lazy as _
 
 
@@ -35,14 +35,3 @@ class QuestionForm(BootstrapMixin, forms.ModelForm):
         }
 
 
-class AnswerForm(BootstrapMixin, forms.ModelForm):
-    answer = forms.ChoiceField(
-        choices=Answer.ANSWER_CHOICES + [('', _('Skip'))],
-        widget=forms.RadioSelect,
-        required=False,
-    )
-    question_id = forms.IntegerField(widget=forms.HiddenInput)
-
-    class Meta:
-        model = Answer
-        fields = ['answer']
