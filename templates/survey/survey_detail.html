@@ -115,10 +115,19 @@
           <div v-if="isAuthenticated">
             <div class="answer-buttons mb-2" role="group">
               <div class="btn-group yes-no-group me-2" role="group">
-                <button class="btn btn-success" @click="submitAnswer('yes')">{% translate 'Yes' %}</button>
-                <button class="btn btn-danger" @click="submitAnswer('no')">{% translate 'No' %}</button>
+                <button
+                  :class="['btn', currentQuestion.my_answer ? (currentQuestion.my_answer === 'yes' ? 'btn-success' : 'btn-outline-success') : 'btn-success']"
+                  @click="submitAnswer('yes')">{% translate 'Yes' %}</button>
+                <button
+                  :class="['btn', currentQuestion.my_answer ? (currentQuestion.my_answer === 'no' ? 'btn-danger' : 'btn-outline-danger') : 'btn-danger']"
+                  @click="submitAnswer('no')">{% translate 'No' %}</button>
               </div>
-              <button class="btn btn-secondary" @click="submitAnswer('')">{% translate 'Skip' %}</button>
+              <template v-if="currentQuestion.my_answer">
+                <button v-if="isRunning" class="btn btn-danger me-2" @click="deleteAnswer(currentQuestion)">{% translate 'Remove answer' %}</button>
+              </template>
+              <template v-else>
+                <button class="btn btn-secondary" @click="submitAnswer('')">{% translate 'Skip' %}</button>
+              </template>
               <button class="btn btn-link" @click="closeQuestion">{% translate 'Back' %}</button>
             </div>
           </div>
