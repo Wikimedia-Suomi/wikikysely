@@ -8,6 +8,7 @@ const app = createApp({
   setup() {
     const questions = ref([]);
     const loading = ref(true);
+    const currentQuestion = ref(null);
     const root = document.getElementById('survey-detail-app');
     const isAuthenticated = root.dataset.auth === 'true';
     const answerUrlTemplate = root.dataset.answerUrlTemplate;
@@ -36,6 +37,9 @@ const app = createApp({
     const userAnswers = computed(() =>
       questions.value.filter(q => q.my_answer)
     );
+    const otherUserAnswers = computed(() =>
+      questions.value.filter(q => q.my_answer && (!currentQuestion.value || q.id !== currentQuestion.value.id))
+    );
 
     function getCookie(name) {
       const value = `; ${document.cookie}`;
@@ -44,11 +48,15 @@ const app = createApp({
     }
 
     function fetchQuestions() {
+      const currentId = currentQuestion.value ? currentQuestion.value.id : null;
       loading.value = true;
       fetch(window.questionsJsonUrl)
         .then(resp => resp.json())
         .then(data => {
           questions.value = data.questions || [];
+          if (currentId) {
+            currentQuestion.value = questions.value.find(q => q.id === currentId) || null;
+          }
           if (window.unansweredCount && 'value' in window.unansweredCount) {
             window.unansweredCount.value = questions.value.filter(q => !q.my_answer).length;
           }
@@ -97,6 +105,35 @@ const app = createApp({
       return answerDeleteUrlTemplate.replace('0', id);
     }
 
+    function openQuestion(q) {
+      currentQuestion.value = q;
+    }
+
+    function closeQuestion() {
+      currentQuestion.value = null;
+    }
+
+    function submitAnswer(ans) {
+      if (!currentQuestion.value) return;
+      const url = answerUrlTemplate.replace('0', currentQuestion.value.id);
+      const formData = new FormData();
+      formData.append('answer', ans);
+      formData.append('question_id', currentQuestion.value.id);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: formData
+      }).then(resp => resp.ok ? resp.json() : Promise.reject())
+        .then(() => {
+          fetchQuestions();
+          closeQuestion();
+        })
+        .catch(() => window.location.reload());
+    }
+
     onMounted(fetchQuestions);
 
     return {
@@ -104,15 +141,20 @@ const app = createApp({
       isAuthenticated,
       isRunning,
       questions,
+      currentQuestion,
       answerSurveyUrl,
       questionEditUrl,
       unansweredQuestions,
       userAnswers,
+      otherUserAnswers,
       formatDate,
       answerUrl,
       updateAnswer,
       deleteAnswer,
-      deleteUrl
+      deleteUrl,
+      openQuestion,
+      closeQuestion,
+      submitAnswer
     };
   }
 });

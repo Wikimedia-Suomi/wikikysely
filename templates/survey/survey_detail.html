@@ -28,83 +28,146 @@
      data-answer-survey-url="{% url 'survey:answer_survey' %}">
   <p v-if="loading">{% translate 'Loading...' %}</p>
   <template v-else>
-    <div class="mb-3" v-if="isAuthenticated">
-      <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-      <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
-      <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
-    </div>
-    <div class="mb-3" v-else>
-      <a v-if="questions.length" href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-    </div>
-    <h2 class="mt-3" v-if="unansweredQuestions.length">{% translate 'Unanswered questions' %}</h2>
-    <div class="table-responsive" v-if="unansweredQuestions.length">
-      <table class="table mb-3 survey-detail-table stacked-table">
-        <thead>
-        <tr>
-          <th>{% translate 'Published' %}</th>
-          <th>{% translate 'Title' %}</th>
-          <th>{% translate 'Answers' %}</th>
-          <th>{% translate 'Agree' %}</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="q in unansweredQuestions" :key="q.id">
-          <td data-label="{% translate 'Published' %}">[[ formatDate(q.created_at) ]]</td>
-          <td data-label="{% translate 'Title' %}">
-            <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
-            <span v-else>[[ q.text ]]</span>
-          </td>
-          <td class="total-answers" data-label="{% translate 'Answers' %}">[[ q.total_answers ]]</td>
-          <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
-          <td class="text-end">
-            <a v-if="q.total_answers === 0 && q.is_creator" :href="questionEditUrl(q.id)" class="btn btn-sm btn-warning">{% translate 'Edit question' %}</a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    <div v-if="!currentQuestion">
+      <div class="mb-3" v-if="isAuthenticated">
+        <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+        <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
+        <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+      </div>
+      <div class="mb-3" v-else>
+        <a v-if="questions.length" href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+      </div>
+      <h2 class="mt-3" v-if="unansweredQuestions.length">{% translate 'Unanswered questions' %}</h2>
+      <div class="table-responsive" v-if="unansweredQuestions.length">
+        <table class="table mb-3 survey-detail-table stacked-table">
+          <thead>
+          <tr>
+            <th>{% translate 'Published' %}</th>
+            <th>{% translate 'Title' %}</th>
+            <th>{% translate 'Answers' %}</th>
+            <th>{% translate 'Agree' %}</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="q in unansweredQuestions" :key="q.id">
+            <td data-label="{% translate 'Published' %}">[[ formatDate(q.created_at) ]]</td>
+            <td data-label="{% translate 'Title' %}">
+              <a v-if="isAuthenticated" :href="answerUrl(q.id)" @click.prevent="openQuestion(q)">[[ q.text ]]</a>
+              <span v-else>[[ q.text ]]</span>
+            </td>
+            <td class="total-answers" data-label="{% translate 'Answers' %}">[[ q.total_answers ]]</td>
+            <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
+            <td class="text-end">
+              <a v-if="q.total_answers === 0 && q.is_creator" :href="questionEditUrl(q.id)" class="btn btn-sm btn-warning">{% translate 'Edit question' %}</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <h2 class="mt-4" v-if="userAnswers.length">{% translate 'My answers' %}</h2>
-    <div class="table-responsive" v-if="userAnswers.length">
-      <table class="table mb-3 survey-detail-table stacked-table">
-        <thead>
-        <tr>
-          <th>{% translate 'Published' %}</th>
-          <th>{% translate 'Title' %}</th>
-          <th>{% translate 'Answers' %}</th>
-          <th>{% translate 'Agree' %}</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="a in userAnswers" :key="a.id">
-          <td data-label="{% translate 'Published' %}">[[ formatDate(a.created_at) ]]</td>
-          <td data-label="{% translate 'Title' %}"><a :href="answerUrl(a.id)">[[ a.text ]]</a></td>
-          <td class="total-answers" data-label="{% translate 'Answers' %}">[[ a.total_answers ]]</td>
-          <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ a.agree_ratio.toFixed(1) ]]%</td>
-          <td class="text-end">
-            <template v-if="isRunning">
-              <form class="d-inline" @change="updateAnswer(a)">
-                <input type="hidden" name="question_id" :value="a.id">
-                <div class="btn-group yes-no-group" role="group">
-                  <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-yes'" value="yes" v-model="a.my_answer">
-                  <label class="btn btn-sm btn-outline-success" :for="'answer-' + a.id + '-yes'">{% translate 'Yes' %}</label>
-                  <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-no'" value="no" v-model="a.my_answer">
-                  <label class="btn btn-sm btn-outline-danger" :for="'answer-' + a.id + '-no'">{% translate 'No' %}</label>
-                </div>
-              </form>
-              <a :href="deleteUrl(a.my_answer_id)" class="btn btn-sm btn-danger ms-2" @click.prevent="deleteAnswer(a)">{% translate 'Remove answer' %}</a>
-            </template>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+      <h2 class="mt-4" v-if="userAnswers.length">{% translate 'My answers' %}</h2>
+      <div class="table-responsive" v-if="userAnswers.length">
+        <table class="table mb-3 survey-detail-table stacked-table">
+          <thead>
+          <tr>
+            <th>{% translate 'Published' %}</th>
+            <th>{% translate 'Title' %}</th>
+            <th>{% translate 'Answers' %}</th>
+            <th>{% translate 'Agree' %}</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="a in userAnswers" :key="a.id">
+            <td data-label="{% translate 'Published' %}">[[ formatDate(a.created_at) ]]</td>
+            <td data-label="{% translate 'Title' %}"><a :href="answerUrl(a.id)" @click.prevent="openQuestion(a)">[[ a.text ]]</a></td>
+            <td class="total-answers" data-label="{% translate 'Answers' %}">[[ a.total_answers ]]</td>
+            <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ a.agree_ratio.toFixed(1) ]]%</td>
+            <td class="text-end">
+              <template v-if="isRunning">
+                <form class="d-inline" @change="updateAnswer(a)">
+                  <input type="hidden" name="question_id" :value="a.id">
+                  <div class="btn-group yes-no-group" role="group">
+                    <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-yes'" value="yes" v-model="a.my_answer">
+                    <label class="btn btn-sm btn-outline-success" :for="'answer-' + a.id + '-yes'">{% translate 'Yes' %}</label>
+                    <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-no'" value="no" v-model="a.my_answer">
+                    <label class="btn btn-sm btn-outline-danger" :for="'answer-' + a.id + '-no'">{% translate 'No' %}</label>
+                  </div>
+                </form>
+                <a :href="deleteUrl(a.my_answer_id)" class="btn btn-sm btn-danger ms-2" @click.prevent="deleteAnswer(a)">{% translate 'Remove answer' %}</a>
+              </template>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <p class="alert alert-warning" v-if="!unansweredQuestions.length && !userAnswers.length">
-      {% translate 'This survey has no questions yet. Please add questions.' %}
-    </p>
+      <p class="alert alert-warning" v-if="!unansweredQuestions.length && !userAnswers.length">
+        {% translate 'This survey has no questions yet. Please add questions.' %}
+      </p>
+    </div>
+    <div v-else>
+      <div class="card mx-auto mb-4" style="max-width: 40rem;">
+        <div class="card-body text-center">
+          <h2 class="card-title mb-0">[[ currentQuestion.text ]]</h2>
+          <div v-if="isAuthenticated">
+            <div class="answer-buttons mb-2" role="group">
+              <div class="btn-group yes-no-group me-2" role="group">
+                <button class="btn btn-success" @click="submitAnswer('yes')">{% translate 'Yes' %}</button>
+                <button class="btn btn-danger" @click="submitAnswer('no')">{% translate 'No' %}</button>
+              </div>
+              <button class="btn btn-secondary" @click="submitAnswer('')">{% translate 'Skip' %}</button>
+              <button class="btn btn-link" @click="closeQuestion">{% translate 'Back' %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="mt-4">{% translate 'Answer details' %}</h2>
+      <div class="table-responsive">
+        <table class="table mb-3 stacked-table">
+          <thead>
+            <tr>
+              <th>{% translate 'Yes' %}</th>
+              <th>{% translate 'No' %}</th>
+              <th>{% translate 'Total' %}</th>
+              <th>{% translate 'Agree' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="{% translate 'Yes' %}">[[ currentQuestion.yes_count ]]</td>
+              <td data-label="{% translate 'No' %}">[[ currentQuestion.no_count ]]</td>
+              <td data-label="{% translate 'Total' %}">[[ currentQuestion.total_answers ]]</td>
+              <td data-label="{% translate 'Agree' %}">[[ currentQuestion.agree_ratio.toFixed(1) ]]%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="mt-4" v-if="otherUserAnswers.length">{% translate 'My answers' %}</h2>
+      <div class="table-responsive" v-if="otherUserAnswers.length">
+        <table class="table mb-3 survey-detail-table stacked-table">
+          <thead>
+            <tr>
+              <th>{% translate 'Published' %}</th>
+              <th>{% translate 'Title' %}</th>
+              <th>{% translate 'Answers' %}</th>
+              <th>{% translate 'Agree' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="a in otherUserAnswers" :key="a.id">
+              <td data-label="{% translate 'Published' %}">[[ formatDate(a.created_at) ]]</td>
+              <td data-label="{% translate 'Title' %}"><a :href="answerUrl(a.id)" @click.prevent="openQuestion(a)">[[ a.text ]]</a></td>
+              <td class="total-answers" data-label="{% translate 'Answers' %}">[[ a.total_answers ]]</td>
+              <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ a.agree_ratio.toFixed(1) ]]%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </template>
 </div>
 {% if can_edit %}
