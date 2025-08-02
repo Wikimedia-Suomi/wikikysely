@@ -70,7 +70,7 @@
     <td data-label="{% translate 'Answer' %}">{{ answer.get_answer_display }}</td>
     <td class="text-end" data-label="">
       {% if answer.question.survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:api_answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
       {% endif %}
     </td>
   </tr>

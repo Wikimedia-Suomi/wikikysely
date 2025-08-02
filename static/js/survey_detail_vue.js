@@ -12,8 +12,9 @@ const app = createApp({
     const root = document.getElementById('survey-detail-app');
     const isAuthenticated = root.dataset.auth === 'true';
     const answerUrlTemplate = root.dataset.answerUrlTemplate;
-    const answerEditUrlTemplate = root.dataset.answerEditUrlTemplate;
+    const answerApiUrlTemplate = root.dataset.answerApiUrlTemplate;
     const answerDeleteUrlTemplate = root.dataset.answerDeleteUrlTemplate;
+    const answerDeleteApiUrlTemplate = root.dataset.answerDeleteApiUrlTemplate;
     const questionEditUrlTemplate = root.dataset.questionEditUrlTemplate;
     const isRunning = root.dataset.running === 'true';
     const answerSurveyUrl = root.dataset.answerSurveyUrl;
@@ -72,7 +73,7 @@ const app = createApp({
     }
 
     function updateAnswer(a) {
-      const url = answerEditUrlTemplate.replace('0', a.my_answer_id);
+      const url = answerApiUrlTemplate.replace('0', a.id);
       const formData = new FormData();
       formData.append('answer', a.my_answer);
       formData.append('question_id', a.id);
@@ -89,7 +90,7 @@ const app = createApp({
     }
 
     function deleteAnswer(a) {
-      const url = answerDeleteUrlTemplate.replace('0', a.my_answer_id);
+      const url = answerDeleteApiUrlTemplate.replace('0', a.my_answer_id);
       fetch(url, {
         method: 'POST',
         headers: {
@@ -116,7 +117,7 @@ const app = createApp({
     function submitAnswer(ans) {
       if (!currentQuestion.value) return;
       const prevId = currentQuestion.value.id;
-      const url = answerUrlTemplate.replace('0', prevId);
+      const url = answerApiUrlTemplate.replace('0', prevId);
       const formData = new FormData();
       formData.append('answer', ans);
       formData.append('question_id', prevId);
