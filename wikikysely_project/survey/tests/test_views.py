@@ -499,3 +499,39 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertIsNotNone(data.get("my_answered_at"))
         self.assertEqual(data["my_answer_id"], ans.id)
         self.assertTrue(data["is_creator"])
+
+    def test_api_answer_create_edit_delete(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey, text="First?")
+        q2 = self._create_question(survey, text="Second?")
+
+        # create answer via API
+        response = self.client.post(
+            reverse("survey:api_answer_question", args=[q1.pk]),
+            {"answer": "yes"},
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["answer"], "yes")
+        self.assertEqual(data["next_question_id"], q2.pk)
+        self.assertEqual(data["next_question_text"], q2.text)
+        ans = Answer.objects.get(question=q1, user=self.user)
+        self.assertEqual(ans.answer, "yes")
+
+        # edit answer via same API
+        response = self.client.post(
+            reverse("survey:api_answer_question", args=[q1.pk]),
+            {"answer": "no"},
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["answer"], "no")
+        self.assertEqual(data["next_question_id"], q2.pk)
+        ans.refresh_from_db()
+        self.assertEqual(ans.answer, "no")
+
+        # delete answer via API
+        response = self.client.post(reverse("survey:api_answer_delete", args=[ans.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["deleted"])
+        self.assertFalse(Answer.objects.filter(pk=ans.pk).exists())

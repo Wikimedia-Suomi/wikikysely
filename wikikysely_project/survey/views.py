@@ -14,6 +14,7 @@ from django.utils.html import format_html, format_html_join
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max, Subquery
 from django.db.models.functions import NullIf, TruncDate, Greatest
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from datetime import timedelta
 from django.utils import timezone
 import json
@@ -1168,6 +1169,83 @@ def answer_delete(request, pk):
     if next_url:
         return redirect(next_url)
     return redirect("survey:survey_detail")
+
+
+@login_required
+@require_POST
+def api_answer_question(request, pk):
+    """Create or update an answer for a question via JSON API."""
+    question = get_object_or_404(
+        Question,
+        pk=pk,
+        visible=True,
+        survey__deleted=False,
+    )
+    survey = question.survey
+    if survey.state != "running":
+        return JsonResponse({"error": str(_("Survey not active"))}, status=400)
+
+    answer_value = request.POST.get("answer")
+    if answer_value not in dict(Answer.ANSWER_CHOICES):
+        return JsonResponse({"error": str(_("Invalid answer"))}, status=400)
+
+    answer, created = Answer.objects.update_or_create(
+        user=request.user,
+        question=question,
+        defaults={"answer": answer_value},
+    )
+    answered_questions = Answer.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+    next_question = (
+        survey.questions.filter(visible=True)
+        .exclude(id__in=answered_questions)
+        .order_by("id")
+        .first()
+    )
+    yes_count = question.answers.filter(answer="yes").count()
+    no_count = question.answers.filter(answer="no").count()
+    total = yes_count + no_count
+    ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+    return JsonResponse(
+        {
+            "id": answer.pk,
+            "question_id": question.pk,
+            "answer": answer.answer,
+            "created": created,
+            "yes_count": yes_count,
+            "total": total,
+            "agree_ratio": ratio,
+            "next_question_id": next_question.pk if next_question else None,
+            "next_question_text": next_question.text if next_question else None,
+        }
+    )
+
+
+@login_required
+@require_POST
+def api_answer_delete(request, pk):
+    """Delete an answer via JSON API."""
+    answer = get_object_or_404(Answer, pk=pk, user=request.user)
+    survey = answer.question.survey
+    if survey.state != "running":
+        return JsonResponse({"error": str(_("Survey not active"))}, status=400)
+
+    question = answer.question
+    answer.delete()
+    yes_count = question.answers.filter(answer="yes").count()
+    no_count = question.answers.filter(answer="no").count()
+    total = yes_count + no_count
+    ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+    return JsonResponse(
+        {
+            "deleted": True,
+            "question_id": question.pk,
+            "yes_count": yes_count,
+            "total": total,
+            "agree_ratio": ratio,
+        }
+    )
 
 
 def survey_answers(request):
