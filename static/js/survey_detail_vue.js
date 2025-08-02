@@ -28,6 +28,10 @@ const app = createApp({
       return answerUrlTemplate.replace('0', id) + `?next=${nextParam}`;
     }
 
+    function answerPath(id) {
+      return answerUrlTemplate.replace('0', id);
+    }
+
     function questionEditUrl(id) {
       return questionEditUrlTemplate.replace('0', id);
     }
@@ -106,12 +110,18 @@ const app = createApp({
       return answerDeleteUrlTemplate.replace('0', id);
     }
 
-    function openQuestion(q) {
+    function openQuestion(q, push = true) {
       currentQuestion.value = q;
+      if (push) {
+        window.history.pushState({ questionId: q.id }, '', answerPath(q.id));
+      }
     }
 
-    function closeQuestion() {
+    function closeQuestion(push = true) {
       currentQuestion.value = null;
+      if (push) {
+        window.history.pushState({}, '', answerSurveyUrl);
+      }
     }
 
     function submitAnswer(ans) {
@@ -121,7 +131,7 @@ const app = createApp({
       const formData = new FormData();
       formData.append('answer', ans);
       formData.append('question_id', prevId);
-      closeQuestion();
+      closeQuestion(false);
       fetch(url, {
         method: 'POST',
         headers: {
@@ -135,12 +145,32 @@ const app = createApp({
           const next = unansweredQuestions.value.find(q => q.id !== prevId);
           if (next) {
             openQuestion(next);
+          } else {
+            closeQuestion();
           }
         })
         .catch(() => window.location.reload());
     }
 
-    onMounted(fetchQuestions);
+    function handlePopState() {
+      const m = window.location.pathname.match(/question\/(\d+)/);
+      if (m) {
+        const id = parseInt(m[1]);
+        const q = questions.value.find(q => q.id === id);
+        if (q) {
+          openQuestion(q, false);
+        }
+      } else {
+        closeQuestion(false);
+      }
+    }
+
+    onMounted(() => {
+      fetchQuestions().then(() => {
+        handlePopState();
+      });
+      window.addEventListener('popstate', handlePopState);
+    });
 
     return {
       loading,
