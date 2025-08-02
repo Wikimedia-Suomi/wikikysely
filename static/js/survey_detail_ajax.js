@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: formData
       }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
-        if (!data || !data.success) { window.location.reload(); return; }
+        if (!data || typeof data.total === 'undefined') { window.location.reload(); return; }
         let row = form.closest('tr');
         if (!row) {
           const qInput = form.querySelector('input[name="question_id"]');

@@ -103,7 +103,7 @@
         <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end" data-label="">
           {% if a.question.survey.state == 'running' %}
-          <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
+          <form method="post" action="{% url 'survey:api_answer_question' a.question.pk %}" class="d-inline ajax-answer-form">
             {% csrf_token %}
             <input type="hidden" name="question_id" value="{{ a.question.pk }}">
             <div class="btn-group yes-no-group" role="group" aria-label="{% translate 'Answer' %}">
@@ -113,7 +113,7 @@
               <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
             </div>
           </form>
-          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
+          <a href="{% url 'survey:api_answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
           {% endif %}
         </td>
       </tr>

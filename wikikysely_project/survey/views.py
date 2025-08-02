@@ -1237,6 +1237,15 @@ def api_answer_delete(request, pk):
     no_count = question.answers.filter(answer="no").count()
     total = yes_count + no_count
     ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+    answered_ids = Answer.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+    unanswered_count = (
+        survey.questions.filter(visible=True).exclude(id__in=answered_ids).count()
+    )
+    can_edit = (
+        request.user == question.creator and total == 0 and survey.state != "closed"
+    )
     return JsonResponse(
         {
             "deleted": True,
@@ -1244,6 +1253,20 @@ def api_answer_delete(request, pk):
             "yes_count": yes_count,
             "total": total,
             "agree_ratio": ratio,
+            "question_text": question.text,
+            "question_published": question.created_at.strftime("%Y-%m-%d"),
+            "question_url": reverse("survey:answer_question", args=[question.pk]),
+            "can_edit": can_edit,
+            "edit_url": reverse("survey:question_edit", args=[question.pk]) if can_edit else "",
+            "delete_url": reverse("survey:question_delete", args=[question.pk]) if can_edit else "",
+            "edit_label": gettext("Edit"),
+            "remove_label": gettext("Remove question"),
+            "unanswered_label": gettext("Unanswered questions"),
+            "unanswered_count": unanswered_count,
+            "published_label": gettext("Published"),
+            "title_label": gettext("Title"),
+            "answers_label": gettext("Answers"),
+            "agree_label": gettext("Agree"),
         }
     )
 
