@@ -24,6 +24,16 @@ urlpatterns = [
     path("question/<int:pk>/", views.answer_question, name="answer_question"),
     path("answer/<int:pk>/edit/", views.answer_edit, name="answer_edit"),
     path("answer/<int:pk>/delete/", views.answer_delete, name="answer_delete"),
+    path(
+        "api/question/<int:pk>/answer/",
+        views.api_answer_question,
+        name="api_answer_question",
+    ),
+    path(
+        "api/answer/<int:pk>/delete/",
+        views.api_answer_delete,
+        name="api_answer_delete",
+    ),
     path("my_answers/", views.userinfo, name="userinfo"),
     path("my_answers/download/", views.userinfo_download, name="userinfo_download"),
     path("my_answers/delete_data/", views.user_data_delete, name="user_data_delete"),
