@@ -5,6 +5,7 @@ app_name = "survey"
 
 urlpatterns = [
     path("", views.survey_detail, name="survey_detail"),
+    path("api/questions/", views.questions_api, name="questions_api"),
     path("survey/create/", views.survey_create, name="survey_create"),
     path("register/", views.register, name="register"),
     path("survey/edit/", views.survey_edit, name="survey_edit"),

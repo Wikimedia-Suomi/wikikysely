@@ -20,6 +20,7 @@ import json
 from .models import Survey, Question, Answer
 from .forms import SurveyForm, QuestionForm, AnswerForm, SecretaryAddForm
 from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_GET
 
 LOGIN_REQUIRED_VIEWS = {
     "survey_edit",
@@ -196,42 +197,14 @@ def survey_detail(request):
         messages.info(request, _("No surveys"))
         return render(request, "survey/survey_list.html", {"surveys": []})
 
-    questions = survey.questions.filter(visible=True).prefetch_related(
-        'answers'
-    ).order_by("pk")
-   
-    # Defaults for user not logged in
-    user_answers = Answer.objects.none()
-    unanswered_questions = questions
-    unanswered_count = 0
-
-    if request.user.is_authenticated:
-        user_answers = Answer.objects.filter(
-            user=request.user, 
-            question__survey=survey
-        ).select_related("question")
-
-    answered_ids = set(user_answers.values_list('question_id', flat=True))
-    unanswered_questions = [q for q in questions if q.id not in answered_ids]
-    unanswered_count = len(unanswered_questions)
-
-    for question in questions:
-        question.yes_count = sum(1 for a in question.answers.all() if a.answer == 'yes')
-        question.total_answers = question.answers.count()
-        question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
-    
     can_edit = can_edit_survey(request.user, survey)
-    
+
     return render(
         request,
         "survey/survey_detail.html",
         {
             "survey": survey,
-            "questions": questions,
             "can_edit": can_edit,
-            "user_answers": user_answers,
-            "unanswered_count": unanswered_count,
-            "unanswered_questions": unanswered_questions,
         },
     )
 
@@ -241,6 +214,56 @@ def calculate_agree_ratio(yes_count, total_answers):
     if total_answers == 0:
         return 0
     return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
+
+
+@require_GET
+def questions_api(request):
+    """Return survey questions and user answers as JSON."""
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return JsonResponse({"questions": [], "survey_state": None})
+
+    questions = survey.questions.filter(visible=True).prefetch_related("answers").order_by("pk")
+
+    user_answers = {}
+    if request.user.is_authenticated:
+        answers = (
+            Answer.objects.filter(user=request.user, question__survey=survey)
+            .select_related("question")
+        )
+        user_answers = {a.question_id: a for a in answers}
+
+    data = []
+    for q in questions:
+        yes_count = sum(1 for a in q.answers.all() if a.answer == "yes")
+        total = q.answers.count()
+        agree_ratio = calculate_agree_ratio(yes_count, total)
+        ans = user_answers.get(q.id)
+        can_edit_question = (
+            request.user.is_authenticated
+            and request.user == q.creator
+            and total == 0
+            and survey.state != "closed"
+        )
+        data.append(
+            {
+                "id": q.id,
+                "text": q.text,
+                "published": q.created_at.strftime("%Y-%m-%d"),
+                "total_answers": total,
+                "agree_ratio": round(agree_ratio, 1),
+                "answer_url": reverse("survey:answer_question", args=[q.pk]),
+                "can_edit": can_edit_question,
+                "edit_url": reverse("survey:question_edit", args=[q.pk]),
+                "delete_url": reverse("survey:question_delete", args=[q.pk]),
+                "user_answer": ans.answer if ans else None,
+                "answer_id": ans.pk if ans else None,
+                "answer_edit_url": reverse("survey:answer_edit", args=[ans.pk]) if ans else None,
+                "answer_delete_url": reverse("survey:answer_delete", args=[ans.pk]) if ans else None,
+            }
+        )
+
+    return JsonResponse({"questions": data, "survey_state": survey.state})
 
 
 @login_required
