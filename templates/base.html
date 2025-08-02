@@ -24,11 +24,14 @@
       {% url 'survey:userinfo' as userinfo_url %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
-        {% if unanswered_count %}
-        <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} (<span id="unanswered-count">{{ unanswered_count }}</span>)</a></li>
-        {% else %}
-        <li class="nav-item"><span class="nav-link text-secondary">{% translate 'Answer survey' %}{% if request.user.is_authenticated %}(<span id="unanswered-count">0</span>){% endif %}</span></li>
-        {% endif %}
+        <li id="nav-answer-app" class="nav-item"
+            data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+            data-answer-url="{{ answer_survey_url }}"
+            data-is-active="{% if request.path == answer_survey_url %}true{% else %}false{% endif %}">
+          {% translate 'Answer survey' as answer_label %}
+          <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
+          <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>
+        </li>
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
       </ul>
       <ul id="userbar" class="navbar-nav ms-auto">
@@ -81,6 +84,9 @@
 </footer>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  window.unansweredCount = {{ unanswered_count|default:0 }};
+</script>
 <script src="{% static 'js/langswitch.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>

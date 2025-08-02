@@ -18,30 +18,23 @@
   {% endif %}
 {% endif %}
 <p>{{ survey.description }}</p>
-{% if request.user.is_authenticated %}
-  <div class="mb-3">
-    {% if unanswered_questions and survey.state == 'running' %}
-      <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-    {% else %}
-      {% if questions %}
-        <a href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
-      {% endif %}
-    {% endif %}
-    <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
-  </div>
-{% else %}
-    {% if questions %}
-        <a href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-    {% endif %}
-{% endif %}
 <div id="survey-detail-app"
      data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
      data-answer-url-template="{% url 'survey:answer_question' 0 %}"
      data-answer-edit-url-template="{% url 'survey:answer_edit' 0 %}"
      data-answer-delete-url-template="{% url 'survey:answer_delete' 0 %}"
-     data-running="{% if survey.state == 'running' %}true{% else %}false{% endif %}">
+     data-running="{% if survey.state == 'running' %}true{% else %}false{% endif %}"
+     data-answer-survey-url="{% url 'survey:answer_survey' %}">
   <p v-if="loading">{% translate 'Loading...' %}</p>
   <template v-else>
+    <div class="mb-3" v-if="isAuthenticated">
+      <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+      <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
+      <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+    </div>
+    <div class="mb-3" v-else>
+      <a v-if="questions.length" href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+    </div>
     <h2 class="mt-3" v-if="unansweredQuestions.length">{% translate 'Unanswered questions' %}</h2>
     <div class="table-responsive" v-if="unansweredQuestions.length">
       <table class="table mb-3 survey-detail-table stacked-table">
