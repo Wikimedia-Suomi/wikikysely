@@ -50,7 +50,7 @@ const app = createApp({
     function fetchQuestions() {
       const currentId = currentQuestion.value ? currentQuestion.value.id : null;
       loading.value = true;
-      fetch(window.questionsJsonUrl)
+      return fetch(window.questionsJsonUrl)
         .then(resp => resp.json())
         .then(data => {
           questions.value = data.questions || [];
@@ -115,10 +115,12 @@ const app = createApp({
 
     function submitAnswer(ans) {
       if (!currentQuestion.value) return;
-      const url = answerUrlTemplate.replace('0', currentQuestion.value.id);
+      const prevId = currentQuestion.value.id;
+      const url = answerUrlTemplate.replace('0', prevId);
       const formData = new FormData();
       formData.append('answer', ans);
-      formData.append('question_id', currentQuestion.value.id);
+      formData.append('question_id', prevId);
+      closeQuestion();
       fetch(url, {
         method: 'POST',
         headers: {
@@ -127,9 +129,12 @@ const app = createApp({
         },
         body: formData
       }).then(resp => resp.ok ? resp.json() : Promise.reject())
+        .then(() => fetchQuestions())
         .then(() => {
-          fetchQuestions();
-          closeQuestion();
+          const next = unansweredQuestions.value.find(q => q.id !== prevId);
+          if (next) {
+            openQuestion(next);
+          }
         })
         .catch(() => window.location.reload());
     }
