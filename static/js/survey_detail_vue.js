@@ -1,5 +1,9 @@
 const { createApp, ref, computed, onMounted, nextTick } = Vue;
 
+if (typeof window.unansweredCount === 'number') {
+  window.unansweredCount = ref(window.unansweredCount);
+}
+
 const app = createApp({
   setup() {
     const questions = ref([]);
@@ -10,6 +14,7 @@ const app = createApp({
     const answerEditUrlTemplate = root.dataset.answerEditUrlTemplate;
     const answerDeleteUrlTemplate = root.dataset.answerDeleteUrlTemplate;
     const isRunning = root.dataset.running === 'true';
+    const answerSurveyUrl = root.dataset.answerSurveyUrl;
 
     function formatDate(str) {
       return str ? str.slice(0, 10) : '';
@@ -39,6 +44,9 @@ const app = createApp({
         .then(resp => resp.json())
         .then(data => {
           questions.value = data.questions || [];
+          if (window.unansweredCount && 'value' in window.unansweredCount) {
+            window.unansweredCount.value = questions.value.filter(q => !q.my_answer).length;
+          }
         })
         .finally(() => {
           loading.value = false;
@@ -90,6 +98,8 @@ const app = createApp({
       loading,
       isAuthenticated,
       isRunning,
+      questions,
+      answerSurveyUrl,
       unansweredQuestions,
       userAnswers,
       formatDate,
@@ -103,3 +113,18 @@ const app = createApp({
 
 app.config.compilerOptions.delimiters = ['[[', ']]'];
 app.mount('#survey-detail-app');
+
+const navRoot = document.getElementById('nav-answer-app');
+if (navRoot) {
+  const navApp = createApp({
+    setup() {
+      const count = window.unansweredCount;
+      const auth = navRoot.dataset.auth === 'true';
+      const answerUrl = navRoot.dataset.answerUrl;
+      const isActive = navRoot.dataset.isActive === 'true';
+      return { count, auth, answerUrl, isActive };
+    }
+  });
+  navApp.config.compilerOptions.delimiters = ['[[', ']]'];
+  navApp.mount('#nav-answer-app');
+}
