@@ -278,6 +278,7 @@ def questions_json(request):
             "yes_count": q.yes_count,
             "no_count": q.no_count,
             "agree_ratio": calculate_agree_ratio(q.yes_count, q.total_answers),
+            "is_creator": request.user.is_authenticated and q.creator_id == request.user.id,
         }
         ans = user_answers.get(q.id)
         if ans:

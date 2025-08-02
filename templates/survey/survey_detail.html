@@ -17,12 +17,13 @@
     </p>
   {% endif %}
 {% endif %}
-<p>{{ survey.description }}</p>
+     <p>{{ survey.description }}</p>
 <div id="survey-detail-app"
      data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
      data-answer-url-template="{% url 'survey:answer_question' 0 %}"
      data-answer-edit-url-template="{% url 'survey:answer_edit' 0 %}"
      data-answer-delete-url-template="{% url 'survey:answer_delete' 0 %}"
+     data-question-edit-url-template="{% url 'survey:question_edit' 0 %}"
      data-running="{% if survey.state == 'running' %}true{% else %}false{% endif %}"
      data-answer-survey-url="{% url 'survey:answer_survey' %}">
   <p v-if="loading">{% translate 'Loading...' %}</p>
@@ -56,7 +57,9 @@
           </td>
           <td class="total-answers" data-label="{% translate 'Answers' %}">[[ q.total_answers ]]</td>
           <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
-          <td></td>
+          <td class="text-end">
+            <a v-if="q.total_answers === 0 && q.is_creator" :href="questionEditUrl(q.id)" class="btn btn-sm btn-warning">{% translate 'Edit question' %}</a>
+          </td>
         </tr>
         </tbody>
       </table>

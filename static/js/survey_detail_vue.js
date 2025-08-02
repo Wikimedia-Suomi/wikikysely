@@ -13,6 +13,7 @@ const app = createApp({
     const answerUrlTemplate = root.dataset.answerUrlTemplate;
     const answerEditUrlTemplate = root.dataset.answerEditUrlTemplate;
     const answerDeleteUrlTemplate = root.dataset.answerDeleteUrlTemplate;
+    const questionEditUrlTemplate = root.dataset.questionEditUrlTemplate;
     const isRunning = root.dataset.running === 'true';
     const answerSurveyUrl = root.dataset.answerSurveyUrl;
 
@@ -23,6 +24,10 @@ const app = createApp({
     function answerUrl(id) {
       const nextParam = encodeURIComponent(window.location.pathname + window.location.search);
       return answerUrlTemplate.replace('0', id) + `?next=${nextParam}`;
+    }
+
+    function questionEditUrl(id) {
+      return questionEditUrlTemplate.replace('0', id);
     }
 
     const unansweredQuestions = computed(() =>
@@ -100,6 +105,7 @@ const app = createApp({
       isRunning,
       questions,
       answerSurveyUrl,
+      questionEditUrl,
       unansweredQuestions,
       userAnswers,
       formatDate,
