@@ -195,6 +195,59 @@ def survey_detail(request):
             return redirect("survey:survey_create")
         messages.info(request, _("No surveys"))
         return render(request, "survey/survey_list.html", {"surveys": []})
+
+    questions = survey.questions.filter(visible=True).prefetch_related(
+        'answers'
+    ).order_by("pk")
+   
+    # Defaults for user not logged in
+    user_answers = Answer.objects.none()
+    unanswered_questions = questions
+    unanswered_count = 0
+
+    if request.user.is_authenticated:
+        user_answers = Answer.objects.filter(
+            user=request.user, 
+            question__survey=survey
+        ).select_related("question")
+
+    answered_ids = set(user_answers.values_list('question_id', flat=True))
+    unanswered_questions = [q for q in questions if q.id not in answered_ids]
+    unanswered_count = len(unanswered_questions)
+
+    for question in questions:
+        question.yes_count = sum(1 for a in question.answers.all() if a.answer == 'yes')
+        question.total_answers = question.answers.count()
+        question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
+    
+    can_edit = can_edit_survey(request.user, survey)
+    
+    return render(
+        request,
+        "survey/survey_detail.html",
+        {
+            "survey": survey,
+            "questions": questions,
+            "can_edit": can_edit,
+            "user_answers": user_answers,
+            "unanswered_count": unanswered_count,
+            "unanswered_questions": unanswered_questions,
+        },
+    )
+
+def calculate_agree_ratio(yes_count, total_answers):
+    """Calculate agree ratio in Python to reduce database load"""
+    if total_answers == 0:
+        return 0
+    return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
+
+def survey_detail_old(request):
+    survey = Survey.get_main_survey()
+    if survey is None:
+        if request.user.is_authenticated:
+            return redirect("survey:survey_create")
+        messages.info(request, _("No surveys"))
+        return render(request, "survey/survey_list.html", {"surveys": []})
     base_qs = survey.questions.filter(visible=True)
     user_answers = Answer.objects.none()
     unanswered_questions_qs = base_qs
