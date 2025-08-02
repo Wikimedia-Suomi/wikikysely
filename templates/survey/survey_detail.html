@@ -5,9 +5,6 @@
 {% if survey.state == 'paused' %}
   <div class="alert alert-info">{% translate 'This survey is currently paused.' %}</div>
 {% endif %}
-{% if not questions %}
-  <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
-{% endif %}
 {% if not request.user.is_authenticated and questions %}
   {% if request.GET.login_required %}
     <p class="alert alert-info">
@@ -37,84 +34,67 @@
         <a href="?login_required=1" class="btn btn-primary">{% translate 'Answer survey' %}</a>
     {% endif %}
 {% endif %}
-        <h2 id="unanswered-header" class="mt-3"{% if not unanswered_questions %} style="display:none"{% endif %}>{% translate 'Unanswered questions' %}</h2>
-      <div class="table-responsive">
-      <table id="unanswered-table" class="table mb-3 survey-detail-table stacked-table"{% if not unanswered_questions %} style="display:none"{% endif %}>
+<div id="survey-detail-app"
+     data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+     data-answer-url-template="{% url 'survey:answer_question' 0 %}">
+  <p v-if="loading">{% translate 'Loading...' %}</p>
+  <template v-else>
+    <h2 class="mt-3" v-if="unansweredQuestions.length">{% translate 'Unanswered questions' %}</h2>
+    <div class="table-responsive" v-if="unansweredQuestions.length">
+      <table class="table mb-3 survey-detail-table stacked-table">
         <thead>
-      <tr>
-        <th>{% translate 'Published' %}</th>
-        <th>{% translate 'Title' %}</th>
-        <th>{% translate 'Answers' %}</th>
-        <th>{% translate 'Agree' %}</th>
-        <th></th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for q in unanswered_questions %}
         <tr>
-        <td data-label="{% translate 'Published' %}">{{ q.created_at | date:"Y-m-d" }}</td>
-{% if request.user.is_authenticated %}
-        <td data-label="{% translate 'Title' %}"><a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a></td>
-{% else %}
-        <td data-label="{% translate 'Title' %}">{{ q.text }}</td>
-{% endif %}
-        <td class="total-answers" data-label="{% translate 'Answers' %}">{{ q.total_answers }}</td>
-        <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ q.agree_ratio|floatformat:1 }}%</td>
-        <td class="text-end" data-label="">
-          {% if request.user.is_authenticated and request.user == q.creator and q.total_answers == 0 and survey.state != 'closed' %}
-          <a href="{% url 'survey:question_edit' q.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>
-          <a href="{% url 'survey:question_delete' q.pk %}" class="btn btn-sm btn-danger ajax-delete-question">{% translate 'Remove question' %}</a>
-          {% endif %}
-        </td>
+          <th>{% translate 'Published' %}</th>
+          <th>{% translate 'Title' %}</th>
+          <th>{% translate 'Answers' %}</th>
+          <th>{% translate 'Agree' %}</th>
+          <th></th>
         </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+        <tr v-for="q in unansweredQuestions" :key="q.id">
+          <td data-label="{% translate 'Published' %}">[[ formatDate(q.created_at) ]]</td>
+          <td data-label="{% translate 'Title' %}">
+            <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
+            <span v-else>[[ q.text ]]</span>
+          </td>
+          <td class="total-answers" data-label="{% translate 'Answers' %}">[[ q.total_answers ]]</td>
+          <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
+          <td></td>
+        </tr>
         </tbody>
       </table>
-      </div>
+    </div>
 
-{% if user_answers %}
-<h2 class="mt-4">{% translate 'My answers' %}</h2>
-<div class="table-responsive">
-<table class="table mb-3 survey-detail-table stacked-table">
-  <thead>
-  <tr>
-    <th>{% translate 'Published' %}</th>
-    <th>{% translate 'Title' %}</th>
-    <th>{% translate 'Answers' %}</th>
-    <th>{% translate 'Agree' %}</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  {% for a in user_answers %}
-    <tr>
-      <td data-label="{% translate 'Published' %}">{{ a.question.created_at|date:"Y-m-d" }}</td>
-      <td data-label="{% translate 'Title' %}">
-        <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
-      </td>
-      <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
-      <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
-      <td class="text-end" data-label="">
-        {% if a.question.survey.state == 'running' %}
-        <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
-          {% csrf_token %}
-          <input type="hidden" name="question_id" value="{{ a.question.pk }}">
-          <div class="btn-group yes-no-group" role="group" aria-label="{% translate 'Answer' %}">
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes"{% if a.answer == 'yes' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
-          </div>
-        </form>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer">{% translate 'Remove answer' %}</a>
-        {% endif %}
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+    <h2 class="mt-4" v-if="userAnswers.length">{% translate 'My answers' %}</h2>
+    <div class="table-responsive" v-if="userAnswers.length">
+      <table class="table mb-3 survey-detail-table stacked-table">
+        <thead>
+        <tr>
+          <th>{% translate 'Published' %}</th>
+          <th>{% translate 'Title' %}</th>
+          <th>{% translate 'Answers' %}</th>
+          <th>{% translate 'Agree' %}</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="a in userAnswers" :key="a.id">
+          <td data-label="{% translate 'Published' %}">[[ formatDate(a.created_at) ]]</td>
+          <td data-label="{% translate 'Title' %}"><a :href="answerUrl(a.id)">[[ a.text ]]</a></td>
+          <td class="total-answers" data-label="{% translate 'Answers' %}">[[ a.total_answers ]]</td>
+          <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ a.agree_ratio.toFixed(1) ]]%</td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="alert alert-warning" v-if="!unansweredQuestions.length && !userAnswers.length">
+      {% translate 'This survey has no questions yet. Please add questions.' %}
+    </p>
+  </template>
 </div>
-{% endif %}
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
 {% endif %}
@@ -122,10 +102,9 @@
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/sort_tables.js' %}"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables(".survey-detail-table");
-});
+  window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
 </script>
-<script src="{% static 'js/survey_detail_ajax.js' %}"></script>
+<script src="{% static 'js/survey_detail_vue.js' %}"></script>
 {% endblock %}
