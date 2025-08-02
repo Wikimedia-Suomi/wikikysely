@@ -1,4 +1,3 @@
-import random
 from django.contrib import messages
 from django.urls import reverse, resolve, Resolver404
 from django.contrib.auth import login, logout
@@ -19,7 +18,7 @@ from datetime import timedelta
 from django.utils import timezone
 import json
 from .models import Survey, Question, Answer
-from .forms import SurveyForm, QuestionForm, AnswerForm, SecretaryAddForm
+from .forms import SurveyForm, QuestionForm, SecretaryAddForm
 from django.contrib.auth import get_user_model
 
 LOGIN_REQUIRED_VIEWS = {
@@ -29,8 +28,6 @@ LOGIN_REQUIRED_VIEWS = {
     "question_show",
     "question_delete",
     "question_edit",
-    "answer_survey",
-    "answer_edit",
     "answer_delete",
     "userinfo",
     "userinfo_download",
@@ -119,14 +116,6 @@ def get_login_redirect_url(request):
     survey = Survey.get_main_survey()
     if survey is None:
         return reverse("survey:survey_create")
-    answered_ids = Answer.objects.filter(
-        user=request.user, question__survey=survey
-    ).values_list("question_id", flat=True)
-    has_unanswered = survey.questions.filter(visible=True).exclude(
-        id__in=answered_ids
-    ).exists()
-    if has_unanswered:
-        return reverse("survey:answer_survey")
     return reverse("survey:survey_detail")
 
 
@@ -189,7 +178,7 @@ def survey_logout(request):
     return redirect("survey:survey_answers")
 
 
-def survey_detail(request):
+def survey_detail(request, pk=None):
     survey = Survey.get_main_survey()
     if survey is None:
         if request.user.is_authenticated:
@@ -586,230 +575,8 @@ def question_edit(request, pk):
     )
 
 
-@login_required
-def answer_survey(request):
-    survey = Survey.get_main_survey()
-    if survey is None:
-        return redirect("survey:survey_create")
-    if survey.state == "paused":
-        messages.error(request, _("Survey not active"))
-        return redirect("survey:survey_detail")
-    if not survey.is_active():
-        messages.error(request, _("Survey not active"))
-        return redirect("survey:survey_detail")
-    if request.method == "POST":
-        form = AnswerForm(request.POST)
-        question = get_object_or_404(
-            Question,
-            pk=form.data.get("question_id"),
-            survey=survey,
-            visible=True,
-        )
-        if form.is_valid():
-            answer_value = form.cleaned_data["answer"]
-            if answer_value:
-                Answer.objects.update_or_create(
-                    user=request.user,
-                    question=question,
-                    defaults={"answer": answer_value},
-                )
-                messages.success(request, _("Answer saved"))
-            else:
-                messages.info(request, _("Question skipped"))
-
-            answered_questions = Answer.objects.filter(
-                user=request.user,
-                question__survey=survey,
-            ).values_list("question_id", flat=True)
-            remaining = survey.questions.filter(visible=True).exclude(
-                id__in=answered_questions
-            )
-            if not answer_value:
-                remaining = remaining.exclude(id=question.pk)
-            question = random.choice(list(remaining)) if remaining else None
-            if not question:
-                messages.info(request, _("No more questions"))
-                return redirect("survey:survey_detail")
-            form = AnswerForm(initial={"question_id": question.pk})
-    else:
-        answered_questions = Answer.objects.filter(
-            user=request.user,
-            question__survey=survey,
-        ).values_list("question_id", flat=True)
-        remaining = survey.questions.filter(visible=True).exclude(
-            id__in=answered_questions
-        )
-        skip_id = request.GET.get("skip")
-        if skip_id:
-            remaining = remaining.exclude(id=skip_id)
-        question = random.choice(list(remaining)) if remaining else None
-        if not question:
-            messages.info(request, _("No more questions"))
-            return redirect("survey:survey_detail")
-        form = AnswerForm(initial={"question_id": question.pk})
-
-    user_answers = get_user_answers(request.user, survey)
-    if question:
-        user_answers = user_answers.exclude(question=question)
-    question_stats = get_question_stats(question, request.user) if question else None
-    max_total = (
-        survey.questions.filter(visible=True)
-        .annotate(total=Count("answers"))
-        .aggregate(max_total=Max("total"))
-        .get("max_total")
-        or 0
-    )
-    yes_label = gettext("Yes")
-    no_label = gettext("No")
-    no_answers_label = gettext("No answers")
-    timeline_data = json.dumps(question_stats["timeline"]) if question_stats else "[]"
-    return render(
-        request,
-        "survey/answer_form.html",
-        {
-            "survey": survey,
-            "question": question,
-            "form": form,
-            "user_answers": user_answers,
-            "question_stats": question_stats,
-            "max_total": max_total,
-            "timeline_data": timeline_data,
-            "yes_label": yes_label,
-            "no_label": no_label,
-            "no_answers_label": no_answers_label,
-        },
-    )
-
-
 def answer_question(request, pk):
-    question = get_object_or_404(
-        Question,
-        pk=pk,
-        visible=True,
-        survey__deleted=False,
-    )
-    survey = question.survey
-    if survey.state == "paused":
-        messages.error(request, _("Survey not active"))
-        return redirect("survey:survey_detail")
-    if not survey.is_active():
-        messages.error(request, _("Survey not active"))
-        return redirect("survey:survey_detail")
-
-    answer = None
-    can_delete_question = False
-    next_url = request.GET.get("next") or request.POST.get("next")
-
-    if not request.user.is_authenticated:
-        login_url = f"{reverse('login')}?next={request.path}"
-        messages.info(
-            request,
-            format_html(
-                _('To answer the question you must <a href="{0}">log in</a>.'),
-                login_url,
-            ),
-        )
-        form = None
-    else:
-        answer = Answer.objects.filter(question=question, user=request.user).first()
-        if request.method == "POST":
-            form = AnswerForm(request.POST, instance=answer)
-            if form.is_valid():
-                answer_value = form.cleaned_data["answer"]
-                if answer_value:
-                    Answer.objects.update_or_create(
-                        user=request.user,
-                        question=question,
-                        defaults={"answer": answer_value},
-                    )
-                    messages.success(request, _("Answer saved"))
-                else:
-                    messages.info(request, _("Question skipped"))
-
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    yes_count = question.answers.filter(answer="yes").count()
-                    no_count = question.answers.filter(answer="no").count()
-                    total = yes_count + no_count
-                    ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
-                    return JsonResponse(
-                        {
-                            "success": True,
-                            "yes_count": yes_count,
-                            "total": total,
-                            "agree_ratio": ratio,
-                            "question_id": question.pk,
-                        }
-                    )
-
-                if answer is not None:
-                    if next_url:
-                        return redirect(next_url)
-                    return redirect(request.path)
-
-                answered_questions = Answer.objects.filter(
-                    user=request.user, question__survey=survey
-                ).values_list("question_id", flat=True)
-                question = (
-                    survey.questions.filter(visible=True)
-                    .exclude(id__in=answered_questions)
-                    .exclude(id=question.pk)
-                    .order_by("?")
-                    .first()
-                )
-
-                if not question:
-                    messages.info(request, _("No more questions"))
-                    return redirect("survey:survey_detail")
-                answer = None
-                form = AnswerForm(initial={"question_id": question.pk})
-            else:
-                form = AnswerForm(instance=answer, initial={"question_id": question.pk})
-        else:
-            form = AnswerForm(instance=answer, initial={"question_id": question.pk})
-        can_delete_question = (
-            request.user == question.creator
-            and not question.answers.exclude(user=request.user).exists()
-        )
-    user_answers = (
-        get_user_answers(request.user, survey)
-        if request.user.is_authenticated
-        else Answer.objects.none()
-    )
-    if request.user.is_authenticated:
-        user_answers = user_answers.exclude(question=question)
-    question_stats = get_question_stats(question, request.user)
-    max_total = (
-        survey.questions.filter(visible=True)
-        .annotate(total=Count("answers"))
-        .aggregate(max_total=Max("total"))
-        .get("max_total")
-        or 0
-    )
-    yes_label = gettext("Yes")
-    no_label = gettext("No")
-    no_answers_label = gettext("No answers")
-    timeline_data = json.dumps(question_stats["timeline"])
-    return render(
-        request,
-        "survey/answer_form.html",
-        {
-            "survey": survey,
-            "question": question,
-            "form": form,
-            "is_edit": answer is not None,
-            "can_delete_question": (
-                can_delete_question if request.user.is_authenticated else False
-            ),
-            "user_answers": user_answers,
-            "question_stats": question_stats,
-            "max_total": max_total,
-            "timeline_data": timeline_data,
-            "yes_label": yes_label,
-            "no_label": no_label,
-            "no_answers_label": no_answers_label,
-            "next": next_url,
-        },
-    )
+    return survey_detail(request, pk=pk)
 
 
 @login_required
@@ -1061,54 +828,6 @@ def user_data_delete(request):
     messages.success(request, message)
     return redirect("survey:userinfo")
 
-
-@login_required
-def answer_edit(request, pk):
-    answer = get_object_or_404(
-        Answer,
-        pk=pk,
-        user=request.user,
-        question__survey__deleted=False,
-        question__visible=True,
-    )
-    survey = answer.question.survey
-    if survey.state != "running":
-        messages.error(
-            request, _("Answer can only be edited while the survey is running")
-        )
-        return redirect("survey:survey_detail")
-    if request.method == "POST":
-        form = AnswerForm(request.POST, instance=answer)
-        if form.is_valid():
-            form.save()
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                question = answer.question
-                yes_count = question.answers.filter(answer="yes").count()
-                no_count = question.answers.filter(answer="no").count()
-                total = yes_count + no_count
-                ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
-                return JsonResponse(
-                    {
-                        "success": True,
-                        "yes_count": yes_count,
-                        "total": total,
-                        "agree_ratio": ratio,
-                    }
-                )
-            messages.success(request, _("Answer updated"))
-            return redirect("survey:survey_detail")
-    else:
-        form = AnswerForm(instance=answer, initial={"question_id": answer.question_id})
-    return render(
-        request,
-        "survey/answer_form.html",
-        {
-            "survey": survey,
-            "question": answer.question,
-            "form": form,
-            "is_edit": True,
-        },
-    )
 
 
 @login_required

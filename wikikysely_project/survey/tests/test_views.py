@@ -77,7 +77,7 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("login"),
             {"username": self.user.username, "password": "pass"},
         )
-        self.assertRedirects(response, reverse("survey:answer_survey"))
+        self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_login_redirects_to_detail_when_no_unanswered(self):
         survey = self._create_survey()
@@ -94,7 +94,7 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         self._create_question(survey)
         response = self.client.get(reverse("login_redirect"))
-        self.assertRedirects(response, reverse("survey:answer_survey"))
+        self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_login_redirect_view_to_detail_when_no_unanswered(self):
         survey = self._create_survey()
@@ -230,55 +230,6 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(question.text, "Original?")
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
-    def test_answer_question_and_edit(self):
-        survey = self._create_survey()
-        questions = self._create_questions(survey, 10)
-
-        # answer by first user (already logged in)
-        data = {"question_id": questions[0].pk, "answer": "yes"}
-        response = self.client.post(reverse("survey:answer_survey"), data)
-        self.assertEqual(Answer.objects.count(), 1)
-        answer = Answer.objects.get(question=questions[0], user=self.user)
-        self.assertEqual(answer.answer, "yes")
-        self.assertEqual(response.status_code, 200)
-
-        # answer by second and third users
-        for idx, user in enumerate(self.users[1:], start=1):
-            self.client.logout()
-            self.client.login(username=user.username, password="pass")
-            data = {"question_id": questions[idx].pk, "answer": "yes"}
-            self.client.post(reverse("survey:answer_survey"), data)
-            ans = Answer.objects.get(question=questions[idx], user=user)
-            self.assertEqual(ans.answer, "yes")
-        self.assertEqual(Answer.objects.count(), 3)
-
-        # edit first user's answer
-        self.client.logout()
-        self.client.login(username=self.user.username, password="pass")
-        edit_data = {"question_id": questions[0].pk, "answer": "no"}
-        response = self.client.post(
-            reverse("survey:answer_question", kwargs={"pk": questions[0].pk}),
-            edit_data,
-            follow=True,
-        )
-        answer.refresh_from_db()
-        self.assertEqual(answer.answer, "no")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["question"].pk, questions[0].pk)
-
-    def test_edit_returns_to_same_page_when_next_same_page(self):
-        survey = self._create_survey()
-        questions = self._create_questions(survey, 2)
-        answer = Answer.objects.create(question=questions[0], user=self.user, answer="yes")
-        edit_url = reverse("survey:answer_question", args=[questions[0].pk])
-        response = self.client.post(
-            f"{edit_url}?next={edit_url}",
-            {"question_id": questions[0].pk, "answer": "no"},
-        )
-        answer.refresh_from_db()
-        self.assertEqual(answer.answer, "no")
-        self.assertRedirects(response, edit_url)
-
     def test_results_view(self):
         survey = self._create_survey()
         question = self._create_question(survey)
@@ -334,32 +285,6 @@ class SurveyFlowTests(TransactionTestCase):
         data = json.loads(json_text)
         self.assertEqual(data["survey"]["title"], survey.title)
         self.assertEqual(len(data["data"]), 1)
-
-    def test_answer_saved_to_correct_question_and_user(self):
-        survey = self._create_survey()
-        questions = self._create_questions(survey, 10)
-        for idx, user in enumerate(self.users):
-            self.client.logout()
-            self.client.login(username=user.username, password="pass")
-            data = {"question_id": questions[idx].pk, "answer": "yes"}
-            self.client.post(reverse("survey:answer_survey"), data)
-            ans = Answer.objects.get(question=questions[idx], user=user)
-            self.assertEqual(ans.answer, "yes")
-        self.assertEqual(Answer.objects.count(), 3)
-
-    def test_cannot_answer_when_paused(self):
-        survey = self._create_survey()
-        question = self._create_question(survey)
-        survey.state = "paused"
-        survey.save()
-
-        response = self.client.get(reverse("survey:answer_survey"))
-        self.assertRedirects(response, reverse("survey:survey_detail"))
-
-        data = {"question_id": question.pk, "answer": "yes"}
-        response = self.client.post(reverse("survey:answer_survey"), data)
-        self.assertEqual(Answer.objects.count(), 0)
-        self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_detail_shows_paused_alert(self):
         survey = self._create_survey()
