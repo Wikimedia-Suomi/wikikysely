@@ -196,42 +196,25 @@ def survey_detail(request):
         messages.info(request, _("No surveys"))
         return render(request, "survey/survey_list.html", {"surveys": []})
 
-    questions = survey.questions.filter(visible=True).prefetch_related(
-        'answers'
-    ).order_by("pk")
-   
-    # Defaults for user not logged in
-    user_answers = Answer.objects.none()
-    unanswered_questions = questions
-    unanswered_count = 0
+    questions = survey.questions.filter(visible=True).order_by("pk")
 
     if request.user.is_authenticated:
-        user_answers = Answer.objects.filter(
-            user=request.user, 
-            question__survey=survey
-        ).select_related("question")
+        answered_ids = Answer.objects.filter(
+            user=request.user, question__survey=survey
+        ).values_list("question_id", flat=True)
+        unanswered_count = questions.exclude(id__in=answered_ids).count()
+    else:
+        unanswered_count = questions.count()
 
-    answered_ids = set(user_answers.values_list('question_id', flat=True))
-    unanswered_questions = [q for q in questions if q.id not in answered_ids]
-    unanswered_count = len(unanswered_questions)
-
-    for question in questions:
-        question.yes_count = sum(1 for a in question.answers.all() if a.answer == 'yes')
-        question.total_answers = question.answers.count()
-        question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
-    
     can_edit = can_edit_survey(request.user, survey)
-    
+
     return render(
         request,
         "survey/survey_detail.html",
         {
             "survey": survey,
-            "questions": questions,
             "can_edit": can_edit,
-            "user_answers": user_answers,
             "unanswered_count": unanswered_count,
-            "unanswered_questions": unanswered_questions,
         },
     )
 
@@ -241,6 +224,59 @@ def calculate_agree_ratio(yes_count, total_answers):
     if total_answers == 0:
         return 0
     return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
+
+
+def questions_api(request):
+    """Return survey questions and user's answers as JSON."""
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return JsonResponse({"unanswered": [], "answers": []})
+
+    questions = (
+        survey.questions.filter(visible=True)
+        .prefetch_related("answers")
+        .order_by("pk")
+    )
+
+    answered_ids = set()
+    answers_data = []
+    if request.user.is_authenticated:
+        user_answers = get_user_answers(request.user, survey)
+        for ans in user_answers:
+            answers_data.append(
+                {
+                    "id": ans.pk,
+                    "question_id": ans.question.pk,
+                    "question_text": ans.question.text,
+                    "question_published": ans.question.created_at.strftime("%Y-%m-%d"),
+                    "total": ans.total_answers,
+                    "agree_ratio": round(ans.agree_ratio, 1),
+                    "answer_display": ans.get_answer_display(),
+                    "question_url": reverse(
+                        "survey:answer_question", args=[ans.question.pk]
+                    ),
+                }
+            )
+            answered_ids.add(ans.question.pk)
+
+    unanswered_data = []
+    for q in questions:
+        yes_count = sum(1 for a in q.answers.all() if a.answer == "yes")
+        total = q.answers.count()
+        agree_ratio = calculate_agree_ratio(yes_count, total)
+        if q.pk not in answered_ids:
+            unanswered_data.append(
+                {
+                    "id": q.pk,
+                    "text": q.text,
+                    "published": q.created_at.strftime("%Y-%m-%d"),
+                    "total": total,
+                    "agree_ratio": round(agree_ratio, 1),
+                    "url": reverse("survey:answer_question", args=[q.pk]),
+                }
+            )
+
+    return JsonResponse({"unanswered": unanswered_data, "answers": answers_data})
 
 
 @login_required
