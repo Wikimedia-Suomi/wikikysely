@@ -80,43 +80,45 @@
 </div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
 <h2>{% translate 'Answer table' %}</h2>
-<div class="table-responsive">
-<table id="answerTable" class="table stacked-table">
-<thead>
-<tr>
-  <th>{% translate 'Published' %}</th>
-  <th>{% translate 'Question' %}</th>
-  {% if request.user.is_authenticated %}
-  <th>{% translate 'My answer' %}</th>
-  {% endif %}
-  <th>{% translate 'Yes' %}</th>
-  <th>{% translate 'No' %}</th>
-  <th>{% translate 'Total' %}</th>
-  <th>{% translate 'Agree' %}</th>
-</tr>
-</thead>
-<tbody>
-{% for row in data %}
-<tr>
-  <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
-  <td data-label="{% translate 'Question' %}">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
-  </td>
-  {% if request.user.is_authenticated %}
-  <td data-label="{% translate 'My answer' %}">{{ row.my_answer | default:""}}</td>
-  {% endif %}
-  <td data-label="{% translate 'Yes' %}">{{ row.yes }}</td>
-  <td data-label="{% translate 'No' %}">{{ row.no }}</td>
-  <td data-label="{% translate 'Total' %}">{{ row.total }}</td>
-  <td data-label="{% translate 'Agree' %}">{{ row.agree_ratio|floatformat:1 }}%</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<div
+  id="answers-table-app"
+  data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+  data-answer-url-template="{% url 'survey:answer_question' 0 %}"
+>
+  <p v-if="loading">{% translate 'Loading...' %}</p>
+  <div class="table-responsive" v-else>
+    <table id="answerTable" class="table stacked-table">
+      <thead>
+      <tr>
+        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Question' %}</th>
+        {% if request.user.is_authenticated %}
+        <th>{% translate 'My answer' %}</th>
+        {% endif %}
+        <th>{% translate 'Yes' %}</th>
+        <th>{% translate 'No' %}</th>
+        <th>{% translate 'Total' %}</th>
+        <th>{% translate 'Agree' %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="q in questions" :key="q.id">
+        <td data-label="{% translate 'Published' %}">[[ formatDate(q.created_at) ]]</td>
+        <td data-label="{% translate 'Question' %}">
+          <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
+          <span v-else>[[ q.text ]]</span>
+        </td>
+        {% if request.user.is_authenticated %}
+        <td data-label="{% translate 'My answer' %}">[[ q.my_answer || '' ]]</td>
+        {% endif %}
+        <td data-label="{% translate 'Yes' %}">[[ q.yes_count ]]</td>
+        <td data-label="{% translate 'No' %}">[[ q.no_count ]]</td>
+        <td data-label="{% translate 'Total' %}">[[ q.total_answers ]]</td>
+        <td data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -190,9 +192,9 @@ document.querySelectorAll('input[name="chartType"]').forEach(radio => {
 });
 </script>
 <script src="{% static 'js/sort_tables.js' %}"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables("#answerTable");
-});
+  window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
 </script>
+<script src="{% static 'js/answers_vue.js' %}"></script>
 {% endblock %}
