@@ -137,7 +137,7 @@ tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 shell
 (venv):$ deactivate
 (webservice):~$ exit
 
-tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 start
+tools.wikikysely@...:~$ webservice -c 2 -m 2G --backend=kubernetes python3.11 start
    ```
 
 
