@@ -188,7 +188,7 @@ def survey_logout(request):
     return redirect("survey:survey_answers")
 
 
-def survey_detail_new(request):
+def survey_detail(request):
     survey = Survey.get_main_survey()
     if survey is None:
         if request.user.is_authenticated:
@@ -235,187 +235,12 @@ def survey_detail_new(request):
         },
     )
 
+
 def calculate_agree_ratio(yes_count, total_answers):
     """Calculate agree ratio in Python to reduce database load"""
     if total_answers == 0:
         return 0
     return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
-
-def survey_detail(request):
-    survey = Survey.get_main_survey()
-    if survey is None:
-        if request.user.is_authenticated:
-            return redirect("survey:survey_create")
-        messages.info(request, _("No surveys"))
-        return render(request, "survey/survey_list.html", {"surveys": []})
-    
-    # Single base queryset with all annotations
-    base_qs = survey.questions.filter(visible=True).select_related('survey')
-    
-    # Define the agree_ratio calculation once
-    agree_ratio_expression = ExpressionWrapper(
-        (
-            Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-            * 100.0
-            / NullIf(F("total_answers"), 0)
-            - 50
-        ) * 2,
-        output_field=FloatField(),
-    )
-    
-    # Annotate base queryset once with all needed calculations
-    questions = base_qs.annotate(
-        yes_count=Count("answers", filter=Q(answers__answer="yes")),
-        total_answers=Count("answers"),
-    ).annotate(
-        agree_ratio=agree_ratio_expression
-    ).order_by("pk")
-    
-    user_answers = Answer.objects.none()
-    unanswered_questions = questions  # Default to all questions
-    unanswered_count = 0
-    
-    if request.user.is_authenticated:
-        # Get user answers with optimized query
-        user_answers = (
-            Answer.objects.filter(user=request.user, question__survey=survey)
-            .select_related("question")
-            .annotate(
-                yes_count=Count(
-                    "question__answers",
-                    filter=Q(question__answers__answer="yes"),
-                    distinct=True,
-                ),
-                total_answers=Count("question__answers", distinct=True),
-            )
-            .annotate(agree_ratio=agree_ratio_expression)
-        )
-        
-        # More efficient way to filter unanswered questions
-        # Using a subquery instead of exclude(id__in=...)
-        answered_subquery = Answer.objects.filter(
-            user=request.user, 
-            question__survey=survey
-        ).values('question_id')
-        
-        unanswered_questions = questions.exclude(
-            id__in=Subquery(answered_subquery)
-        )
-        
-        # Get count without additional query if possible
-        # Could cache this result or calculate differently
-        unanswered_count = unanswered_questions.count()
-    
-    can_edit = can_edit_survey(request.user, survey)
-    
-    return render(
-        request,
-        "survey/survey_detail.html",
-        {
-            "survey": survey,
-            "questions": questions,
-            "can_edit": can_edit,
-            "user_answers": user_answers,
-            "unanswered_count": unanswered_count,
-            "unanswered_questions": unanswered_questions,
-        },
-    )
-
-
-
-def survey_detail_old(request):
-    survey = Survey.get_main_survey()
-    if survey is None:
-        if request.user.is_authenticated:
-            return redirect("survey:survey_create")
-        messages.info(request, _("No surveys"))
-        return render(request, "survey/survey_list.html", {"surveys": []})
-    base_qs = survey.questions.filter(visible=True)
-    user_answers = Answer.objects.none()
-    unanswered_questions_qs = base_qs
-    if request.user.is_authenticated:
-        user_answers = (
-            Answer.objects.filter(user=request.user, question__survey=survey)
-            .select_related("question")
-            .annotate(
-                yes_count=Count(
-                    "question__answers",
-                    filter=Q(question__answers__answer="yes"),
-                    distinct=True,
-                ),
-                total_answers=Count("question__answers", distinct=True),
-            )
-        )
-        user_answers = user_answers.annotate(
-            agree_ratio=ExpressionWrapper(
-                (
-                    Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-                    * 100.0
-                    / NullIf(F("total_answers"), 0)
-                    - 50
-                )
-                * 2,
-                output_field=FloatField(),
-            )
-        )
-        answered_ids = user_answers.values_list("question_id", flat=True)
-        unanswered_questions_qs = base_qs.exclude(id__in=answered_ids)
-    questions = base_qs.annotate(
-        yes_count=Count("answers", filter=Q(answers__answer="yes")),
-        total_answers=Count("answers"),
-    )
-    unanswered_questions = unanswered_questions_qs.annotate(
-        yes_count=Count("answers", filter=Q(answers__answer="yes")),
-        total_answers=Count("answers"),
-    )
-
-    questions = questions.annotate(
-        agree_ratio=ExpressionWrapper(
-            (
-                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-                * 100.0
-                / NullIf(F("total_answers"), 0)
-                - 50
-            )
-            * 2,
-            output_field=FloatField(),
-        )
-    )
-    unanswered_questions = unanswered_questions.annotate(
-        agree_ratio=ExpressionWrapper(
-            (
-                Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
-                * 100.0
-                / NullIf(F("total_answers"), 0)
-                - 50
-            )
-            * 2,
-            output_field=FloatField(),
-        )
-    )
-
-    # Preserve original insertion order without exposing sorting options
-    questions = questions.order_by("pk")
-    unanswered_questions = unanswered_questions.order_by("pk")
-
-    can_edit = can_edit_survey(request.user, survey)
-
-    unanswered_count = (
-        unanswered_questions.count() if request.user.is_authenticated else 0
-    )
-
-    return render(
-        request,
-        "survey/survey_detail.html",
-        {
-            "survey": survey,
-            "questions": questions,
-            "can_edit": can_edit,
-            "user_answers": user_answers,
-            "unanswered_count": unanswered_count,
-            "unanswered_questions": unanswered_questions,
-        },
-    )
 
 
 @login_required
