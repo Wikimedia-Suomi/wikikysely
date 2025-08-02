@@ -26,10 +26,10 @@
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
         <li id="nav-answer-app" class="nav-item"
             data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
-            data-answer-url="{{ answer_survey_url }}"
-            data-is-active="{% if request.path == answer_survey_url %}true{% else %}false{% endif %}">
+            data-answer-url="{{ survey_detail_url }}"
+            data-is-active="{% if request.path == survey_detail_url %}true{% else %}false{% endif %}">
           {% translate 'Answer survey' as answer_label %}
-          <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
+          <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
           <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>
         </li>
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>

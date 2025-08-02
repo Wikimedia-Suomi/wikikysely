@@ -160,7 +160,15 @@ const app = createApp({
 });
 
 app.config.compilerOptions.delimiters = ['[[', ']]'];
-app.mount('#survey-detail-app');
+const surveyApp = app.mount('#survey-detail-app');
+
+window.openFirstQuestion = () => {
+  if (surveyApp && surveyApp.unansweredQuestions.length) {
+    surveyApp.openQuestion(surveyApp.unansweredQuestions[0]);
+  } else if (surveyApp && surveyApp.answerSurveyUrl) {
+    window.location.href = surveyApp.answerSurveyUrl;
+  }
+};
 
 const navRoot = document.getElementById('nav-answer-app');
 if (navRoot) {
@@ -170,7 +178,14 @@ if (navRoot) {
       const auth = navRoot.dataset.auth === 'true';
       const answerUrl = navRoot.dataset.answerUrl;
       const isActive = navRoot.dataset.isActive === 'true';
-      return { count, auth, answerUrl, isActive };
+      function openFirstQuestion() {
+        if (typeof window.openFirstQuestion === 'function') {
+          window.openFirstQuestion();
+        } else {
+          window.location.href = answerUrl;
+        }
+      }
+      return { count, auth, answerUrl, isActive, openFirstQuestion };
     }
   });
   navApp.config.compilerOptions.delimiters = ['[[', ']]'];

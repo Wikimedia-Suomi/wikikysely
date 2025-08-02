@@ -25,12 +25,12 @@
      data-answer-delete-url-template="{% url 'survey:answer_delete' 0 %}"
      data-question-edit-url-template="{% url 'survey:question_edit' 0 %}"
      data-running="{% if survey.state == 'running' %}true{% else %}false{% endif %}"
-     data-answer-survey-url="{% url 'survey:answer_survey' %}">
+     data-answer-survey-url="{% url 'survey:survey_detail' %}">
   <p v-if="loading">{% translate 'Loading...' %}</p>
   <template v-else>
     <div v-if="!currentQuestion">
       <div class="mb-3" v-if="isAuthenticated">
-        <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary">{% translate 'Answer survey' %}</a>
+        <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary" @click.prevent="openQuestion(unansweredQuestions[0])">{% translate 'Answer survey' %}</a>
         <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
         <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
       </div>
