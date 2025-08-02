@@ -467,3 +467,30 @@ class SurveyFlowTests(TransactionTestCase):
         self._create_question(survey)
         with self.assertRaises(ProtectedError):
             survey.delete()
+
+    def test_questions_json_anonymous(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        Answer.objects.create(question=question, user=self.user, answer="yes")
+        other = self.users[1]
+        Answer.objects.create(question=question, user=other, answer="no")
+
+        self.client.logout()
+        response = self.client.get(reverse("survey:questions_json"))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["questions"][0]
+        self.assertEqual(data["yes_count"], 1)
+        self.assertEqual(data["no_count"], 1)
+        self.assertEqual(data["total_answers"], 2)
+        self.assertNotIn("my_answer", data)
+
+    def test_questions_json_authenticated(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        ans = Answer.objects.create(question=question, user=self.user, answer="yes")
+
+        response = self.client.get(reverse("survey:questions_json"))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["questions"][0]
+        self.assertEqual(data["my_answer"], "yes")
+        self.assertIsNotNone(data.get("my_answered_at"))
