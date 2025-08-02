@@ -7,6 +7,9 @@ const app = createApp({
     const root = document.getElementById('survey-detail-app');
     const isAuthenticated = root.dataset.auth === 'true';
     const answerUrlTemplate = root.dataset.answerUrlTemplate;
+    const answerEditUrlTemplate = root.dataset.answerEditUrlTemplate;
+    const answerDeleteUrlTemplate = root.dataset.answerDeleteUrlTemplate;
+    const isRunning = root.dataset.running === 'true';
 
     function formatDate(str) {
       return str ? str.slice(0, 10) : '';
@@ -24,7 +27,14 @@ const app = createApp({
       questions.value.filter(q => q.my_answer)
     );
 
-    onMounted(() => {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function fetchQuestions() {
+      loading.value = true;
       fetch(window.questionsJsonUrl)
         .then(resp => resp.json())
         .then(data => {
@@ -38,15 +48,55 @@ const app = createApp({
             }
           });
         });
-    });
+    }
+
+    function updateAnswer(a) {
+      const url = answerEditUrlTemplate.replace('0', a.my_answer_id);
+      const formData = new FormData();
+      formData.append('answer', a.my_answer);
+      formData.append('question_id', a.id);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: formData
+      }).then(resp => resp.ok ? resp.json() : Promise.reject())
+        .then(() => fetchQuestions())
+        .catch(() => window.location.reload());
+    }
+
+    function deleteAnswer(a) {
+      const url = answerDeleteUrlTemplate.replace('0', a.my_answer_id);
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        }
+      }).then(resp => resp.ok ? resp.json() : Promise.reject())
+        .then(() => fetchQuestions())
+        .catch(() => window.location.reload());
+    }
+
+    function deleteUrl(id) {
+      return answerDeleteUrlTemplate.replace('0', id);
+    }
+
+    onMounted(fetchQuestions);
 
     return {
       loading,
       isAuthenticated,
+      isRunning,
       unansweredQuestions,
       userAnswers,
       formatDate,
-      answerUrl
+      answerUrl,
+      updateAnswer,
+      deleteAnswer,
+      deleteUrl
     };
   }
 });

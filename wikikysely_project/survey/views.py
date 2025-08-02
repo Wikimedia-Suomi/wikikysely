@@ -283,6 +283,7 @@ def questions_json(request):
         if ans:
             item["my_answer"] = ans.answer
             item["my_answered_at"] = ans.created_at
+            item["my_answer_id"] = ans.id
         data.append(item)
 
     return JsonResponse({"questions": data})

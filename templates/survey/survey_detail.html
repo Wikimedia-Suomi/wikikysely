@@ -36,7 +36,10 @@
 {% endif %}
 <div id="survey-detail-app"
      data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
-     data-answer-url-template="{% url 'survey:answer_question' 0 %}">
+     data-answer-url-template="{% url 'survey:answer_question' 0 %}"
+     data-answer-edit-url-template="{% url 'survey:answer_edit' 0 %}"
+     data-answer-delete-url-template="{% url 'survey:answer_delete' 0 %}"
+     data-running="{% if survey.state == 'running' %}true{% else %}false{% endif %}">
   <p v-if="loading">{% translate 'Loading...' %}</p>
   <template v-else>
     <h2 class="mt-3" v-if="unansweredQuestions.length">{% translate 'Unanswered questions' %}</h2>
@@ -84,7 +87,20 @@
           <td data-label="{% translate 'Title' %}"><a :href="answerUrl(a.id)">[[ a.text ]]</a></td>
           <td class="total-answers" data-label="{% translate 'Answers' %}">[[ a.total_answers ]]</td>
           <td class="agree-ratio" data-label="{% translate 'Agree' %}">[[ a.agree_ratio.toFixed(1) ]]%</td>
-          <td></td>
+          <td class="text-end">
+            <template v-if="isRunning">
+              <form class="d-inline" @change="updateAnswer(a)">
+                <input type="hidden" name="question_id" :value="a.id">
+                <div class="btn-group yes-no-group" role="group">
+                  <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-yes'" value="yes" v-model="a.my_answer">
+                  <label class="btn btn-sm btn-outline-success" :for="'answer-' + a.id + '-yes'">{% translate 'Yes' %}</label>
+                  <input type="radio" class="btn-check" :name="'answer-' + a.id" :id="'answer-' + a.id + '-no'" value="no" v-model="a.my_answer">
+                  <label class="btn btn-sm btn-outline-danger" :for="'answer-' + a.id + '-no'">{% translate 'No' %}</label>
+                </div>
+              </form>
+              <a :href="deleteUrl(a.my_answer_id)" class="btn btn-sm btn-danger ms-2" @click.prevent="deleteAnswer(a)">{% translate 'Remove answer' %}</a>
+            </template>
+          </td>
         </tr>
         </tbody>
       </table>
