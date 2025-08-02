@@ -124,10 +124,9 @@
 const yesLabel = '{{ yes_label|escapejs }}';
 const noLabel = '{{ no_label|escapejs }}';
 const noAnswersLabel = '{{ no_answers_label|escapejs }}';
-const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
-const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
-const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
-    getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary').trim() || 'gray';
+const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim() || '#14866d';
+const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--color-destructive').trim() || '#d73333';
+const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--color-base-subtle').trim() || '#eaecf0';
 
 // Pie charts
 const pieContainers = document.querySelectorAll('#pieCharts .pie-chart');

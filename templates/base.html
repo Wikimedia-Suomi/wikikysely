@@ -6,23 +6,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}WikiKysely{% endblock %}</title>
-    <!-- Bootswatch theme for nicer default styling -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.5.3.2.flatly.css' %}">
+    <link rel="stylesheet" href="https://doc.wikimedia.org/codex/main/bundled/codex.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'survey:survey_detail' %}">WikiKysely</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="{% translate 'Toggle navigation' %}">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbar-main">
+    <div id="navbar-main">
       {% url 'survey:survey_detail' as survey_detail_url %}
       {% url 'survey:answer_survey' as answer_survey_url %}
       {% url 'survey:survey_answers' as survey_answers_url %}
       {% url 'survey:userinfo' as userinfo_url %}
-      <ul class="navbar-nav me-auto">
+      <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
         {% if unanswered_count %}
         <li class="nav-item"><a class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} (<span id="unanswered-count">{{ unanswered_count }}</span>)</a></li>
@@ -31,7 +27,7 @@
         {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
       </ul>
-      <ul id="userbar" class="navbar-nav ms-auto">
+      <ul id="userbar" class="navbar-nav">
       <li class="nav-item">
       <form action="{% url 'set_language' %}" method="post" class="d-flex">
         {% csrf_token %}
@@ -63,9 +59,8 @@
 <div class="container mt-4">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{{ message.tags }}" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endif %}
@@ -79,7 +74,6 @@
     <a href="https://github.com/Wikimedia-Suomi/wikikysely/blob/main/privacy-policy.md" target="_blank">{% translate 'Privacy policy' %}</a>
   </small>
 </footer>
-<script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="{% static 'js/langswitch.js' %}"></script>
 {% block scripts %}{% endblock %}

@@ -41,9 +41,9 @@
 </div>
 {% if question_stats %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
+    <a class="toggle-link text-decoration-none" data-target="answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
   </h2>
-  <div id="answerDetails" class="collapse">
+  <div id="answerDetails" class="collapsible" hidden>
   <!--div class="row mb-4">
     <div class="col-md-6 text-center">
       <p class="mt-2">{% translate 'Answer distribution' %}</p>
@@ -80,9 +80,9 @@
 {% endif %}
 {% if user_answers %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
+    <a class="toggle-link text-decoration-none" data-target="myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
-  <div id="myAnswers" class="collapse">
+  <div id="myAnswers" class="collapsible" hidden>
   <div class="table-responsive">
   <table class="table mb-3 survey-detail-table stacked-table">
     <thead>
@@ -137,11 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
 const yesLabel = '{{ yes_label|escapejs }}';
 const noLabel = '{{ no_label|escapejs }}';
 const noAnswersLabel = '{{ no_answers_label|escapejs }}';
-const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
-const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
-const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
-    getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary').trim() || 'gray';
-const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || 'blue';
+const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim() || '#14866d';
+const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--color-destructive').trim() || '#d73333';
+const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--color-base-subtle').trim() || '#eaecf0';
+const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--color-progressive').trim() || '#36c';
 const yesCount = {{ question_stats.yes|default:0 }};
 const noCount = {{ question_stats.no|default:0 }};
 const totalCount = {{ question_stats.total|default:0 }};
@@ -198,22 +197,21 @@ if (tlCtx) {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const sections = [
-        {key: 'answerDetailsOpen', id: 'answerDetails'},
-        {key: 'myAnswersOpen', id: 'myAnswers'}
-    ];
-    sections.forEach(({key, id}) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const collapse = new bootstrap.Collapse(el, {toggle: false});
+    document.querySelectorAll('.toggle-link').forEach(link => {
+        const target = document.getElementById(link.dataset.target);
+        if (!target) return;
+        const key = link.dataset.target + 'Open';
         const saved = localStorage.getItem(key);
-        if (saved === 'false') {
-            collapse.hide();
-        } else {
-            collapse.show();
-        }
-        el.addEventListener('shown.bs.collapse', () => localStorage.setItem(key, 'true'));
-        el.addEventListener('hidden.bs.collapse', () => localStorage.setItem(key, 'false'));
+        const isOpen = saved === null || saved === 'true';
+        target.hidden = !isOpen;
+        link.setAttribute('aria-expanded', isOpen);
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const nowOpen = target.hidden;
+            target.hidden = !nowOpen;
+            link.setAttribute('aria-expanded', nowOpen);
+            localStorage.setItem(key, nowOpen);
+        });
     });
 });
 </script>

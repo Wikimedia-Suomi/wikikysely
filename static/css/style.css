@@ -1,6 +1,23 @@
 body {
   padding-bottom: 60px;
 }
+.navbar {
+  background-color: var(--color-base, #fff);
+  border-bottom: 1px solid var(--color-base-subtle, #a2a9b1);
+  padding: 0.5rem 1rem;
+}
+.navbar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem;
+}
 .navbar-brand {
   font-weight: bold;
 }
@@ -47,10 +64,20 @@ body {
 /* Make the active navigation link stand out more */
 .nav-link.active {
   font-weight: bold;
-  color: var(--bs-primary);
-  background-color: var(--bs-primary-bg-subtle);
+  color: var(--color-progressive, #36c);
+  background-color: var(--color-progressive-subtle, #eaf3ff);
   border-radius: 0.25rem;
 }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-base-subtle, #a2a9b1);
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+.alert-success { background-color: var(--color-success-subtle, #d5fdf4); }
+.alert-danger { background-color: var(--color-destructive-subtle, #f9d2d2); }
+.alert-info { background-color: var(--color-progressive-subtle, #eaf3ff); }
 
 /* Keep answer page buttons aligned */
 .answer-buttons {
@@ -82,7 +109,7 @@ body {
   }
   .stacked-table tr {
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--bs-table-border-color, #dee2e6);
+    border-bottom: 1px solid var(--color-base-subtle, #a2a9b1);
   }
   .stacked-table td {
     display: flex !important;
