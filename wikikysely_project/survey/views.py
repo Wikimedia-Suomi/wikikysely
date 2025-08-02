@@ -243,6 +243,51 @@ def calculate_agree_ratio(yes_count, total_answers):
     return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
 
 
+def questions_json(request):
+    """Return survey questions and aggregated statistics as JSON."""
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return JsonResponse({"questions": []})
+
+    questions = (
+        survey.questions.filter(visible=True)
+        .annotate(
+            yes_count=Count("answers", filter=Q(answers__answer="yes")),
+            no_count=Count("answers", filter=Q(answers__answer="no")),
+            total_answers=Count("answers"),
+        )
+        .order_by("pk")
+    )
+
+    user_answers = {}
+    if request.user.is_authenticated:
+        user_answers = {
+            a.question_id: a
+            for a in Answer.objects.filter(
+                user=request.user, question__survey=survey
+            )
+        }
+
+    data = []
+    for q in questions:
+        item = {
+            "id": q.id,
+            "text": q.text,
+            "created_at": q.created_at,
+            "total_answers": q.total_answers,
+            "yes_count": q.yes_count,
+            "no_count": q.no_count,
+            "agree_ratio": calculate_agree_ratio(q.yes_count, q.total_answers),
+        }
+        ans = user_answers.get(q.id)
+        if ans:
+            item["my_answer"] = ans.answer
+            item["my_answered_at"] = ans.created_at
+        data.append(item)
+
+    return JsonResponse({"questions": data})
+
+
 @login_required
 def survey_create(request):
     """Create a new survey when none exists."""
