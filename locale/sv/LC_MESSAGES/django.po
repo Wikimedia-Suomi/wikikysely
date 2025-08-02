@@ -87,6 +87,10 @@ msgstr "Ta bort fråga"
 msgid "Skip"
 msgstr "Hoppa över"
 
+#: templates/survey/survey_detail.html:131
+msgid "Back"
+msgstr "Tillbaka"
+
 #: templates/survey/answer_list.html:7
 msgid "My questions"
 msgstr "Mina frågor"

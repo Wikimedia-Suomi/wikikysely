@@ -87,6 +87,10 @@ msgstr "Poista kysymys"
 msgid "Skip"
 msgstr "Ohita"
 
+#: templates/survey/survey_detail.html:131
+msgid "Back"
+msgstr "Takaisin"
+
 #: templates/survey/answer_list.html:7
 msgid "My questions"
 msgstr "Omat kysymykset"
