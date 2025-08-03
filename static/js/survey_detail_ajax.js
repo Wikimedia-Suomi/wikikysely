@@ -5,6 +5,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
+  function updateAnswerNavLink(count) {
+    const navCount = document.getElementById('unanswered-count');
+    if (navCount) {
+      navCount.textContent = count;
+    }
+
+    const navLink = document.getElementById('answer-nav-link');
+    if (!navLink) return;
+
+    if (count > 0 && navLink.tagName === 'SPAN') {
+      const url = navLink.dataset.answerUrl;
+      const newLink = document.createElement('a');
+      newLink.id = 'answer-nav-link';
+      newLink.className = 'nav-link';
+      newLink.href = url;
+      newLink.innerHTML = navLink.innerHTML;
+      navLink.replaceWith(newLink);
+    } else if (count === 0 && navLink.tagName === 'A') {
+      const url = navLink.href;
+      const newSpan = document.createElement('span');
+      newSpan.id = 'answer-nav-link';
+      newSpan.className = 'nav-link text-secondary';
+      newSpan.dataset.answerUrl = url;
+      newSpan.innerHTML = navLink.innerHTML;
+      navLink.replaceWith(newSpan);
+    }
+  }
+
+  const initialNavCount = document.getElementById('unanswered-count');
+  if (initialNavCount) {
+    const initialCount = parseInt(initialNavCount.textContent, 10) || 0;
+    updateAnswerNavLink(initialCount);
+  }
+
   function attachDeleteQuestion(link) {
     link.addEventListener('click', ev => {
       ev.preventDefault();
@@ -76,19 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         if (row) row.remove();
-        const navCount = document.getElementById('unanswered-count');
-        if (navCount && typeof data.unanswered_count !== 'undefined') {
-          navCount.textContent = data.unanswered_count;
-        }
-        const navLink = document.getElementById('answer-nav-link');
-        if (navLink && typeof data.unanswered_count !== 'undefined' && data.unanswered_count > 0 && navLink.tagName === 'SPAN') {
-          const url = navLink.dataset.answerUrl;
-          const newLink = document.createElement('a');
-          newLink.id = 'answer-nav-link';
-          newLink.className = 'nav-link';
-          newLink.href = url;
-          newLink.innerHTML = navLink.innerHTML;
-          navLink.replaceWith(newLink);
+        if (typeof data.unanswered_count !== 'undefined') {
+          updateAnswerNavLink(data.unanswered_count);
         }
         const answerBtn = document.getElementById('answer-survey-btn');
         const answersBtn = document.getElementById('answers-btn');

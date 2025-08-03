@@ -479,6 +479,19 @@ class SurveyFlowTests(TransactionTestCase):
         User = get_user_model()
         self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
 
+    def test_delete_answer_returns_unanswered_count(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        ans = Answer.objects.create(question=q, user=self.user, answer="yes")
+
+        response = self.client.post(
+            reverse("survey:answer_delete", args=[ans.pk]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data["unanswered_count"], 1)
+
     def test_logout_from_protected_page_redirects_to_answers(self):
         self._create_survey()
         url = reverse("survey:survey_edit")
