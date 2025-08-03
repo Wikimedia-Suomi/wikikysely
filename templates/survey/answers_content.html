@@ -1,0 +1,84 @@
+{% load i18n %}
+<h1>{% translate 'Answers' %}</h1>
+<div
+  id="answers-app"
+  data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
+  data-answer-url-template="{% url 'survey:answer_question' 0 %}"
+  data-total-users="{{ total_users }}"
+>
+  <div class="mb-3">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="chartType" id="pieChartRadio" value="pie" v-model="chartType">
+      <label class="form-check-label" for="pieChartRadio">{% translate 'Pie chart' %}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar" v-model="chartType">
+      <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
+    </div>
+  </div>
+  <div class="table-responsive" v-show="chartType === 'bar'">
+    <table id="barChartTable" class="table">
+      <tbody>
+      <tr v-for="q in questions" :key="'bar-'+q.id">
+        <td class="bar-chart-question">
+          <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
+          <span v-else>[[ q.text ]]</span>
+        </td>
+        <td class="w-100">
+          <div class="progress" style="height: 1.25rem;">
+            <div class="progress-bar bg-success text-black" role="progressbar" :style="{width: percent(q.yes_count, q.total_answers) + '%'}">[[ q.yes_count ]]</div>
+            <div class="progress-bar bg-danger text-light" role="progressbar" :style="{width: percent(q.no_count, q.total_answers) + '%'}">[[ q.no_count ]]</div>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="pieChartsContainer" v-show="chartType === 'pie'">
+    <div id="pieCharts" class="d-flex flex-wrap gap-4 mt-4 justify-content-center">
+      <div class="pie-chart text-center" v-for="q in questions" :key="'pie-'+q.id" :data-yes="q.yes_count" :data-no="q.no_count" :data-total="q.total_answers">
+        <canvas></canvas>
+        <p class="mt-2">
+          <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
+          <span v-else>[[ q.text ]]</span>
+        </p>
+      </div>
+    </div>
+  </div>
+  <p class="mt-3">{% translate 'Total respondents' %}: [[ totalUsers ]]</p>
+  <h2>{% translate 'Answer table' %}</h2>
+  <p v-if="loading">{% translate 'Loading...' %}</p>
+  <div class="table-responsive" v-else>
+    <table id="answerTable" class="table stacked-table">
+      <thead>
+      <tr>
+        <th>{% translate 'Published' %}</th>
+        <th>{% translate 'Question' %}</th>
+        {% if request.user.is_authenticated %}
+        <th>{% translate 'My answer' %}</th>
+        {% endif %}
+        <th>{% translate 'Yes' %}</th>
+        <th>{% translate 'No' %}</th>
+        <th>{% translate 'Total' %}</th>
+        <th>{% translate 'Agree' %}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="q in questions" :key="q.id">
+        <td data-label="{% translate 'Published' %}">[[ formatDate(q.created_at) ]]</td>
+        <td data-label="{% translate 'Question' %}">
+          <a v-if="isAuthenticated" :href="answerUrl(q.id)">[[ q.text ]]</a>
+          <span v-else>[[ q.text ]]</span>
+        </td>
+        {% if request.user.is_authenticated %}
+        <td data-label="{% translate 'My answer' %}">[[ q.my_answer || '' ]]</td>
+        {% endif %}
+        <td data-label="{% translate 'Yes' %}">[[ q.yes_count ]]</td>
+        <td data-label="{% translate 'No' %}">[[ q.no_count ]]</td>
+        <td data-label="{% translate 'Total' %}">[[ q.total_answers ]]</td>
+        <td data-label="{% translate 'Agree' %}">[[ q.agree_ratio.toFixed(1) ]]%</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -209,9 +209,16 @@ def survey_detail(request, pk=None):
         question.yes_count = sum(1 for a in question.answers.all() if a.answer == 'yes')
         question.total_answers = question.answers.count()
         question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
-    
+
     can_edit = can_edit_survey(request.user, survey)
-    
+
+    total_users = (
+        Answer.objects.filter(question__survey=survey).values("user").distinct().count()
+    )
+    yes_label = gettext("Yes")
+    no_label = gettext("No")
+    no_answers_label = gettext("No answers")
+
     return render(
         request,
         "survey/survey_detail.html",
@@ -222,6 +229,10 @@ def survey_detail(request, pk=None):
             "user_answers": user_answers,
             "unanswered_count": unanswered_count,
             "unanswered_questions": unanswered_questions,
+            "total_users": total_users,
+            "yes_label": yes_label,
+            "no_label": no_label,
+            "no_answers_label": no_answers_label,
         },
     )
 
