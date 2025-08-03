@@ -1,4 +1,4 @@
-const { createApp, ref, computed, onMounted, nextTick } = Vue;
+const { createApp, ref, computed, onMounted } = Vue;
 
 if (typeof window.unansweredCount === 'number') {
   window.unansweredCount = ref(window.unansweredCount);
@@ -68,7 +68,7 @@ const app = createApp({
         })
         .finally(() => {
           loading.value = false;
-          nextTick(() => {
+          Vue.nextTick(() => {
             if (typeof initSortableTables === 'function') {
               initSortableTables('.survey-detail-table');
             }

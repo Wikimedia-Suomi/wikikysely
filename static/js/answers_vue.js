@@ -1,4 +1,4 @@
-const { createApp, ref, onMounted, nextTick, watch } = Vue;
+const { createApp, ref, onMounted, watch } = Vue;
 
 const app = createApp({
   setup() {
@@ -77,7 +77,7 @@ const app = createApp({
         })
         .finally(() => {
           loading.value = false;
-          nextTick(() => {
+          Vue.nextTick(() => {
             renderPieCharts();
             if (typeof initSortableTables === 'function') {
               initSortableTables('#answerTable');
