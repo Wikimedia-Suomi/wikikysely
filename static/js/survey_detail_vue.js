@@ -207,25 +207,4 @@ window.openFirstQuestion = () => {
   }
 };
 
-const navRoot = document.getElementById('nav-answer-app');
-if (navRoot) {
-  const navApp = createApp({
-    setup() {
-      const count = window.unansweredCount;
-      const auth = navRoot.dataset.auth === 'true';
-      const answerUrl = navRoot.dataset.answerUrl;
-      const isActive = navRoot.dataset.isActive === 'true';
-      function openFirstQuestion() {
-        if (typeof window.openFirstQuestion === 'function') {
-          window.openFirstQuestion();
-        } else {
-          window.location.href = answerUrl;
-        }
-      }
-      return { count, auth, answerUrl, isActive, openFirstQuestion };
-    }
-  });
-  navApp.config.compilerOptions.delimiters = ['[[', ']]'];
-  navApp.mount('#nav-answer-app');
-}
 })();
