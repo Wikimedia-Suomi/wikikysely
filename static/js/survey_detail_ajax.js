@@ -80,6 +80,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navCount && typeof data.unanswered_count !== 'undefined') {
           navCount.textContent = data.unanswered_count;
         }
+        const navLink = document.getElementById('answer-nav-link');
+        if (navLink && typeof data.unanswered_count !== 'undefined' && data.unanswered_count > 0 && navLink.tagName === 'SPAN') {
+          const url = navLink.dataset.answerUrl;
+          const newLink = document.createElement('a');
+          newLink.id = 'answer-nav-link';
+          newLink.className = 'nav-link';
+          newLink.href = url;
+          newLink.innerHTML = navLink.innerHTML;
+          navLink.replaceWith(newLink);
+        }
+        const answerBtn = document.getElementById('answer-survey-btn');
+        const answersBtn = document.getElementById('answers-btn');
+        if (typeof data.unanswered_count !== 'undefined' && answerBtn && answersBtn) {
+          if (data.unanswered_count > 0) {
+            answerBtn.style.display = '';
+            answersBtn.style.display = 'none';
+          } else {
+            answersBtn.style.display = '';
+            answerBtn.style.display = 'none';
+          }
+        }
         if (updateUnanswered) {
           const tbody = unansweredTable.tBodies[0];
           if (tbody) {

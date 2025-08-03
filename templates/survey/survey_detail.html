@@ -23,12 +23,11 @@
 <p>{{ survey.description }}</p>
 {% if request.user.is_authenticated %}
   <div class="mb-3">
-    {% if unanswered_questions and survey.state == 'running' %}
-      <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
-    {% else %}
-      {% if questions %}
-        <a href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
-      {% endif %}
+    {% if survey.state == 'running' %}
+      <a href="{% url 'survey:answer_survey' %}" id="answer-survey-btn" class="btn btn-primary"{% if not unanswered_questions %} style="display:none"{% endif %}>{% translate 'Answer survey' %}</a>
+    {% endif %}
+    {% if questions %}
+      <a href="{% url 'survey:survey_answers' %}" id="answers-btn" class="btn btn-info"{% if survey.state == 'running' and unanswered_questions %} style="display:none"{% endif %}>{% translate 'Answers' %}</a>
     {% endif %}
     <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
   </div>
