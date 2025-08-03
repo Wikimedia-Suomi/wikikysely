@@ -37,7 +37,9 @@
 
       function show(v, push = true) {
         view.value = v;
-        const targetExists = (v === 'questions' ? document.getElementById(questionsId) : document.getElementById(resultsId)) !== null;
+        const targetExists = (v === 'questions'
+          ? document.getElementById(questionsId)
+          : document.getElementById(resultsId)) !== null;
         if (targetExists) {
           toggle(v);
           if (push) {
@@ -45,7 +47,10 @@
             window.history.pushState({ view: v }, '', url);
           }
         } else {
-          window.location.href = v === 'questions' ? questionsUrl : resultsUrl;
+          const url = v === 'questions' ? questionsUrl : resultsUrl;
+          if (window.location.pathname !== url) {
+            window.location.href = url;
+          }
         }
       }
 
