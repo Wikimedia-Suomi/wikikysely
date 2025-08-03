@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n static %}
-{% block title %}{% translate 'Answers' %}{% endblock %}
+{% block title %}{% translate 'Results' %}{% endblock %}
 {% block content %}
 {% if not request.user.is_authenticated and data %}
   {% if request.GET.login_required %}
@@ -28,11 +28,12 @@
       <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
   {% endif %}
+<div id="results-view">
 {% include 'survey/answers_content.html' %}
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/sort_tables.js' %}"></script>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
   window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
   window.answersConfig = {

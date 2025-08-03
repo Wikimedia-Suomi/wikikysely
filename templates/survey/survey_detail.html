@@ -18,6 +18,7 @@
   {% endif %}
 {% endif %}
      <p>{{ survey.description }}</p>
+<div id="questions-view">
 <div id="survey-detail-app"
      data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
      data-answer-url-template="{% url 'survey:answer_question' 0 %}"
@@ -32,7 +33,7 @@
     <div v-if="!currentQuestion">
       <div class="mb-3" v-if="isAuthenticated">
         <a v-if="unansweredQuestions.length && isRunning" :href="answerSurveyUrl" class="btn btn-primary" @click.prevent="openQuestion(unansweredQuestions[0])">{% translate 'Answer survey' %}</a>
-        <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info">{% translate 'Answers' %}</a>
+        <a v-else-if="questions.length" href="{% url 'survey:survey_answers' %}" class="btn btn-info" @click.prevent="window.navQr && window.navQr.show('results')">{% translate 'Results' %}</a>
         <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
       </div>
       <div class="mb-3" v-else>
@@ -195,15 +196,16 @@
     </div>
   </template>
 </div>
+ </div>
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
 {% endif %}
-{% include 'survey/answers_content.html' %}
-
+<div id="results-view" class="d-none">
+  {% include 'survey/answers_content.html' %}
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/sort_tables.js' %}"></script>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
   window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
   window.answersConfig = {

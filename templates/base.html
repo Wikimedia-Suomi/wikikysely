@@ -21,17 +21,22 @@
       {% url 'survey:survey_detail' as survey_detail_url %}
       {% url 'survey:survey_answers' as survey_answers_url %}
       {% url 'survey:userinfo' as userinfo_url %}
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
+      <ul class="navbar-nav me-auto" id="nav-qr-app"
+          data-questions-id="questions-view"
+          data-results-id="results-view"
+          data-questions-url="{{ survey_detail_url }}"
+          data-results-url="{{ survey_answers_url }}"
+          data-initial-view="{% if request.path == survey_answers_url %}results{% else %}questions{% endif %}">
+        <li class="nav-item"><a class="nav-link" :class="{ active: view === 'questions' }" href="{{ survey_detail_url }}" @click.prevent="show('questions')">{% translate 'Questions' %}</a></li>
         <li id="nav-answer-app" class="nav-item"
             data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
             data-answer-url="{{ survey_detail_url }}"
             data-is-active="{% if request.path == survey_detail_url %}true{% else %}false{% endif %}">
           {% translate 'Answer survey' as answer_label %}
-          <a v-if="count > 0" class="nav-link" :class="{ active: isActive }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
+          <a v-if="count > 0" class="nav-link" :class="{ active: isActive && view === 'questions' }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
           <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>
         </li>
-        <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
+        <li class="nav-item"><a class="nav-link" :class="{ active: view === 'results' }" href="{{ survey_answers_url }}" @click.prevent="show('results')">{% translate 'Results' %}</a></li>
       </ul>
       <ul id="userbar" class="navbar-nav ms-auto">
       <li class="nav-item">
@@ -83,6 +88,8 @@
 </footer>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="{% static 'js/nav_qr_vue.js' %}"></script>
 <script>
   window.unansweredCount = {{ unanswered_count|default:0 }};
 </script>

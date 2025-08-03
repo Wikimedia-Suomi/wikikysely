@@ -16,8 +16,12 @@ msgid "Answer survey"
 msgstr "Svara"
 
 #: templates/base.html:29 templates/survey/results.html:3
-#: templates/survey/results.html:5 templates/survey/survey_detail.html:26
-#: templates/survey/survey_detail.html:43 templates/survey/survey_detail.html:78
+#: templates/survey/results.html:5 templates/survey/survey_detail.html:35
+msgid "Results"
+msgstr "Resultat"
+
+#: templates/survey/survey_detail.html:26 templates/survey/survey_detail.html:43
+#: templates/survey/survey_detail.html:78
 msgid "Answers"
 msgstr "Svar"
 

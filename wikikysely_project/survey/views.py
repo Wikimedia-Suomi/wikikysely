@@ -1039,7 +1039,7 @@ def survey_answers(request):
     no_answers_label = gettext("No answers")
     return render(
         request,
-        "survey/answers.html",
+        "survey/results.html",
         {
             "survey": survey,
             "data": data,
