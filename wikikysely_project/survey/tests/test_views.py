@@ -460,3 +460,11 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["deleted"])
         self.assertFalse(Answer.objects.filter(pk=ans.pk).exists())
+
+    def test_survey_answer_view(self):
+        survey = self._create_survey()
+        self._create_question(survey)
+        response = self.client.get(reverse("survey:survey_answer"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "survey/survey_detail.html")
+        self.assertTrue(response.context["open_first_question"])
