@@ -1,6 +1,6 @@
 const { createApp, ref, onMounted, watch } = Vue;
 
-const app = createApp({
+const answersApp = createApp({
   setup() {
     const questions = ref([]);
     const loading = ref(true);
@@ -94,5 +94,5 @@ const app = createApp({
   }
 });
 
-app.config.compilerOptions.delimiters = ['[[', ']]'];
-app.mount('#answers-app');
+answersApp.config.compilerOptions.delimiters = ['[[', ']]'];
+answersApp.mount('#answers-app');
