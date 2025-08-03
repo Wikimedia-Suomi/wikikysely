@@ -89,10 +89,10 @@
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="{% static 'js/nav_qr_vue.js' %}"></script>
 <script>
   window.unansweredCount = {{ unanswered_count|default:0 }};
 </script>
+<script src="{% static 'js/nav_qr_vue.js' %}"></script>
 <script src="{% static 'js/langswitch.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>

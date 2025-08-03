@@ -19,7 +19,10 @@
   const app = createApp({
     setup() {
       const view = ref(initialView);
-      const count = window.unansweredCount;
+      const count = (window.unansweredCount && typeof window.unansweredCount === 'object' && 'value' in window.unansweredCount)
+        ? window.unansweredCount
+        : ref(window.unansweredCount || 0);
+      window.unansweredCount = count;
       const auth = navRoot ? navRoot.dataset.auth === 'true' : false;
       const answerUrl = navRoot ? navRoot.dataset.answerUrl : '';
       const isActive = ref(navRoot ? navRoot.dataset.isActive === 'true' : false);
