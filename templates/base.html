@@ -20,6 +20,7 @@
     <div class="collapse navbar-collapse" id="navbar-main">
       {% url 'survey:survey_detail' as survey_detail_url %}
       {% url 'survey:survey_answers' as survey_answers_url %}
+      {% url 'survey:survey_answer' as survey_answer_url %}
       {% url 'survey:userinfo' as userinfo_url %}
       <ul class="navbar-nav me-auto" id="nav-qr-app"
           data-questions-id="questions-view"
@@ -30,8 +31,8 @@
         <li class="nav-item"><a class="nav-link" :class="{ active: view === 'questions' }" href="{{ survey_detail_url }}" @click.prevent="show('questions')">{% translate 'Questions' %}</a></li>
         <li id="nav-answer-app" class="nav-item"
             data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
-            data-answer-url="{{ survey_detail_url }}"
-            data-is-active="{% if request.path == survey_detail_url %}true{% else %}false{% endif %}">
+            data-answer-url="{{ survey_answer_url }}"
+            data-is-active="{% if request.path == survey_answer_url or '/question/' in request.path %}true{% else %}false{% endif %}">
           {% translate 'Answer survey' as answer_label %}
           <a v-if="count > 0" class="nav-link" :class="{ active: isActive && view === 'questions' }" :href="answerUrl" @click.prevent="openFirstQuestion">{{ answer_label }} (<span id="unanswered-count">[[ count ]]</span>)</a>
           <span v-else class="nav-link text-secondary">{{ answer_label }}<template v-if="auth">(<span id="unanswered-count">[[ count ]]</span>)</template></span>

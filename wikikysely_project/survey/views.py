@@ -178,7 +178,7 @@ def survey_logout(request):
     return redirect("survey:survey_answers")
 
 
-def survey_detail(request, pk=None):
+def survey_detail(request, pk=None, open_first=False):
     survey = Survey.get_main_survey()
     if survey is None:
         if request.user.is_authenticated:
@@ -233,8 +233,13 @@ def survey_detail(request, pk=None):
             "yes_label": yes_label,
             "no_label": no_label,
             "no_answers_label": no_answers_label,
+            "open_first_question": open_first,
         },
     )
+
+
+def survey_answer(request):
+    return survey_detail(request, open_first=True)
 
 
 def calculate_agree_ratio(yes_count, total_answers):

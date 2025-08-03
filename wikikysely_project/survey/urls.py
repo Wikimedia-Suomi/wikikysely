@@ -35,6 +35,7 @@ urlpatterns = [
     path("my_answers/", views.userinfo, name="userinfo"),
     path("my_answers/download/", views.userinfo_download, name="userinfo_download"),
     path("my_answers/delete_data/", views.user_data_delete, name="user_data_delete"),
+    path("answer/", views.survey_answer, name="survey_answer"),
     path("answers/", views.survey_answers, name="survey_answers"),
     path(
         "answers/wikitext/",
