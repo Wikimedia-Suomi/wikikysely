@@ -1,3 +1,4 @@
+(() => {
 const { createApp, ref, computed, onMounted } = Vue;
 
 if (typeof window.unansweredCount === 'number') {
@@ -195,8 +196,8 @@ const surveyDetailApp = createApp({
   }
   });
 
-  surveyDetailApp.config.compilerOptions.delimiters = ['[[', ']]'];
-  const surveyApp = surveyDetailApp.mount('#survey-detail-app');
+surveyDetailApp.config.compilerOptions.delimiters = ['[[', ']]'];
+const surveyApp = surveyDetailApp.mount('#survey-detail-app');
 
 window.openFirstQuestion = () => {
   if (surveyApp && surveyApp.unansweredQuestions.length) {
@@ -227,3 +228,4 @@ if (navRoot) {
   navApp.config.compilerOptions.delimiters = ['[[', ']]'];
   navApp.mount('#nav-answer-app');
 }
+})();
