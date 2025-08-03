@@ -34,6 +34,10 @@
   data-auth="{{ request.user.is_authenticated|yesno:'true,false' }}"
   data-answer-url-template="{% url 'survey:answer_question' 0 %}"
   data-total-users="{{ total_users }}"
+  data-questions-json-url="{% url 'survey:questions_json' %}"
+  data-yes-label="{{ yes_label }}"
+  data-no-label="{{ no_label }}"
+  data-no-answers-label="{{ no_answers_label }}"
 >
   <div class="mb-3">
     <div class="form-check form-check-inline">
@@ -111,17 +115,4 @@
     </table>
   </div>
 </div>
-{% endblock %}
-{% block scripts %}
-<script src="{% static 'js/sort_tables.js' %}"></script>
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script>
-  window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
-  window.answersConfig = {
-    yesLabel: '{{ yes_label|escapejs }}',
-    noLabel: '{{ no_label|escapejs }}',
-    noAnswersLabel: '{{ no_answers_label|escapejs }}'
-  };
-</script>
-<script src="{% static 'js/answers_vue.js' %}"></script>
 {% endblock %}
