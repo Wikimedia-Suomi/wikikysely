@@ -1,3 +1,4 @@
+(() => {
 const { createApp, ref, onMounted, watch } = Vue;
 
 const answersApp = createApp({
@@ -96,3 +97,4 @@ const answersApp = createApp({
 
 answersApp.config.compilerOptions.delimiters = ['[[', ']]'];
 answersApp.mount('#answers-app');
+})();
