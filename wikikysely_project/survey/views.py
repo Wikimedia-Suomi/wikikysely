@@ -199,24 +199,40 @@ def survey_detail(request):
     questions = survey.questions.filter(visible=True).prefetch_related(
         'answers'
     ).order_by("pk")
-   
+
     # Defaults for user not logged in
-    user_answers = Answer.objects.none()
+    user_answers = []
     unanswered_questions = questions
     unanswered_count = 0
 
     if request.user.is_authenticated:
-        user_answers = Answer.objects.filter(
-            user=request.user, 
-            question__survey=survey
-        ).select_related("question")
+        user_answers_qs = (
+            Answer.objects.filter(
+                user=request.user,
+                question__survey=survey,
+            )
+            .select_related("question")
+            .annotate(
+                yes_count=Count(
+                    "question__answers",
+                    filter=Q(question__answers__answer="yes"),
+                    distinct=True,
+                ),
+                total_answers=Count("question__answers", distinct=True),
+            )
+        )
+        answered_ids = set(user_answers_qs.values_list("question_id", flat=True))
+        user_answers = list(user_answers_qs)
+        for ans in user_answers:
+            ans.agree_ratio = calculate_agree_ratio(ans.yes_count, ans.total_answers)
+    else:
+        answered_ids = set()
 
-    answered_ids = set(user_answers.values_list('question_id', flat=True))
     unanswered_questions = [q for q in questions if q.id not in answered_ids]
     unanswered_count = len(unanswered_questions)
 
     for question in questions:
-        question.yes_count = sum(1 for a in question.answers.all() if a.answer == 'yes')
+        question.yes_count = sum(1 for a in question.answers.all() if a.answer == "yes")
         question.total_answers = question.answers.count()
         question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
     

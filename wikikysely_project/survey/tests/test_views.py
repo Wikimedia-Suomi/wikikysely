@@ -368,6 +368,19 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse("survey:survey_detail"))
         self.assertContains(response, "This survey is currently paused.")
 
+    def test_detail_shows_answer_counts_and_consensus(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+        Answer.objects.create(question=q, user=self.users[1], answer="no")
+        Answer.objects.create(question=q, user=self.users[2], answer="yes")
+
+        response = self.client.get(reverse("survey:survey_detail"))
+        self.assertEqual(response.status_code, 200)
+        answers = list(response.context["user_answers"])
+        self.assertEqual(answers[0].total_answers, 3)
+        self.assertAlmostEqual(answers[0].agree_ratio, 33.3333, places=1)
+
     def test_userinfo_download_returns_json(self):
         survey = self._create_survey()
         q = self._create_question(survey)
