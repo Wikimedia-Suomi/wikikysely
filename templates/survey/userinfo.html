@@ -54,6 +54,8 @@
   <tr>
     <th>{% translate 'Question' %}</th>
     <th>{% translate 'Answer' %}</th>
+    <th>{% translate 'Answers' %}</th>
+    <th>{% translate 'Agree' %}</th>
     <th></th>
   </tr>
 </thead>
@@ -68,6 +70,8 @@
       {% endif %}
     </td>
     <td data-label="{% translate 'Answer' %}">{{ answer.get_answer_display }}</td>
+    <td data-label="{% translate 'Answers' %}">{{ answer.total_answers }}</td>
+    <td data-label="{% translate 'Agree' %}">{{ answer.agree_ratio|floatformat:1 }}%</td>
     <td class="text-end" data-label="">
       {% if answer.question.survey.state == 'running' %}
       <a href="{% url 'survey:answer_delete' answer.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-no-reload="true">{% translate 'Remove answer' %}</a>
@@ -75,7 +79,7 @@
     </td>
   </tr>
 {% empty %}
-  <tr><td colspan="3">{% translate 'No answers' %}</td></tr>
+  <tr><td colspan="5">{% translate 'No answers' %}</td></tr>
 {% endfor %}
 </tbody>
 </table>

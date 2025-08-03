@@ -810,11 +810,26 @@ def answer_question(request, pk):
 
 @login_required
 def userinfo(request):
-    answers = Answer.objects.filter(
-        user=request.user,
-        question__visible=True,
-        question__survey__deleted=False,
+    answers_qs = (
+        Answer.objects.filter(
+            user=request.user,
+            question__visible=True,
+            question__survey__deleted=False,
+        )
+        .select_related("question")
+        .annotate(
+            yes_count=Count(
+                "question__answers",
+                filter=Q(question__answers__answer="yes"),
+                distinct=True,
+            ),
+            total_answers=Count("question__answers", distinct=True),
+        )
     )
+
+    answers = list(answers_qs)
+    for ans in answers:
+        ans.agree_ratio = calculate_agree_ratio(ans.yes_count, ans.total_answers)
 
     total_answers = Answer.objects.filter(user=request.user).count()
 
