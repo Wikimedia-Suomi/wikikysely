@@ -198,6 +198,7 @@
 {% if can_edit %}
    <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
 {% endif %}
+{% include 'survey/answers_content.html' %}
 
 {% endblock %}
 {% block scripts %}
@@ -205,6 +206,12 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
   window.questionsJsonUrl = "{% url 'survey:questions_json' %}";
+  window.answersConfig = {
+    yesLabel: '{{ yes_label|escapejs }}',
+    noLabel: '{{ no_label|escapejs }}',
+    noAnswersLabel: '{{ no_answers_label|escapejs }}'
+  };
 </script>
 <script src="{% static 'js/survey_detail_vue.js' %}"></script>
+<script src="{% static 'js/answers_vue.js' %}"></script>
 {% endblock %}
