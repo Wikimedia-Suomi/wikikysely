@@ -4,7 +4,7 @@ if (typeof window.unansweredCount === 'number') {
   window.unansweredCount = ref(window.unansweredCount);
 }
 
-const app = createApp({
+const surveyDetailApp = createApp({
   setup() {
     const questions = ref([]);
     const loading = ref(true);
@@ -193,10 +193,10 @@ const app = createApp({
       submitAnswer
     };
   }
-});
+  });
 
-app.config.compilerOptions.delimiters = ['[[', ']]'];
-const surveyApp = app.mount('#survey-detail-app');
+  surveyDetailApp.config.compilerOptions.delimiters = ['[[', ']]'];
+  const surveyApp = surveyDetailApp.mount('#survey-detail-app');
 
 window.openFirstQuestion = () => {
   if (surveyApp && surveyApp.unansweredQuestions.length) {
