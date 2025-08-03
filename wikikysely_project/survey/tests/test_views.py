@@ -403,6 +403,19 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(surveys_by_title["Other Survey"]["description"], "desc")
 
 
+    def test_userinfo_shows_answer_counts_and_consensus(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        Answer.objects.create(question=q, user=self.user, answer="yes")
+        Answer.objects.create(question=q, user=self.users[1], answer="no")
+        Answer.objects.create(question=q, user=self.users[2], answer="yes")
+
+        response = self.client.get(reverse("survey:userinfo"))
+        self.assertEqual(response.status_code, 200)
+        answers = list(response.context["answers"])
+        self.assertEqual(answers[0].total_answers, 3)
+        self.assertAlmostEqual(answers[0].agree_ratio, 33.3333, places=1)
+
     def test_user_data_delete_removes_answers_and_questions(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)
