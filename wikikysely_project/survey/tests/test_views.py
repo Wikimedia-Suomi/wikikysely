@@ -502,6 +502,17 @@ class SurveyFlowTests(TransactionTestCase):
         data = json.loads(response.content)
         self.assertEqual(data["unanswered_count"], 1)
 
+    def test_delete_answer_without_next_redirects_to_detail(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        ans = Answer.objects.create(question=q, user=self.user, answer="yes")
+
+        response = self.client.get(
+            reverse("survey:answer_delete", args=[ans.pk]) + "?next=None"
+        )
+        self.assertRedirects(response, reverse("survey:survey_detail"))
+        self.assertFalse(Answer.objects.filter(pk=ans.pk).exists())
+
     def test_logout_from_protected_page_redirects_to_answers(self):
         self._create_survey()
         url = reverse("survey:survey_edit")
