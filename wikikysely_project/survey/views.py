@@ -1194,10 +1194,10 @@ def answer_delete(request, pk):
         )
     messages.success(request, _("Answer removed"))
 
-    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER")
-    if next_url:
-        return redirect(next_url)
-    return redirect("survey:survey_detail")
+    next_url = request.GET.get("next")
+    if not next_url or next_url == "None":
+        return redirect("survey:survey_detail")
+    return redirect(next_url)
 
 
 def survey_answers(request):
