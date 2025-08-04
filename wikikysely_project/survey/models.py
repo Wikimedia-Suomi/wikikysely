@@ -62,3 +62,23 @@ class Answer(models.Model):
 
     class Meta:
         unique_together = ('question', 'user')
+
+
+class SurveyLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    data = models.JSONField()
+
+
+def log_survey_action(user, survey, action, **extra):
+    """Store survey edit actions in a JSON based log."""
+    entry = {
+        "action": action,
+        "user_id": getattr(user, "id", None),
+        "username": getattr(user, "username", ""),
+        "survey_id": getattr(survey, "id", None),
+        "survey_title": getattr(survey, "title", ""),
+        "survey_description": getattr(survey, "description", ""),
+        "survey_state": getattr(survey, "state", ""),
+    }
+    entry.update(extra)
+    SurveyLog.objects.create(data=entry)
