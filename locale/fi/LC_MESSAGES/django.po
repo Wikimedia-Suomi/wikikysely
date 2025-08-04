@@ -214,8 +214,12 @@ msgid "Generated on"
 msgstr "Luotu"
 
 #: templates/survey/survey_detail.html:6
-msgid "This survey is currently paused."
-msgstr "Tämä kysely on tauolla."
+#, python-format
+msgid ""
+"This survey will be published on 20 August. Welcome back then! However, you "
+"can try the development version at <a href=\"%(dev_url)s\">wikikysely-dev.toolforge.org</a>."
+msgstr ""
+"Tämä kysely julkaistaan 20.8. Tervetuloa takaisin silloin! Voit kuitenkin kokeilla kehitysversiota osoitteessa <a href=\"%(dev_url)s\">wikikysely-dev.toolforge.org</a>."
 
 #: templates/survey/survey_detail.html:9
 msgid "This survey has no questions yet. Please add questions."
