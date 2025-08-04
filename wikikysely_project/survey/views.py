@@ -48,7 +48,9 @@ def can_edit_survey(user, survey):
 def get_user_answers(user, survey):
     """Return user's answers for the survey with aggregated stats."""
     return (
-        Answer.objects.filter(user=user, question__survey=survey)
+        Answer.objects.filter(
+            user=user, question__survey=survey, question__visible=True
+        )
         .select_related("question")
         .annotate(
             yes_count=Count(
@@ -210,6 +212,7 @@ def survey_detail(request):
             Answer.objects.filter(
                 user=request.user,
                 question__survey=survey,
+                question__visible=True,
             )
             .select_related("question")
             .annotate(

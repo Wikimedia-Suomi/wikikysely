@@ -421,6 +421,19 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(answers[0].total_answers, 3)
         self.assertAlmostEqual(answers[0].agree_ratio, 33.3333, places=1)
 
+    def test_hidden_question_not_shown_to_creator(self):
+        survey = self._create_survey()
+        visible_q = self._create_question(survey, text="Visible Q")
+        hidden_q = self._create_question(survey, text="Hidden Q")
+        hidden_q.visible = False
+        hidden_q.save()
+        Answer.objects.create(question=hidden_q, user=self.user, answer="yes")
+
+        response = self.client.get(reverse("survey:survey_detail"))
+        self.assertContains(response, visible_q.text)
+        self.assertNotContains(response, hidden_q.text)
+        self.assertEqual(list(response.context["user_answers"]), [])
+
     def test_userinfo_download_returns_json(self):
         survey = self._create_survey()
         q = self._create_question(survey)
