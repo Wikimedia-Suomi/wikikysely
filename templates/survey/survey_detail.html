@@ -3,7 +3,11 @@
 {% block title %}{{ survey.title }}{% endblock %}
 {% block content %}
 {% if survey.state == 'paused' %}
-  <div class="alert alert-info">{% translate 'This survey is currently paused.' %}</div>
+  <div class="alert alert-info">
+    {% blocktrans trimmed with dev_url=dev_url %}
+    This survey will be published on 20 August. Welcome back then! However, you can try the development version at <a href="{{ dev_url }}">wikikysely-dev.toolforge.org</a>.
+    {% endblocktrans %}
+  </div>
 {% endif %}
 {% if not questions %}
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>

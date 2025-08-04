@@ -378,7 +378,7 @@ class SurveyFlowTests(TransactionTestCase):
         survey.save()
 
         response = self.client.get(reverse("survey:survey_detail"))
-        self.assertContains(response, "This survey is currently paused.")
+        self.assertContains(response, "This survey will be published on 20 August.")
 
     def test_detail_shows_answer_counts_and_consensus(self):
         survey = self._create_survey()

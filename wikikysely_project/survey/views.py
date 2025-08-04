@@ -237,6 +237,8 @@ def survey_detail(request):
         question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
     
     can_edit = can_edit_survey(request.user, survey)
+
+    dev_url = f"https://wikikysely-dev.toolforge.org/{request.LANGUAGE_CODE}"
     
     return render(
         request,
@@ -248,6 +250,7 @@ def survey_detail(request):
             "user_answers": user_answers,
             "unanswered_count": unanswered_count,
             "unanswered_questions": unanswered_questions,
+            "dev_url": dev_url,
         },
     )
 
