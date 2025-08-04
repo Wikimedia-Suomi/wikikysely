@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import ProtectedError
 import json
 
-from ..models import Survey, Question, Answer
+from ..models import Survey, Question, Answer, SurveyLog, log_survey_action
 
 
 class SurveyFlowTests(TransactionTestCase):
@@ -21,6 +21,7 @@ class SurveyFlowTests(TransactionTestCase):
                 schema_editor.create_model(Survey)
                 schema_editor.create_model(Question)
                 schema_editor.create_model(Answer)
+                schema_editor.create_model(SurveyLog)
         finally:
             connection.enable_constraint_checking()
 
@@ -31,6 +32,7 @@ class SurveyFlowTests(TransactionTestCase):
         connection.disable_constraint_checking()
         try:
             with connection.schema_editor(atomic=False) as schema_editor:
+                schema_editor.delete_model(SurveyLog)
                 schema_editor.delete_model(Answer)
                 schema_editor.delete_model(Question)
                 schema_editor.delete_model(Survey)
@@ -115,6 +117,10 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(survey.title, "Edited Survey")
         self.assertEqual(survey.state, "paused")
         self.assertRedirects(response, reverse("survey:survey_detail"))
+        log = SurveyLog.objects.get()
+        self.assertEqual(log.data["action"], "survey_update")
+        self.assertEqual(log.data["user_id"], self.user.id)
+        self.assertEqual(log.data["survey_title"], "Edited Survey")
 
     def test_secretary_can_edit_survey(self):
         survey = self._create_survey()
@@ -139,6 +145,12 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse("survey:survey_edit"))
         self.assertContains(response, secretary.username)
 
+    def test_logs_shown_on_edit_page(self):
+        survey = self._create_survey()
+        log_survey_action(self.user, survey, "survey_update")
+        response = self.client.get(reverse("survey:survey_edit"))
+        self.assertContains(response, "survey_update")
+
     def test_secretary_add_and_remove(self):
         survey = self._create_survey()
         secretary = self.users[1]
@@ -147,11 +159,19 @@ class SurveyFlowTests(TransactionTestCase):
         )
         self.assertRedirects(response, reverse("survey:survey_edit"))
         self.assertIn(secretary, survey.secretaries.all())
+        self.assertEqual(SurveyLog.objects.count(), 1)
+        log = SurveyLog.objects.first()
+        self.assertEqual(log.data["action"], "secretary_add")
+        self.assertEqual(log.data["secretary_username"], secretary.username)
         response = self.client.post(
             reverse("survey:secretary_remove", args=[secretary.pk])
         )
         self.assertRedirects(response, reverse("survey:survey_edit"))
         self.assertNotIn(secretary, survey.secretaries.all())
+        self.assertEqual(SurveyLog.objects.count(), 2)
+        log = SurveyLog.objects.last()
+        self.assertEqual(log.data["action"], "secretary_remove")
+        self.assertEqual(log.data["secretary_username"], secretary.username)
 
     def test_add_question(self):
         survey = self._create_survey()
@@ -172,6 +192,10 @@ class SurveyFlowTests(TransactionTestCase):
         question.refresh_from_db()
         self.assertFalse(question.visible)
         self.assertRedirects(response, reverse("survey:survey_edit"))
+        self.assertEqual(SurveyLog.objects.count(), 1)
+        log = SurveyLog.objects.first()
+        self.assertEqual(log.data["action"], "question_hide")
+        self.assertEqual(log.data["question_text"], question.text)
 
         response = self.client.post(
             reverse("survey:question_show", kwargs={"pk": question.pk})
@@ -179,6 +203,10 @@ class SurveyFlowTests(TransactionTestCase):
         question.refresh_from_db()
         self.assertTrue(question.visible)
         self.assertRedirects(response, reverse("survey:survey_edit"))
+        self.assertEqual(SurveyLog.objects.count(), 2)
+        log = SurveyLog.objects.last()
+        self.assertEqual(log.data["action"], "question_show")
+        self.assertEqual(log.data["question_text"], question.text)
 
     def test_hard_delete_question(self):
         survey = self._create_survey()

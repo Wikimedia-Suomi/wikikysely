@@ -17,7 +17,7 @@ from django.http import JsonResponse
 from datetime import timedelta
 from django.utils import timezone
 import json
-from .models import Survey, Question, Answer
+from .models import Survey, Question, Answer, log_survey_action, SurveyLog
 from .forms import SurveyForm, QuestionForm, AnswerForm, SecretaryAddForm
 from django.contrib.auth import get_user_model
 
@@ -333,7 +333,8 @@ def survey_edit(request):
     if request.method == "POST":
         form = SurveyForm(request.POST, instance=survey)
         if form.is_valid():
-            form.save()
+            survey = form.save()
+            log_survey_action(request.user, survey, "survey_update")
             messages.success(request, _("Survey updated"))
             return redirect("survey:survey_detail")
     else:
@@ -342,6 +343,10 @@ def survey_edit(request):
     hidden_questions = survey.questions.filter(visible=False)
     secretaries = survey.secretaries.all()
     secretary_form = SecretaryAddForm()
+    logs = (
+        SurveyLog.objects.filter(data__survey_id=survey.id)
+        .order_by("-created_at")[:20]
+    )
     return render(
         request,
         "survey/survey_form.html",
@@ -353,6 +358,7 @@ def survey_edit(request):
             "hidden_questions": hidden_questions,
             "secretaries": secretaries,
             "secretary_form": secretary_form,
+            "logs": logs,
         },
     )
 
@@ -427,6 +433,13 @@ def question_hide(request, pk):
 
     question.visible = False
     question.save()
+    log_survey_action(
+        request.user,
+        survey,
+        "question_hide",
+        question_id=question.id,
+        question_text=question.text,
+    )
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return JsonResponse({"hidden": True})
     messages.success(request, _("Question hidden"))
@@ -452,6 +465,13 @@ def question_show(request, pk):
         return redirect("survey:survey_edit")
     question.visible = True
     question.save()
+    log_survey_action(
+        request.user,
+        survey,
+        "question_show",
+        question_id=question.id,
+        question_text=question.text,
+    )
     messages.success(request, _("Question visible"))
     return redirect("survey:survey_edit")
 
@@ -509,6 +529,13 @@ def secretary_add(request):
             try:
                 user = User.objects.get(username=username)
                 survey.secretaries.add(user)
+                log_survey_action(
+                    request.user,
+                    survey,
+                    "secretary_add",
+                    secretary_id=user.id,
+                    secretary_username=user.username,
+                )
                 messages.success(request, _("Secretary added"))
             except User.DoesNotExist:
                 messages.error(request, _("User not found"))
@@ -527,6 +554,13 @@ def secretary_remove(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         survey.secretaries.remove(user)
+        log_survey_action(
+            request.user,
+            survey,
+            "secretary_remove",
+            secretary_id=user.id,
+            secretary_username=user.username,
+        )
         messages.success(request, _("Secretary removed"))
     except User.DoesNotExist:
         messages.error(request, _("User not found"))
