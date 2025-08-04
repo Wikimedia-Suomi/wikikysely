@@ -189,11 +189,10 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertFalse(Question.objects.filter(pk=question.pk).exists())
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
-    def test_hard_delete_fails_with_other_answers(self):
+    def test_hard_delete_fails_with_answers(self):
         survey = self._create_survey()
         question = self._create_question(survey)
-        other = self.users[1]
-        Answer.objects.create(question=question, user=other, answer="yes")
+        Answer.objects.create(question=question, user=self.user, answer="yes")
         response = self.client.post(
             reverse("survey:question_delete", kwargs={"pk": question.pk})
         )
@@ -203,6 +202,19 @@ class SurveyFlowTests(TransactionTestCase):
     def test_edit_question(self):
         survey = self._create_survey()
         question = self._create_question(survey)
+        data = {"text": "Updated question?"}
+        response = self.client.post(
+            reverse("survey:question_edit", kwargs={"pk": question.pk}),
+            data,
+        )
+        question.refresh_from_db()
+        self.assertEqual(question.text, "Updated question?")
+        self.assertRedirects(response, reverse("survey:survey_edit"))
+
+    def test_edit_question_with_own_answer(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        Answer.objects.create(question=question, user=self.user, answer="yes")
         data = {"text": "Updated question?"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
@@ -434,7 +446,6 @@ class SurveyFlowTests(TransactionTestCase):
         q1 = self._create_question(survey)
         q2 = self._create_question(survey)
         other = self.users[1]
-        Answer.objects.create(question=q1, user=self.user, answer="yes")
         Answer.objects.create(question=q2, user=self.user, answer="yes")
         Answer.objects.create(question=q2, user=other, answer="yes")
 
@@ -457,7 +468,6 @@ class SurveyFlowTests(TransactionTestCase):
     def test_user_data_delete_removes_account_when_no_references(self):
         survey = self._create_survey()
         q = self._create_question(survey)
-        Answer.objects.create(question=q, user=self.user, answer="yes")
 
         response = self.client.post(reverse("survey:user_data_delete"), follow=True)
         self.assertRedirects(response, reverse("survey:survey_detail"))

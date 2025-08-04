@@ -458,7 +458,7 @@ def question_show(request, pk):
 
 @login_required
 def question_delete(request, pk):
-    """Permanently delete a question if only the creator has answered."""
+    """Permanently delete a question if it has no answers."""
     question = get_object_or_404(Question, pk=pk, visible=True)
     survey = question.survey
 
@@ -466,7 +466,7 @@ def question_delete(request, pk):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
 
-    if question.answers.exclude(user=request.user).exists():
+    if question.answers.exists():
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
 
@@ -542,7 +542,9 @@ def question_edit(request, pk):
         request.user == question.creator
         and not question.answers.exclude(user=request.user).exists()
     )
-    can_delete_question = can_creator_edit
+    can_delete_question = (
+        request.user == question.creator and not question.answers.exists()
+    )
 
     if not (
         request.user == survey.creator or request.user.is_superuser or can_creator_edit
@@ -779,8 +781,7 @@ def answer_question(request, pk):
         else:
             form = AnswerForm(instance=answer, initial={"question_id": question.pk})
         can_delete_question = (
-            request.user == question.creator
-            and not question.answers.exclude(user=request.user).exists()
+            request.user == question.creator and not question.answers.exists()
         )
     user_answers = (
         get_user_answers(request.user, survey)
@@ -861,7 +862,8 @@ def userinfo(request):
                 "answers",
                 filter=~Q(answers__user=request.user),
                 distinct=True,
-            )
+            ),
+            total_answers=Count("answers", distinct=True),
         )
     )
 
@@ -873,7 +875,7 @@ def userinfo(request):
         can_creator_modify = q.other_answers == 0
         if (
             q.creator == request.user
-            and can_creator_modify
+            and q.total_answers == 0
             and q.survey.state != "closed"
         ):
             hard_deletable_questions.append(q.pk)
