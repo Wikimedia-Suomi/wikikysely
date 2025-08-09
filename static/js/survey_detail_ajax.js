@@ -130,11 +130,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.dataset.questionId = data.question_id;
 
+            const tdId = document.createElement('td');
+            tdId.dataset.label = data.id_label;
+            tdId.textContent = data.question_id;
+            tr.appendChild(tdId);
+
             const tdPublished = document.createElement('td');
+            tdPublished.dataset.label = data.published_label;
             tdPublished.textContent = data.question_published;
             tr.appendChild(tdPublished);
 
             const tdTitle = document.createElement('td');
+            tdTitle.dataset.label = data.title_label;
             const titleLink = document.createElement('a');
             const nextParam = encodeURIComponent(window.location.pathname + window.location.search);
             titleLink.href = `${data.question_url}?next=${nextParam}`;
@@ -144,11 +151,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const tdTotal = document.createElement('td');
             tdTotal.className = 'total-answers';
+            tdTotal.dataset.label = data.answers_label;
             tdTotal.textContent = data.total;
             tr.appendChild(tdTotal);
 
             const tdRatio = document.createElement('td');
             tdRatio.className = 'agree-ratio';
+            tdRatio.dataset.label = data.agree_label;
             tdRatio.textContent = `${data.agree_ratio}%`;
             tr.appendChild(tdRatio);
 
