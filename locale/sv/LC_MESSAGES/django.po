@@ -401,7 +401,7 @@ msgstr "Inga fler frågor"
 #: wikikysely_project/survey/views.py:370
 #, python-brace-format
 msgid "To answer the question you must <a href=\"{0}\">log in</a>."
-msgstr ""
+msgstr "För att svara på frågan måste du <a href=\"{0}\">logga in</a>."
 
 #: wikikysely_project/survey/views.py:473
 msgid "Answer can only be edited while the survey is running"
