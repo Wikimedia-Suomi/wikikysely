@@ -1222,6 +1222,7 @@ def answer_delete(request, pk):
                 "can_edit": can_edit,
                 "edit_url": reverse("survey:question_edit", args=[question.pk]) if can_edit else "",
                 "delete_url": reverse("survey:question_delete", args=[question.pk]) if can_edit else "",
+                "id_label": gettext("ID"),
                 "edit_label": gettext("Edit"),
                 "remove_label": gettext("Remove question"),
                 "unanswered_label": gettext("Unanswered questions"),

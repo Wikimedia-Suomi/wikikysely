@@ -87,6 +87,7 @@
   <table class="table mb-3 survey-detail-table stacked-table">
     <thead>
       <tr>
+        <th>{% translate 'ID' %}</th>
         <th>{% translate 'Answer date' %}</th>
         <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
@@ -97,6 +98,7 @@
     <tbody>
       {% for a in user_answers %}
       <tr data-question-id="{{ a.question.pk }}">
+        <td data-label="{% translate 'ID' %}">{{ a.question.pk }}</td>
         <td data-label="{% translate 'Answer date' %}">{{ a.created_at|date:"Y-m-d" }}</td>
         <td data-label="{% translate 'Title' %}"><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
         <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
@@ -130,7 +132,7 @@
 <script src="{% static 'js/sort_tables.js' %}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables(".survey-detail-table");
+    initSortableTables(".survey-detail-table", 1);
 });
 </script>
 <script>

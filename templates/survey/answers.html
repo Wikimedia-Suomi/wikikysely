@@ -44,6 +44,7 @@
   <tbody>
   {% for row in data %}
   <tr>
+    <td>{{ row.question.pk }}</td>
     <td class="bar-chart-question">
     {% if request.user.is_authenticated %}
       <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
@@ -84,6 +85,7 @@
 <table id="answerTable" class="table stacked-table">
 <thead>
 <tr>
+  <th>{% translate 'ID' %}</th>
   <th>{% translate 'Published' %}</th>
   <th>{% translate 'Question' %}</th>
   {% if request.user.is_authenticated %}
@@ -98,6 +100,7 @@
 <tbody>
 {% for row in data %}
 <tr>
+  <td data-label="{% translate 'ID' %}">{{ row.question.pk }}</td>
   <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
   <td data-label="{% translate 'Question' %}">
     {% if request.user.is_authenticated %}
@@ -200,7 +203,7 @@ document.querySelectorAll('input[name="chartType"]').forEach(radio => {
 <script src="{% static 'js/sort_tables.js' %}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables("#answerTable");
+    initSortableTables("#answerTable", 1);
 });
 </script>
 {% endblock %}

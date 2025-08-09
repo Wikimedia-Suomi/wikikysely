@@ -4,15 +4,22 @@
 ''{% translate 'Generated on' %}: {{ generated_at|date:"Y-m-d H:i" }}''
 
 === {% translate 'Bar charts' %} ===
-<table>{% for row in data %}<tr><td style="min-width:15rem"> {% if request.user.is_authenticated %}<a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>{% else %}{{ row.question.text }}{% endif %}</td>
-<td style="width:100%"><div style="background-color:#e9ecef;border:1px solid black;display:flex;border-radius:0.25rem;margin-bottom:0.25em;margin-top:0.25em;">{% if row.yes  %}<div style="width: {% widthratio row.yes total_users 100 %}%;background-color:#198754;color:#000;display:flex;align-items:center;justify-content:center;">{{ row.yes }}</div>{% endif %}{% if row.no  %}<div style="width: {% widthratio row.no total_users 100 %}%;background-color:#dc3545;color:#fff;display:flex;align-items:center;justify-content:center;">{{ row.no }}</div>{% endif %}</div></td></tr>{% endfor %}</table>
+<table>
+{% for row in data %}
+<tr>
+<td>{{ row.question.pk }}</td>
+<td style="min-width:15rem"> {% if request.user.is_authenticated %}<a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>{% else %}{{ row.question.text }}{% endif %}</td>
+<td style="width:100%"><div style="background-color:#e9ecef;border:1px solid black;display:flex;border-radius:0.25rem;margin-bottom:0.25em;margin-top:0.25em;">{% if row.yes  %}<div style="width: {% widthratio row.yes total_users 100 %}%;background-color:#198754;color:#000;display:flex;align-items:center;justify-content:center;">{{ row.yes }}</div>{% endif %}{% if row.no  %}<div style="width: {% widthratio row.no total_users 100 %}%;background-color:#dc3545;color:#fff;display:flex;align-items:center;justify-content:center;">{{ row.no }}</div>{% endif %}</div></td>
+</tr>
+{% endfor %}
+</table>
 
 === {% translate 'Answer table' %} ===
 {| class="wikitable"
-! {% translate 'Published' %} !! {% translate 'Question' %}{% if include_personal %} !! {% translate 'My answer' %}{% endif %} !! {{ yes_label }} !! {{ no_label }} !! {% translate 'Total' %} !! {% translate 'Agree' %}
+! {% translate 'ID' %} !! {% translate 'Published' %} !! {% translate 'Question' %}{% if include_personal %} !! {% translate 'My answer' %}{% endif %} !! {{ yes_label }} !! {{ no_label }} !! {% translate 'Total' %} !! {% translate 'Agree' %}
 {% for row in data %}
 |-
-| {{ row.published|date:"Y-m-d" }} || {{ row.question.text }}{% if include_personal %} || {{ row.my_answer|default:"" }}{% endif %} || {{ row.yes }} || {{ row.no }} || {{ row.total }} || {{ row.agree_ratio|floatformat:1 }}%
+| {{ row.question.pk }} || {{ row.published|date:"Y-m-d" }} || {{ row.question.text }}{% if include_personal %} || {{ row.my_answer|default:"" }}{% endif %} || {{ row.yes }} || {{ row.no }} || {{ row.total }} || {{ row.agree_ratio|floatformat:1 }}%
 {% endfor %}
 |}
 
