@@ -5,7 +5,7 @@
 {% block content %}
 <div class="card mx-auto mb-4" style="max-width: 40rem;">
   <div id="answerbox" class="card-body text-center">
-    <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
+    <h2 class="card-title mb-0" style="padding-bottom:0.25em;"><a href="{% url 'survey:answer_question' question.pk %}">#{{ question.pk }}</a> {{ question.text }}</h2>
 {% if request.user.is_authenticated %}
 <form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
   {% csrf_token %}
