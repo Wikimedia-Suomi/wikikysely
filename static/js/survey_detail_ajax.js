@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
+  function formatPercentage(value) {
+    const num = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(num)) return value;
+    return num.toFixed(1).replace('.', ',');
+  }
+
   function updateAnswerNavLink(count) {
     const navCount = document.getElementById('unanswered-count');
     if (navCount) {
@@ -81,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const totalCell = row.querySelector('.total-answers');
           const ratioCell = row.querySelector('.agree-ratio');
           if (totalCell) totalCell.textContent = data.total;
-          if (ratioCell) ratioCell.textContent = `${data.agree_ratio}%`;
+          if (ratioCell) ratioCell.textContent = `${formatPercentage(data.agree_ratio)}%`;
         }
       }).catch(() => window.location.reload());
     });
@@ -158,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const tdRatio = document.createElement('td');
             tdRatio.className = 'agree-ratio';
             tdRatio.dataset.label = data.agree_label;
-            tdRatio.textContent = `${data.agree_ratio}%`;
+            tdRatio.textContent = `${formatPercentage(data.agree_ratio)}%`;
             tr.appendChild(tdRatio);
 
             const tdActions = document.createElement('td');
