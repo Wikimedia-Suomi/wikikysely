@@ -161,10 +161,12 @@ body {
 }
 
 /* Add arrow indicators for collapsible sections */
-.collapse-toggle::after {
-  content: " \25BC"; /* Down arrow */
+.collapse-toggle::before {
+  content: " \25B6"; /* Down arrow */
   margin-left: 0.25rem;
+  font-size:0.75em;
 }
-.collapse-toggle:not(.collapsed)::after {
-  content: " \25B2"; /* Up arrow when expanded */
+.collapse-toggle:not(.collapsed)::before {
+  content: " \25BC"; /* Up arrow when expanded */
+  font-size:0.75em;
 }
