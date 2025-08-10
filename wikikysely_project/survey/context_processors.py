@@ -15,31 +15,24 @@ def unanswered_count(request):
         else None
     )
 
-    if not request.user.is_authenticated:
-        return {
-            "local_login_enabled": settings.LOCAL_LOGIN_ENABLED,
-            "can_edit": False,
-            "latest_question": latest_question,
-        }
-
     if survey is None:
-        return {
-            "unanswered_count": 0,
-            "local_login_enabled": settings.LOCAL_LOGIN_ENABLED,
-            "can_edit": False,
-            "latest_question": latest_question,
-        }
+        count = 0
+        can_edit = False
+    elif request.user.is_authenticated:
+        answered_ids = Answer.objects.filter(
+            user=request.user,
+            question__survey=survey,
+        ).values_list("question_id", flat=True)
+        count = (
+            survey.questions.filter(visible=True)
+            .exclude(id__in=answered_ids)
+            .count()
+        )
+        can_edit = can_edit_survey(request.user, survey)
+    else:
+        count = survey.questions.filter(visible=True).count()
+        can_edit = False
 
-    answered_ids = Answer.objects.filter(
-        user=request.user,
-        question__survey=survey,
-    ).values_list("question_id", flat=True)
-    count = (
-        survey.questions.filter(visible=True)
-        .exclude(id__in=answered_ids)
-        .count()
-    )
-    can_edit = can_edit_survey(request.user, survey)
     return {
         "unanswered_count": count,
         "local_login_enabled": settings.LOCAL_LOGIN_ENABLED,
