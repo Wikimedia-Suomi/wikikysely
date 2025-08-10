@@ -34,11 +34,7 @@
   <tr>
     <td>{{ row.question.pk }}</td>
     <td class="bar-chart-question">
-    {% if request.user.is_authenticated %}
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
+       <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
     </td>
     <td class="w-100">
       <div class="progress" style="height: 1.25rem;">
@@ -57,11 +53,7 @@
   <div class="pie-chart text-center" data-yes="{{ row.yes }}" data-no="{{ row.no }}" data-total="{{ row.total }}">
     <canvas></canvas>
     <p class="mt-2">
-    {% if request.user.is_authenticated %}
       {{ row.question.pk }}. <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.pk }}. {{ row.question.text }}
-    {% endif %}
     </p>
   </div>
 {% endfor %}
@@ -91,11 +83,7 @@
   <td data-label="{% translate 'ID' %}">{{ row.question.pk }}</td>
   <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
   <td data-label="{% translate 'Question' %}">
-    {% if request.user.is_authenticated %}
       <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-    {% else %}
-      {{ row.question.text }}
-    {% endif %}
   </td>
   {% if request.user.is_authenticated %}
   <td data-label="{% translate 'My answer' %}">{{ row.my_answer | default:""}}</td>
@@ -165,6 +153,7 @@ pieContainers.forEach(el => {
         options: {
             responsive: false,
             maintainAspectRatio: false,
+            events: [],
             plugins: {
                 legend: { display: false },
                 datalabels: {
