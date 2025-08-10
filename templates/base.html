@@ -25,16 +25,20 @@
       {% url 'survey:survey_edit' as survey_edit_url %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
-        {% if unanswered_count %}
+        {% if unanswered_count is not None %}
+        {% if unanswered_count > 0 %}
         <li class="nav-item"><a id="answer-nav-link" class="nav-link{% if request.path == answer_survey_url %} active{% endif %}" href="{{ answer_survey_url }}">{% translate 'Answer survey' %} (<span id="unanswered-count">{{ unanswered_count }}</span>)</a></li>
         {% else %}
         {% if request.user.is_authenticated %}
         <li class="nav-item"><span id="answer-nav-link" class="nav-link text-secondary" data-answer-url="{{ answer_survey_url }}">{% translate 'Answer survey' %}(<span id="unanswered-count">0</span>)</span></li>
+        {% else %}
+        <li class="nav-item"><span id="answer-nav-link" class="nav-link text-secondary">{% translate 'Answer survey' %}(<span id="unanswered-count">0</span>)</span></li>
+        {% endif %}
+        {% endif %}
         {% elif latest_question %}
         <li class="nav-item"><a id="answer-nav-link" class="nav-link" href="{% url 'survey:answer_question' latest_question.id %}">{% translate 'Answer survey' %}</a></li>
         {% else %}
         <li class="nav-item"><span id="answer-nav-link" class="nav-link text-secondary">{% translate 'Answer survey' %}</span></li>
-        {% endif %}
         {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
         {% if can_edit %}
