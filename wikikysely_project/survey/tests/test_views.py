@@ -105,6 +105,14 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse("login_redirect"))
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
+    def test_nav_link_for_anonymous_points_to_latest_question(self):
+        survey = self._create_survey()
+        self._create_question(survey, text="First?")
+        latest = self._create_question(survey, text="Second?")
+        self.client.logout()
+        response = self.client.get(reverse("survey:survey_detail"))
+        self.assertEqual(response.context["latest_question"], latest)
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {
