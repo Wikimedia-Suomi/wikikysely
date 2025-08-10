@@ -657,7 +657,10 @@ def answer_survey(request):
         messages.info(
             request,
             format_html(
-                _('To answer the question you must <a href="{0}">log in</a>.'),
+                _(
+                    'To answer the question you must log in. '
+                    '<a href="{0}">Log in with your Wikimedia account</a>.'
+                ),
                 login_url,
             ),
         )
@@ -778,7 +781,10 @@ def answer_question(request, pk):
         messages.info(
             request,
             format_html(
-                _('To answer the question you must <a href="{0}">log in</a>.'),
+                _(
+                    'To answer the question you must log in. '
+                    '<a href="{0}">Log in with your Wikimedia account</a>.'
+                ),
                 login_url,
             ),
         )

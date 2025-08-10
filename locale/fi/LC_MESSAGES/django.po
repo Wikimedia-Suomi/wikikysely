@@ -563,9 +563,8 @@ msgstr "Ei enempää kysymyksiä"
 
 #: wikikysely_project/survey/views.py:763
 #, python-brace-format
-msgid "To answer the question you must <a href=\"{0}\">log in</a>."
-msgstr ""
-"Vastataksesi kysymykseen sinun on <a href=\"{0}\">kirjauduttava sisään</a>."
+msgid "To answer the question you must log in. <a href=\"{0}\">Log in with your Wikimedia account</a>."
+msgstr "Vastataksesi kysymykseen sinun on kirjauduttava sisälle. <a href=\"{0}\">Kirjaudu Wikimedian tunnuksilla</a>."
 
 #: wikikysely_project/survey/views.py:1069
 #, python-format
