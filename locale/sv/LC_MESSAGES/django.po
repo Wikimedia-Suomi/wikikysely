@@ -464,17 +464,17 @@ msgstr "%(n)s fr\xC3\xA5gor"
 msgid "%(n)s answers"
 msgstr "%(n)s svar"
 
-#: templates/survey/userinfo.html:13
+#: templates/survey/userinfo.html:17
 msgid ""
-"Deleting your data removes all answers, all questions you have asked that do"
-"not yet have answers from other users and are not hidden, and your user account"
-"if you no longer have questions or answers. This action cannot be undone."
-"Delete your data?"
+"Deleting your data will remove all answers and all questions you have asked that"
+" do not yet have answers from other users and are not hidden. If you no"
+" longer have any questions or answers, your account will also be deleted."
+" This action cannot be undone. Delete your data?"
 msgstr ""
-"Radering av dina uppgifter tar bort alla svar, alla frågor du har ställt som"
-"ännu inte har svar från andra användare och som inte är dolda samt ditt"
-"användarkonto om du inte längre har några frågor eller svar. Denna åtgärd kan"
-"inte ångras. Radera dina uppgifter?"
+"Radering av dina uppgifter tar bort alla svar och alla frågor du har ställt som"
+" ännu inte har svar från andra användare och som inte är dolda. Om du"
+" inte längre har några frågor eller svar tas ditt användarkonto också bort."
+" Denna åtgärd kan inte ångras. Radera dina uppgifter?"
 
 #: templates/survey/userinfo.html:15
 msgid "Download my data (JSON)"
