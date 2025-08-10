@@ -465,8 +465,17 @@ msgid "%(n)s answers"
 msgstr "%(n)s vastausta"
 
 #: templates/survey/userinfo.html:13
-msgid "This action cannot be undone. Delete your data?"
-msgstr "T\xC3\xA4t\xC3\xA4 toimintoa ei voi perua. Poista tietosi?"
+msgid ""
+"Deleting your data removes all answers, all questions you have asked that "
+"do not yet have answers from other users and are not hidden, and your user "
+"account if you no longer have questions or answers. This action cannot be "
+"undone. Delete your data?"
+msgstr ""
+"Tietojen poisto poistaa kaikki vastaukset, kaikki käyttäjän tekemät "
+"kysymykset joihin ei ole vielä vastauksia muilta käyttäjiltä ja jotka "
+"eivät ole piilotettuja sekä käyttäjätunnuksen jos käyttäjällä ei ole "
+"enää kysymyksiä tai vastauksia. Tätä toimintoa ei voi perua. Poista "
+"tietosi?"
 
 #: templates/survey/userinfo.html:15
 msgid "Download my data (JSON)"

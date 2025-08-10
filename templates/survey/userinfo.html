@@ -10,7 +10,7 @@
   <li>{% blocktrans with n=total_answers %}{{ n }} answers{% endblocktrans %}</li>
 </ul>
 <p>
-  <form method="post" action="{% url 'survey:user_data_delete' %}" class="d-inline" onsubmit="return confirm('{% translate 'This action cannot be undone. Delete your data?' %}');">
+  <form method="post" action="{% url 'survey:user_data_delete' %}" class="d-inline" onsubmit="return confirm('{% translate 'Deleting your data removes all answers, all questions you have asked that do not yet have answers from other users and are not hidden, and your user account if you no longer have questions or answers. This action cannot be undone. Delete your data?' %}');">
     {% csrf_token %}
     <a href="{% url 'survey:userinfo_download' %}" class="btn btn-primary">{% translate 'Download my data (JSON)' %}</a>
     <button type="submit" class="btn btn-danger ms-2">{% translate 'Delete my data' %}</button>
