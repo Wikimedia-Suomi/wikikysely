@@ -165,12 +165,13 @@ pieContainers.forEach(el => {
             plugins: {
                 legend: { display: false },
                 datalabels: {
-                    display: total !== 0,
+                    display: function(context) {
+                    const value = context.dataset.data[context.dataIndex];
+                    return value !== 0 && total !== 0;
+		    },
                     formatter: value => value,
                     font: { weight: 'bold', size: 20  },
  		    color: '#000',
-		    backgroundColor: '#fff',
-//		    borderColor: '#fff',
 		    borderWidth: 2,
 		    borderRadius: 4,
 		    padding: 4
