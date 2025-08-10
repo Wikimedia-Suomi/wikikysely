@@ -121,6 +121,19 @@
 </tbody>
 </table>
 </div>
+<h2>{% translate 'Survey information' %}</h2>
+<dl>
+  <dt>{% translate 'Number of questions' %}</dt>
+  <dd>{{ question_count }}</dd>
+  <dt>{% translate 'Number of respondents' %}</dt>
+  <dd>{{ total_users }}</dd>
+  <dt>{% translate 'Number of question authors' %}</dt>
+  <dd>{{ question_author_count }}</dd>
+  <dt>{% translate 'First question date' %}</dt>
+  <dd>{{ first_question_date|date:"Y-m-d" }}</dd>
+  <dt>{% translate 'Latest question date' %}</dt>
+  <dd>{{ last_question_date|date:"Y-m-d" }}</dd>
+</dl>
 {% endblock %}
 {% block scripts %}
 <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>

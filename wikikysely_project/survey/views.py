@@ -1249,6 +1249,14 @@ def survey_answers(request):
     total_users = (
         Answer.objects.filter(question__survey=survey).values("user").distinct().count()
     )
+    question_count = questions.count()
+    question_author_count = questions.values("creator").distinct().count()
+    first_question_date = (
+        questions.order_by("created_at").values_list("created_at", flat=True).first()
+    )
+    last_question_date = (
+        questions.order_by("-created_at").values_list("created_at", flat=True).first()
+    )
 
     user_answers = {}
     if request.user.is_authenticated:
@@ -1283,6 +1291,10 @@ def survey_answers(request):
             "survey": survey,
             "data": data,
             "total_users": total_users,
+            "question_count": question_count,
+            "question_author_count": question_author_count,
+            "first_question_date": first_question_date,
+            "last_question_date": last_question_date,
             "yes_label": yes_label,
             "no_label": no_label,
         "no_answers_label": no_answers_label,

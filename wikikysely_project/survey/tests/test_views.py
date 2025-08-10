@@ -363,6 +363,25 @@ class SurveyFlowTests(TransactionTestCase):
             html=True,
         )
 
+    def test_results_view_includes_survey_info(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        q2 = Question.objects.create(
+            survey=survey, text="Another?", creator=self.users[1]
+        )
+        Answer.objects.create(question=q1, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=self.users[1], answer="no")
+        response = self.client.get(reverse("survey:survey_answers"))
+        self.assertEqual(response.context["question_count"], 2)
+        self.assertEqual(response.context["question_author_count"], 2)
+        self.assertEqual(
+            response.context["first_question_date"].date(), q1.created_at.date()
+        )
+        self.assertEqual(
+            response.context["last_question_date"].date(), q2.created_at.date()
+        )
+        self.assertContains(response, "Survey information")
+
     def test_answers_wikitext_contains_json(self):
         survey = self._create_survey()
         question = self._create_question(survey)
