@@ -755,12 +755,14 @@ def answer_question(request, pk):
     can_delete_question = False
     next_url = request.GET.get("next") or request.POST.get("next")
 
-    login_message = None
     if not request.user.is_authenticated:
         login_url = f"{reverse('login')}?next={request.path}"
-        login_message = format_html(
-            _('To answer the question you must <a href="{0}">log in</a>.'),
-            login_url,
+        messages.info(
+            request,
+            format_html(
+                _('To answer the question you must <a href="{0}">log in</a>.'),
+                login_url,
+            ),
         )
         form = None
     else:
@@ -859,7 +861,6 @@ def answer_question(request, pk):
             "no_label": no_label,
             "no_answers_label": no_answers_label,
             "next": next_url,
-            "login_message": login_message,
         },
     )
 
