@@ -46,11 +46,7 @@
         <tr>
         <td data-label="{% translate 'ID' %}">{{ q.pk }}</td>
         <td data-label="{% translate 'Published' %}">{{ q.created_at | date:"Y-m-d" }}</td>
-{% if request.user.is_authenticated %}
         <td data-label="{% translate 'Title' %}"><a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a></td>
-{% else %}
-        <td data-label="{% translate 'Title' %}">{{ q.text }}</td>
-{% endif %}
         <td class="total-answers" data-label="{% translate 'Answers' %}">{{ q.total_answers }}</td>
         <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ q.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end" data-label="">
