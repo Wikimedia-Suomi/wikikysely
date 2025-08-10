@@ -122,10 +122,6 @@
 </table>
 </div>
 {% endif %}
-{% if can_edit %}
-   <a href="{% url 'survey:survey_edit' %}" class="btn btn-warning ms-2">{% translate 'Edit survey' %}</a>
-{% endif %}
-
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'js/sort_tables.js' %}"></script>

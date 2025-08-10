@@ -15,11 +15,7 @@
 </tbody>
 </table>
 </div>
-{% if request.user.is_authenticated %}
-  {% if surveys %}
-    <a href="{% url 'survey:survey_edit' %}" class="btn btn-primary mt-3">{% translate 'Edit survey' %}</a>
-  {% else %}
-    <a href="{% url 'survey:survey_create' %}" class="btn btn-primary mt-3">{% translate 'Create survey' %}</a>
-  {% endif %}
+{% if request.user.is_authenticated and not surveys %}
+  <a href="{% url 'survey:survey_create' %}" class="btn btn-primary mt-3">{% translate 'Create survey' %}</a>
 {% endif %}
 {% endblock %}
