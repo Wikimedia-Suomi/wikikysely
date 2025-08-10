@@ -148,11 +148,14 @@ body {
 }
 
 /* Display userinfo definition list on single lines with colon */
+.survey-data dt,
+.survey-data dd,
 .user-data dt,
 .user-data dd {
   display: inline;
   margin: 0;
 }
+.survey-data dt::after,
 .user-data dt::after {
   content: ": ";
 }
