@@ -32,7 +32,13 @@
   {% for question in questions %}
     <tr>
       <td data-label="{% translate 'ID' %}">{{ question.pk }}</td>
-      <td data-label="{% translate 'Question' %}">{{ question.text }}</td>
+      <td data-label="{% translate 'Question' %}">
+        {% if question.visible %}
+          {{ question.text }}
+        {% else %}
+          <span class="text-decoration-line-through">{{ question.text }}</span>
+        {% endif %}
+      </td>
       <td class="text-end" data-label="">
         {% if question.pk in editable_questions %}
         <a href="{% url 'survey:question_edit' question.pk %}" class="btn btn-sm btn-warning me-2">{% translate 'Edit' %}</a>

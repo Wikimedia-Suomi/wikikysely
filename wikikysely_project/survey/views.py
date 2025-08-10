@@ -893,7 +893,6 @@ def userinfo(request):
     questions_qs = (
         Question.objects.filter(
             creator=request.user,
-            visible=True,
             survey__deleted=False,
         )
         .select_related("survey")
@@ -927,7 +926,7 @@ def userinfo(request):
         )
         if q.survey.state == "closed":
             can_modify = False
-        if can_modify:
+        if can_modify and q.visible:
             editable_questions.append(q.pk)
 
     return render(
