@@ -129,6 +129,11 @@ body {
 
 }
 
+/* Remove pointer cursor from selected yes/no buttons */
+.yes-no-group .btn-check:checked + label {
+  cursor: default;
+}
+
 /* Display userinfo definition list on single lines with colon */
 .user-data dt,
 .user-data dd {
