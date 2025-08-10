@@ -653,7 +653,7 @@ def answer_survey(request):
         messages.error(request, _("Survey not active"))
         return redirect("survey:survey_detail")
     if not request.user.is_authenticated:
-        login_url = f"{reverse('login')}?next={request.path}"
+        login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
         messages.info(
             request,
             format_html(
@@ -777,7 +777,7 @@ def answer_question(request, pk):
     next_url = request.GET.get("next") or request.POST.get("next")
 
     if not request.user.is_authenticated:
-        login_url = f"{reverse('login')}?next={request.path}"
+        login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
         messages.info(
             request,
             format_html(
