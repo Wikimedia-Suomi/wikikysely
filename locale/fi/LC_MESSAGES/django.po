@@ -630,6 +630,30 @@ msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 
+#: templates/survey/answers.html:124
+msgid "Survey information"
+msgstr "Tietoa kyselystä"
+
+#: templates/survey/answers.html:126
+msgid "Number of questions"
+msgstr "Kysymysten määrä"
+
+#: templates/survey/answers.html:128
+msgid "Number of respondents"
+msgstr "Vastaajien määrä"
+
+#: templates/survey/answers.html:130
+msgid "Number of question authors"
+msgstr "Kysymyksiä tehneiden käyttäjien määrä"
+
+#: templates/survey/answers.html:132
+msgid "First question date"
+msgstr "Ensimmäisen kysymyksen päivämäärä"
+
+#: templates/survey/answers.html:134
+msgid "Latest question date"
+msgstr "Viimeisimmän kysymyksen päivämäärä"
+
 #~ msgid "Deleted questions"
 #~ msgstr "Poistetut kysymykset"
 

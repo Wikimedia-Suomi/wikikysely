@@ -627,6 +627,30 @@ msgstr "Svar kan tas bort endast när enkäten är igång"
 msgid "Answer removed"
 msgstr "Svar borttaget"
 
+#: templates/survey/answers.html:124
+msgid "Survey information"
+msgstr "Information om enkäten"
+
+#: templates/survey/answers.html:126
+msgid "Number of questions"
+msgstr "Antal frågor"
+
+#: templates/survey/answers.html:128
+msgid "Number of respondents"
+msgstr "Antal svarande"
+
+#: templates/survey/answers.html:130
+msgid "Number of question authors"
+msgstr "Antal frågeställare"
+
+#: templates/survey/answers.html:132
+msgid "First question date"
+msgstr "Datum för första frågan"
+
+#: templates/survey/answers.html:134
+msgid "Latest question date"
+msgstr "Datum för senaste frågan"
+
 #~ msgid "Deleted questions"
 #~ msgstr "Borttagna frågor"
 
