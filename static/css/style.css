@@ -134,6 +134,19 @@ body {
   cursor: default;
 }
 
+/* Highlight unselected yes/no buttons on hover */
+.yes-no-group .btn-check:not(:checked) + label.btn-outline-success:hover,
+.yes-no-group .btn.btn-outline-success:hover {
+  background-color: var(--bs-success);
+  color: #fff;
+}
+
+.yes-no-group .btn-check:not(:checked) + label.btn-outline-danger:hover,
+.yes-no-group .btn.btn-outline-danger:hover {
+  background-color: var(--bs-danger);
+  color: #fff;
+}
+
 /* Display userinfo definition list on single lines with colon */
 .user-data dt,
 .user-data dd {
