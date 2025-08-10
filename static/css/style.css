@@ -20,6 +20,11 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+#pieCharts .pie-chart p {
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* Set column widths on question tables */
 #answerTable th:nth-child(1),
