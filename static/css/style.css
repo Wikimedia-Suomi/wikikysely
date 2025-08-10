@@ -128,3 +128,16 @@ body {
   }
 
 }
+
+/* Display userinfo definition list on single lines with colon */
+.user-data div {
+  margin-bottom: 0.5rem;
+}
+.user-data dt,
+.user-data dd {
+  display: inline;
+  margin: 0;
+}
+.user-data dt::after {
+  content: " : ";
+}

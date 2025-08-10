@@ -3,15 +3,23 @@
 {% block title %}{{ request.user.username }}{% endblock %}
 {% block content %}
 <h2>{% translate 'My data' %}</h2>
-<dl>
-  <dt>{% translate 'Username' %}</dt>
-  <dd>{{ request.user.username }}</dd>
-  <dt>{% translate 'Date joined' %}</dt>
-  <dd>{{ request.user.date_joined|date:'Y-m-d' }}</dd>
-  <dt>{% translate 'Questions' %}</dt>
-  <dd>{{ total_questions }}</dd>
-  <dt>{% translate 'Answers' %}</dt>
-  <dd>{{ total_answers }}</dd>
+<dl class="user-data">
+  <div>
+    <dt>{% translate 'Username' %}</dt>
+    <dd>{{ request.user.username }}</dd>
+  </div>
+  <div>
+    <dt>{% translate 'Date joined' %}</dt>
+    <dd>{{ request.user.date_joined|date:'Y-m-d' }}</dd>
+  </div>
+  <div>
+    <dt>{% translate 'Questions' %}</dt>
+    <dd>{{ total_questions }}</dd>
+  </div>
+  <div>
+    <dt>{% translate 'Answers' %}</dt>
+    <dd>{{ total_answers }}</dd>
+  </div>
 </dl>
 <p>
   <form method="post" action="{% url 'survey:user_data_delete' %}" class="d-inline" onsubmit="return confirm('{% translate 'Deleting your data will remove all answers and all questions you have asked that do not yet have answers from other users and are not hidden. If you no longer have any questions or answers, your account will also be deleted. This action cannot be undone. Delete your data?' %}');">
