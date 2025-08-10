@@ -22,6 +22,7 @@
       {% url 'survey:answer_survey' as answer_survey_url %}
       {% url 'survey:survey_answers' as survey_answers_url %}
       {% url 'survey:userinfo' as userinfo_url %}
+      {% url 'survey:survey_edit' as survey_edit_url %}
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link{% if request.path == survey_detail_url %} active{% endif %}" href="{{ survey_detail_url }}">{% translate 'Questions' %}</a></li>
         {% if unanswered_count %}
@@ -30,6 +31,9 @@
         <li class="nav-item"><span id="answer-nav-link" class="nav-link text-secondary" data-answer-url="{{ answer_survey_url }}">{% translate 'Answer survey' %}{% if request.user.is_authenticated %}(<span id="unanswered-count">0</span>){% endif %}</span></li>
         {% endif %}
         <li class="nav-item"><a class="nav-link{% if request.path == survey_answers_url %} active{% endif %}" href="{{ survey_answers_url }}">{% translate 'Answers' %}</a></li>
+        {% if can_edit %}
+        <li class="nav-item"><a class="nav-link{% if request.path == survey_edit_url %} active{% endif %}" href="{{ survey_edit_url }}">{% translate 'Edit survey' %}</a></li>
+        {% endif %}
       </ul>
       <ul id="userbar" class="navbar-nav ms-auto">
       <li class="nav-item">
