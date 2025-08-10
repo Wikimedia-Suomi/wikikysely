@@ -465,8 +465,16 @@ msgid "%(n)s answers"
 msgstr "%(n)s svar"
 
 #: templates/survey/userinfo.html:13
-msgid "This action cannot be undone. Delete your data?"
-msgstr "Detta g\xC3\xA5r inte att \xC3\xA5ngra. Ta bort dina uppgifter?"
+msgid ""
+"Deleting your data removes all answers, all questions you have asked that do"
+"not yet have answers from other users and are not hidden, and your user account"
+"if you no longer have questions or answers. This action cannot be undone."
+"Delete your data?"
+msgstr ""
+"Radering av dina uppgifter tar bort alla svar, alla frågor du har ställt som"
+"ännu inte har svar från andra användare och som inte är dolda samt ditt"
+"användarkonto om du inte längre har några frågor eller svar. Denna åtgärd kan"
+"inte ångras. Radera dina uppgifter?"
 
 #: templates/survey/userinfo.html:15
 msgid "Download my data (JSON)"
