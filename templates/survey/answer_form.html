@@ -42,6 +42,7 @@
   </div>
 
 </form>
+{% endif %}
   </div>
 </div>
 {% if question_stats %}
@@ -63,6 +64,7 @@
   <table class="table mb-3 stacked-table">
     <thead>
       <tr>
+        <th>{% translate 'ID' %}</th>
         <th>{% translate 'Published' %}</th>
         <th>{% translate 'Yes' %}</th>
         <th>{% translate 'No' %}</th>
@@ -72,6 +74,7 @@
     </thead>
     <tbody>
       <tr>
+        <td data-label="{% translate 'ID' %}">{{ question.pk }}</td>
         <td data-label="{% translate 'Published' %}">{{ question_stats.published|date:"Y-m-d" }}</td>
         <td data-label="{% translate 'Yes' %}">{{ question_stats.yes }}</td>
         <td data-label="{% translate 'No' %}">{{ question_stats.no }}</td>
@@ -83,6 +86,7 @@
   </div>
   </div>
 {% endif %}
+{% if request.user.is_authenticated %}
 {% if user_answers %}
   <h2 class="mt-4">
     <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
