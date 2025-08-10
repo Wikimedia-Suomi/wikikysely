@@ -2,18 +2,6 @@
 {% load i18n static %}
 {% block title %}{% translate 'Answers' %}{% endblock %}
 {% block content %}
-{% if not request.user.is_authenticated and data %}
-  {% if request.GET.login_required %}
-    <p class="alert alert-info">
-      {% translate 'You must be logged in to answer questions' %}.
-      {% if local_login_enabled %}
-      <a href="{% url 'login' %}?next={% url 'login_redirect' %}">{% translate 'Login' %}</a>
-      {% else %}
-      <a href="{% url 'social:begin' 'mediawiki' %}?next={% url 'login_redirect' %}">{% translate 'Login with Wikimedia' %}</a>
-      {% endif %}
-    </p>
-  {% endif %}
-{% endif %}
 <p>{{ survey.description }}</p>
 {% if request.user.is_authenticated %}
     {% if data and survey.state == 'running' %}
@@ -22,9 +10,9 @@
       {% endif %}
       <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
-  {% else %}
+{% else %}
     {% if data %}
-      <a href="?login_required=1" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
+      <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
       <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
   {% endif %}

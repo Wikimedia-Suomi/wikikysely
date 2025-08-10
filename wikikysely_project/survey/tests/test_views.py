@@ -113,6 +113,24 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.get(reverse("survey:survey_detail"))
         self.assertEqual(response.context["latest_question"], latest)
 
+    def test_answer_survey_accessible_without_login(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        self.client.logout()
+        response = self.client.get(reverse("survey:answer_survey"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["question"], question)
+        self.assertIsNone(response.context["form"])
+
+    def test_anonymous_cannot_submit_answer(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        self.client.logout()
+        data = {"question_id": question.pk, "answer": "yes"}
+        response = self.client.post(reverse("survey:answer_survey"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Answer.objects.count(), 0)
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {

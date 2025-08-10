@@ -28,7 +28,6 @@ LOGIN_REQUIRED_VIEWS = {
     "question_show",
     "question_delete",
     "question_edit",
-    "answer_survey",
     "answer_edit",
     "answer_delete",
     "userinfo",
@@ -47,6 +46,8 @@ def can_edit_survey(user, survey):
 
 def get_user_answers(user, survey):
     """Return user's answers for the survey with aggregated stats."""
+    if not getattr(user, "is_authenticated", False):
+        return Answer.objects.none()
     return (
         Answer.objects.filter(
             user=user, question__survey=survey, question__visible=True
@@ -641,7 +642,6 @@ def question_edit(request, pk):
     )
 
 
-@login_required
 def answer_survey(request):
     survey = Survey.get_main_survey()
     if survey is None:
@@ -652,7 +652,25 @@ def answer_survey(request):
     if not survey.is_active():
         messages.error(request, _("Survey not active"))
         return redirect("survey:survey_detail")
-    if request.method == "POST":
+    if not request.user.is_authenticated:
+        login_url = f"{reverse('login')}?next={request.path}"
+        messages.info(
+            request,
+            format_html(
+                _('To answer the question you must <a href="{0}">log in</a>.'),
+                login_url,
+            ),
+        )
+        remaining = survey.questions.filter(visible=True)
+        skip_id = request.GET.get("skip")
+        if skip_id:
+            remaining = remaining.exclude(id=skip_id)
+        question = random.choice(list(remaining)) if remaining else None
+        if not question:
+            messages.info(request, _("No more questions"))
+            return redirect("survey:survey_detail")
+        form = None
+    elif request.method == "POST":
         form = AnswerForm(request.POST)
         question = get_object_or_404(
             Question,
@@ -704,7 +722,7 @@ def answer_survey(request):
         form = AnswerForm(initial={"question_id": question.pk})
 
     user_answers = get_user_answers(request.user, survey)
-    if question:
+    if request.user.is_authenticated and question:
         user_answers = user_answers.exclude(question=question)
     question_stats = get_question_stats(question, request.user) if question else None
     max_total = (
