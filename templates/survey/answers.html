@@ -135,14 +135,6 @@
      <dt>{% translate 'Number of question authors' %}</dt>
      <dd>{{ question_author_count }}</dd>
   </div>
-  <div>
-     <dt>{% translate 'First question date' %}</dt>
-     <dd>{{ first_question_date|date:"Y-m-d" }}</dd>
-  </div>
-  <div>
-     <dt>{% translate 'Latest question date' %}</dt>
-     <dd>{{ last_question_date|date:"Y-m-d" }}</dd>
-  </div>
 </dl>
 {% endblock %}
 {% block scripts %}
