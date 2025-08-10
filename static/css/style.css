@@ -159,3 +159,12 @@ body {
 .user-data dt::after {
   content: ": ";
 }
+
+/* Add arrow indicators for collapsible sections */
+.collapse-toggle::after {
+  content: " \25BC"; /* Down arrow */
+  margin-left: 0.25rem;
+}
+.collapse-toggle:not(.collapsed)::after {
+  content: " \25B2"; /* Up arrow when expanded */
+}

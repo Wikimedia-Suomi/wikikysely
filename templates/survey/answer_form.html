@@ -47,7 +47,7 @@
 </div>
 {% if question_stats %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
+    <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
   </h2>
   <div id="answerDetails" class="collapse">
   <!--div class="row mb-4">
@@ -89,7 +89,7 @@
 {% if request.user.is_authenticated %}
 {% if user_answers %}
   <h2 class="mt-4">
-    <a class="text-decoration-none" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
+    <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
   <div id="myAnswers" class="collapse">
   <div class="table-responsive">
