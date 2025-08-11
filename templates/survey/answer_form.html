@@ -96,8 +96,8 @@
   <table class="table mb-3 survey-detail-table stacked-table">
     <thead>
       <tr>
-        <th>{% translate 'ID' %}</th>
         <th>{% translate 'Answer date' %}</th>
+        <!--th>{% translate 'ID' %}</th-->
         <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
         <th>{% translate 'Agree' %}</th>
@@ -107,8 +107,8 @@
     <tbody>
       {% for a in user_answers %}
       <tr data-question-id="{{ a.question.pk }}">
-        <td data-label="{% translate 'ID' %}">{{ a.question.pk }}</td>
         <td data-label="{% translate 'Answer date' %}">{{ a.created_at|date:"Y-m-d" }}</td>
+        <!--td data-label="{% translate 'ID' %}">{{ a.question.pk }}</td-->
         <td data-label="{% translate 'Title' %}"><a href="{% url 'survey:answer_question' a.question.pk %}">{{ a.question.text }}</a></td>
         <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
         <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
