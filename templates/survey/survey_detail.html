@@ -34,7 +34,6 @@
         <thead>
       <tr>
         <th>{% translate 'ID' %}</th>
-        <th>{% translate 'Published' %}</th>
         <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
         <th>{% translate 'Agree' %}</th>
@@ -45,7 +44,6 @@
       {% for q in unanswered_questions %}
         <tr>
         <td data-label="{% translate 'ID' %}">{{ q.pk }}</td>
-        <td data-label="{% translate 'Published' %}">{{ q.created_at | date:"Y-m-d" }}</td>
         <td data-label="{% translate 'Title' %}"><a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a></td>
         <td class="total-answers" data-label="{% translate 'Answers' %}">{{ q.total_answers }}</td>
         <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ q.agree_ratio|floatformat:1 }}%</td>
@@ -68,7 +66,6 @@
   <thead>
   <tr>
     <th>{% translate 'ID' %}</th>
-    <th>{% translate 'Published' %}</th>
     <th>{% translate 'Title' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
@@ -79,7 +76,6 @@
   {% for a in user_answers %}
     <tr>
       <td data-label="{% translate 'ID' %}">{{ a.question.pk }}</td>
-      <td data-label="{% translate 'Published' %}">{{ a.question.created_at|date:"Y-m-d" }}</td>
       <td data-label="{% translate 'Title' %}">
         <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
       </td>
@@ -111,7 +107,7 @@
 <script src="{% static 'js/sort_tables.js' %}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables(".survey-detail-table", 1);
+    initSortableTables(".survey-detail-table", 0);
 });
 </script>
 <script src="{% static 'js/survey_detail_ajax.js' %}"></script>
