@@ -74,8 +74,8 @@
   <tr>
     <th>{% translate 'ID' %}</th>
     <th>{% translate 'Question' %}</th>
-    <th>{% translate 'Answer' %}</th>
     <th>{% translate 'Answer date' %}</th>
+    <th>{% translate 'Answer' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
     <th></th>
@@ -92,8 +92,8 @@
         {{ answer.question.text }}
       {% endif %}
     </td>
-    <td data-label="{% translate 'Answer' %}">{{ answer.get_answer_display }}</td>
     <td data-label="{% translate 'Answer date' %}">{{ answer.created_at|date:"Y-m-d" }}</td>
+    <td data-label="{% translate 'Answer' %}">{{ answer.get_answer_display }}</td>
     <td data-label="{% translate 'Answers' %}">{{ answer.total_answers }}</td>
     <td data-label="{% translate 'Agree' %}">{{ answer.agree_ratio|floatformat:1 }}%</td>
     <td class="text-end" data-label="">
