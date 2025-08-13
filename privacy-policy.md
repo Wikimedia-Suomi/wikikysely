@@ -22,4 +22,8 @@ This prototype survey tool stores limited personal data to operate the https://w
 ## Data processing location
 - Data processing occurs on Wikimedia Toolforge servers located in the United States, which  involve international data transfers outside the European Economic Area.
 
+## Deleting own data
+Deleting your data in your user profile page will remove all answers and all questions you have asked that do not yet have answers from other users. Exception are hidden questions which are kept for logging purposes and cannot be deleted. If you no longer have any questions or answers, your account will also be deleted. This action cannot be undone. 
+
+
 All data is stored on wikikysely.toolforge.org managed by the project maintainers and may be removed at any time as this is a prototype.
