@@ -109,10 +109,24 @@ $ ssh YOUR_USER_NAME@login.toolforge.org
 tools.wikikysely@...:~$ mkdir www
 tools.wikikysely@...:~$ mkdir www/python
 tools.wikikysely@...:~$ cd www/python
-tools.wikikysely@...:~$ echo "static-map = /static=/data/project/wikikysely/www/python/src/staticfiles"> uwsgi.ini
+tools.wikikysely@...:~$ echo "[uwsgi]\nstatic-map = /static=/data/project/wikikysely/www/python/src/staticfiles"> uwsgi.ini
 tools.wikikysely@...:~$ git clone https://github.com/Wikimedia-Suomi/wikikysely.git
 tools.wikikysely@...:~$ ln -s wikikysely src
+tools.wikikysely@...:~$ cd src
+   ```
+CREATE app.py
+```python
+import os
 
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wikikysely_project.settings")
+
+app = get_wsgi_application()
+   ```
+SETUP SECRETS
+
+```bash
 tools.wikikysely@...:~$ toolforge envvars create DJANGO_SECRET
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "very-secret-key"
 
@@ -124,9 +138,12 @@ tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_SECRET
 
 tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_CALLBACK
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "http://127.0.0.1:8080/oauth/complete/mediawiki/"
+   ```
+update ALLOWED_HOSTS in wikikysely_project/settings.py
 
+```bash
 tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 shell
-
+(webservice):~$ cd www/python
 (webservice):~$ python3 -m venv venv
 (webservice):~$ source venv/bin/activate
 (venv):$ cd wikikysely
