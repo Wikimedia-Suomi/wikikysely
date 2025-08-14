@@ -140,6 +140,7 @@ tools.wikikysely@...:~$ toolforge envvars create MEDIAWIKI_CALLBACK
 # Enter the value of your envvar (prompt is hidden, hit Ctrl+C to abort): "http://127.0.0.1:8080/oauth/complete/mediawiki/"
    ```
 update ALLOWED_HOSTS in wikikysely_project/settings.py
+if you are using mariadbe then create DATABASE and update it to wikikysely_project/settings.py
 
 ```bash
 tools.wikikysely@...:~$ webservice --backend=kubernetes python3.11 shell
