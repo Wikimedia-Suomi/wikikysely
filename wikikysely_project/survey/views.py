@@ -690,6 +690,7 @@ def answer_survey(request):
         )
         if form.is_valid():
             answer_value = form.cleaned_data["answer"]
+            skip_message = False
             if answer_value:
                 Answer.objects.update_or_create(
                     user=request.user,
@@ -704,7 +705,7 @@ def answer_survey(request):
                 SkippedQuestion.objects.get_or_create(
                     user=request.user, question=question
                 )
-                messages.info(request, _("Question skipped"))
+                skip_message = True
 
             answered_questions = Answer.objects.filter(
                 user=request.user,
@@ -732,6 +733,8 @@ def answer_survey(request):
             if not question:
                 messages.info(request, _("No more questions"))
                 return redirect("survey:survey_detail")
+            if skip_message:
+                messages.info(request, _("Question skipped"))
             form = AnswerForm(initial={"question_id": question.pk})
     else:
         answered_questions = Answer.objects.filter(
@@ -831,6 +834,7 @@ def answer_question(request, pk):
             form = AnswerForm(request.POST, instance=answer)
             if form.is_valid():
                 answer_value = form.cleaned_data["answer"]
+                skip_message = False
                 if answer_value:
                     Answer.objects.update_or_create(
                         user=request.user,
@@ -845,7 +849,7 @@ def answer_question(request, pk):
                     SkippedQuestion.objects.get_or_create(
                         user=request.user, question=question
                     )
-                    messages.info(request, _("Question skipped"))
+                    skip_message = True
 
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     yes_count = question.answers.filter(answer="yes").count()
@@ -868,6 +872,8 @@ def answer_question(request, pk):
 
                     if urlparse(next_url).path != request.path:
                         print("REDIRECT")
+                        if skip_message:
+                            messages.info(request, _("Question skipped"))
                         return redirect(next_url)
 
                 answered_questions = Answer.objects.filter(
@@ -901,6 +907,8 @@ def answer_question(request, pk):
                 if not question:
                     messages.info(request, _("No more questions"))
                     return redirect("survey:survey_detail")
+                if skip_message:
+                    messages.info(request, _("Question skipped"))
                 answer = None
                 form = AnswerForm(initial={"question_id": question.pk})
             else:
