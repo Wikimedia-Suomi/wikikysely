@@ -207,13 +207,21 @@ msgstr "Sinun tulee olla kirjautunut sisään vastataksesi kysymyksiin"
 msgid "Print wikitext"
 msgstr "Tulosta wikitekstinä"
 
-#: templates/survey/answers.html:21
-msgid "<span class=\"bg-success text-black px-1\">%(yes)s</span> and <span class=\"bg-danger text-light px-1\">%(no)s</span> indicate the answers."
-msgstr "<span class=\"bg-success text-black px-1\">%(yes)s</span> ja <span class=\"bg-danger text-light px-1\">%(no)s</span> ovat vastaukset."
-
 #: templates/survey/answers.html:24
-msgid "<span class=\"bg-secondary text-light px-1\">%(unanswered)s</span> shows the share of all respondents who have not answered."
-msgstr "<span class=\"bg-secondary text-light px-1\">%(unanswered)s</span> näyttää, kuinka suuri osa kaikista vastaajista on vastaamatta."
+msgid "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s answers and <span class=\"bg-success text-black px-1\">%(green)s</span> means %(yes)s answers. <span class=\"bg-secondary text-light px-1\">%(grey)s</span> shows the share of all respondents who have not yet answered the question."
+msgstr "<span class=\"bg-danger text-light px-1\">%(red)s</span> tarkoittaa %(no)s vastauksia ja <span class=\"bg-success text-black px-1\">%(green)s</span> tarkoittaa %(yes)s vastauksia. <span class=\"bg-secondary text-light px-1\">%(grey)s</span> kertoo kuinka suuri osa kaikista vastaajista ei ole vielä vastannut kysymykseen."
+
+#: templates/survey/answers.html:20
+msgid "Red"
+msgstr "Punainen"
+
+#: templates/survey/answers.html:21
+msgid "Green"
+msgstr "Vihreä"
+
+#: templates/survey/answers.html:22
+msgid "Grey"
+msgstr "Harmaa"
 
 #: templates/survey/answers.html:35
 msgid "Pie chart"

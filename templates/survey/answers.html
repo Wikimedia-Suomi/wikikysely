@@ -17,13 +17,12 @@
   {% endif %}
   {% endif %}
 <h1>{% translate 'Answers' %}</h1>
+{% translate 'Red' as red_label %}
+{% translate 'Green' as green_label %}
+{% translate 'Grey' as grey_label %}
 <p>
-  {% blocktrans trimmed with yes=yes_label no=no_label %}
-  <span class="bg-success text-black px-1">{{ yes }}</span> and
-  <span class="bg-danger text-light px-1">{{ no }}</span> indicate the answers.
-  {% endblocktrans %}
-  {% blocktrans trimmed with unanswered=no_answers_label %}
-  <span class="bg-secondary text-light px-1">{{ unanswered }}</span> shows the share of all respondents who have not answered.
+  {% blocktrans trimmed with red=red_label green=green_label grey=grey_label yes=yes_label no=no_label %}
+  <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers. <span class="bg-secondary text-light px-1">{{ grey }}</span> shows the share of all respondents who have not yet answered the question.
   {% endblocktrans %}
 </p>
 <div class="mb-3">
