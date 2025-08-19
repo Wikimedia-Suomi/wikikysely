@@ -208,8 +208,8 @@ msgid "Print wikitext"
 msgstr "Skriv ut wikikod"
 
 #: templates/survey/answers.html:24
-msgid "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s answers and <span class=\"bg-success text-black px-1\">%(green)s</span> means %(yes)s answers. <span class=\"bg-secondary text-light px-1\">%(grey)s</span> shows the share of all respondents who have not yet answered the question."
-msgstr "<span class=\"bg-danger text-light px-1\">%(red)s</span> betyder %(no)s svar och <span class=\"bg-success text-black px-1\">%(green)s</span> betyder %(yes)s svar. <span class=\"bg-secondary text-light px-1\">%(grey)s</span> visar hur stor andel av alla svarande som ännu inte har svarat på frågan."
+msgid "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s answers and <span class=\"bg-success text-black px-1\">%(green)s</span> means %(yes)s answers. <span id=\"unansweredInfo\"><span class=\"bg-secondary text-light px-1\">%(grey)s</span> shows the share of all respondents who have not yet answered the question.</span>"
+msgstr "<span class=\"bg-danger text-light px-1\">%(red)s</span> betyder %(no)s svar och <span class=\"bg-success text-black px-1\">%(green)s</span> betyder %(yes)s svar. <span id=\"unansweredInfo\"><span class=\"bg-secondary text-light px-1\">%(grey)s</span> visar hur stor andel av alla svarande som ännu inte har svarat på frågan.</span>"
 
 #: templates/survey/answers.html:20
 msgid "Red"
