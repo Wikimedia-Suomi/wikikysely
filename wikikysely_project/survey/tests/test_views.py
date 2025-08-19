@@ -525,6 +525,8 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(len(data["answers"]), 1)
         self.assertEqual(len(data["questions"]), 1)
         self.assertEqual(len(data["surveys"]), 2)
+        self.assertIn("skipped_questions", data)
+        self.assertEqual(data["skipped_questions"], [])
         self.assertNotIn("secretary_surveys", data)
         surveys_by_title = {s["title"]: s for s in data["surveys"]}
         self.assertIn("Test Survey", surveys_by_title)
@@ -535,6 +537,17 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertFalse(surveys_by_title["Other Survey"].get("creator", False))
         self.assertEqual(surveys_by_title["Test Survey"]["description"], "desc")
         self.assertEqual(surveys_by_title["Other Survey"]["description"], "desc")
+
+
+    def test_userinfo_download_includes_skipped_question_ids(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        SkippedQuestion.objects.create(user=self.user, question=q)
+
+        response = self.client.get(reverse("survey:userinfo_download"))
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content.decode())
+        self.assertEqual(data["skipped_questions"], [q.id])
 
 
     def test_userinfo_shows_answer_counts_and_consensus(self):

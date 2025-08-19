@@ -1057,6 +1057,12 @@ def userinfo_download(request):
     created_surveys = Survey.objects.filter(creator=user)
     secretary_surveys = Survey.objects.filter(secretaries=user)
 
+    skipped_question_ids = (
+        SkippedQuestion.objects.filter(user=user)
+        .values_list("question_id", flat=True)
+        .order_by("question_id")
+    )
+
     surveys_dict = {}
     for s in created_surveys:
         surveys_dict[s.id] = {
@@ -1109,6 +1115,7 @@ def userinfo_download(request):
             }
             for a in answers
         ],
+        "skipped_questions": list(skipped_question_ids),
     }
     response = JsonResponse(
         data,
