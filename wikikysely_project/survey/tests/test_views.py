@@ -132,6 +132,28 @@ class SurveyFlowTests(TransactionTestCase):
             )
             self.assertEqual(response.context["question"], q1)
 
+    def test_skipping_all_questions_via_answer_question(self):
+        survey = self._create_survey()
+        q1, q2 = self._create_questions(survey, count=2)
+
+        data = {"question_id": q1.pk, "answer": ""}
+        response = self.client.post(
+            reverse("survey:answer_question", args=[q1.pk]), data
+        )
+        self.assertTrue(
+            SkippedQuestion.objects.filter(user=self.user, question=q1).exists()
+        )
+        self.assertEqual(response.context["question"], q2)
+
+        data = {"question_id": q2.pk, "answer": ""}
+        response = self.client.post(
+            reverse("survey:answer_question", args=[q2.pk]), data
+        )
+        self.assertEqual(
+            SkippedQuestion.objects.filter(user=self.user).count(), 0
+        )
+        self.assertEqual(response.context["question"], q1)
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {
