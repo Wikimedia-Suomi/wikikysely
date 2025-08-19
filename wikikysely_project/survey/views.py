@@ -977,6 +977,15 @@ def userinfo(request):
 
     total_answers = Answer.objects.filter(user=request.user).count()
 
+    skipped_questions = (
+        SkippedQuestion.objects.filter(
+            user=request.user,
+            question__visible=True,
+            question__survey__deleted=False,
+        )
+        .select_related("question", "question__survey")
+    )
+
     questions_qs = (
         Question.objects.filter(
             creator=request.user,
@@ -1021,6 +1030,7 @@ def userinfo(request):
         "survey/userinfo.html",
         {
             "answers": answers,
+            "skipped_questions": skipped_questions,
             "questions": questions_qs,
             "hard_deletable_questions": hard_deletable_questions,
             "editable_questions": editable_questions,

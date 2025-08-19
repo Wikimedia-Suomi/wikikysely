@@ -442,6 +442,14 @@ msgstr "Omat kysymykset"
 msgid "No answers"
 msgstr "Ei vastauksia"
 
+#: templates/survey/userinfo.html:112
+msgid "Skipped questions"
+msgstr "Ohitetut kysymykset"
+
+#: templates/survey/userinfo.html:134
+msgid "No skipped questions"
+msgstr "Ei ohitettuja kysymyksiä"
+
 #: wikikysely_project/survey/forms.py:34
 msgid "Text"
 msgstr "Teksti"

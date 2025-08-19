@@ -568,6 +568,17 @@ class SurveyFlowTests(TransactionTestCase):
         edit_url = reverse("survey:question_edit", args=[hidden_q.pk])
         self.assertNotContains(response, edit_url)
 
+    def test_userinfo_shows_skipped_questions(self):
+        survey = self._create_survey()
+        q = Question.objects.create(survey=survey, text="Skipped Q", creator=self.users[1])
+        SkippedQuestion.objects.create(user=self.user, question=q)
+
+        response = self.client.get(reverse("survey:userinfo"))
+        self.assertEqual(response.status_code, 200)
+        skipped = list(response.context["skipped_questions"])
+        self.assertEqual(skipped[0].question, q)
+        self.assertContains(response, q.text)
+
     def test_user_data_delete_removes_answers_and_questions(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)
