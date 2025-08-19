@@ -5,40 +5,18 @@ from django.contrib.auth import get_user_model
 from django.db.models import ProtectedError
 import json
 
-from ..models import Survey, Question, Answer, SurveyLog, log_survey_action
+from ..models import (
+    Survey,
+    Question,
+    Answer,
+    SurveyLog,
+    SkippedQuestion,
+    log_survey_action,
+)
+from unittest.mock import patch
 
 
 class SurveyFlowTests(TransactionTestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        from django.db import connection
-
-        connection.disable_constraint_checking()
-        try:
-            with connection.schema_editor(atomic=False) as schema_editor:
-                schema_editor.create_model(Survey)
-                schema_editor.create_model(Question)
-                schema_editor.create_model(Answer)
-                schema_editor.create_model(SurveyLog)
-        finally:
-            connection.enable_constraint_checking()
-
-    @classmethod
-    def tearDownClass(cls):
-        from django.db import connection
-
-        connection.disable_constraint_checking()
-        try:
-            with connection.schema_editor(atomic=False) as schema_editor:
-                schema_editor.delete_model(SurveyLog)
-                schema_editor.delete_model(Answer)
-                schema_editor.delete_model(Question)
-                schema_editor.delete_model(Survey)
-        finally:
-            connection.enable_constraint_checking()
-        super().tearDownClass()
 
     def setUp(self):
         activate("en")
@@ -130,6 +108,29 @@ class SurveyFlowTests(TransactionTestCase):
         response = self.client.post(reverse("survey:answer_survey"), data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Answer.objects.count(), 0)
+
+    def test_skipped_questions_record_and_reset(self):
+        survey = self._create_survey()
+        q1, q2 = self._create_questions(survey, count=2)
+        with patch("random.choice", lambda seq: seq[0]):
+            response = self.client.get(reverse("survey:answer_survey"))
+            self.assertEqual(response.context["question"], q1)
+
+            data = {"question_id": q1.pk, "answer": ""}
+            response = self.client.post(reverse("survey:answer_survey"), data)
+            self.assertTrue(
+                SkippedQuestion.objects.filter(
+                    user=self.user, question=q1
+                ).exists()
+            )
+            self.assertEqual(response.context["question"], q2)
+
+            data = {"question_id": q2.pk, "answer": ""}
+            response = self.client.post(reverse("survey:answer_survey"), data)
+            self.assertEqual(
+                SkippedQuestion.objects.filter(user=self.user).count(), 0
+            )
+            self.assertEqual(response.context["question"], q1)
 
     def test_survey_edit(self):
         survey = self._create_survey()
