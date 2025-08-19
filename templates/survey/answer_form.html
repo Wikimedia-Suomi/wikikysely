@@ -45,6 +45,9 @@
 {% endif %}
   </div>
 </div>
+<div class="text-center mb-4">
+  <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+</div>
 {% if question_stats %}
   <h2 class="mt-4">
     <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
