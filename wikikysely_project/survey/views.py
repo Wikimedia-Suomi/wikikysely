@@ -876,11 +876,12 @@ def answer_question(request, pk):
                 skipped_questions = SkippedQuestion.objects.filter(
                     user=request.user, question__survey=survey
                 ).values_list("question_id", flat=True)
+                current_question_pk = question.pk
                 question = (
                     survey.questions.filter(visible=True)
                     .exclude(id__in=answered_questions)
                     .exclude(id__in=skipped_questions)
-                    .exclude(id=question.pk)
+                    .exclude(id=current_question_pk)
                     .order_by('?')
                     .first()
                 )
@@ -892,7 +893,7 @@ def answer_question(request, pk):
                     question = (
                         survey.questions.filter(visible=True)
                         .exclude(id__in=answered_questions)
-                        .exclude(id=question.pk)
+                        .exclude(id=current_question_pk)
                         .order_by('?')
                         .first()
                     )
