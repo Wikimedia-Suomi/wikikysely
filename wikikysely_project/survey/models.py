@@ -64,6 +64,21 @@ class Answer(models.Model):
         unique_together = ('question', 'user')
 
 
+class SkippedQuestion(models.Model):
+    """Store questions a user has chosen to skip."""
+
+    question = models.ForeignKey(
+        Question, related_name="skips", on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("question", "user")
+
+
 class SurveyLog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     data = models.JSONField()

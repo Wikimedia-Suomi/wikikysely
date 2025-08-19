@@ -17,7 +17,14 @@ from django.http import JsonResponse
 from datetime import timedelta
 from django.utils import timezone
 import json
-from .models import Survey, Question, Answer, log_survey_action, SurveyLog
+from .models import (
+    Survey,
+    Question,
+    Answer,
+    SkippedQuestion,
+    log_survey_action,
+    SurveyLog,
+)
 from .forms import SurveyForm, QuestionForm, AnswerForm, SecretaryAddForm
 from django.contrib.auth import get_user_model
 
@@ -689,17 +696,36 @@ def answer_survey(request):
                     question=question,
                     defaults={"answer": answer_value},
                 )
+                SkippedQuestion.objects.filter(
+                    user=request.user, question=question
+                ).delete()
                 messages.success(request, _("Answer saved"))
             else:
+                SkippedQuestion.objects.get_or_create(
+                    user=request.user, question=question
+                )
                 messages.info(request, _("Question skipped"))
 
             answered_questions = Answer.objects.filter(
                 user=request.user,
                 question__survey=survey,
             ).values_list("question_id", flat=True)
-            remaining = survey.questions.filter(visible=True).exclude(
-                id__in=answered_questions
+            skipped_questions = SkippedQuestion.objects.filter(
+                user=request.user,
+                question__survey=survey,
+            ).values_list("question_id", flat=True)
+            remaining = (
+                survey.questions.filter(visible=True)
+                .exclude(id__in=answered_questions)
+                .exclude(id__in=skipped_questions)
             )
+            if not remaining:
+                SkippedQuestion.objects.filter(
+                    user=request.user, question__survey=survey
+                ).delete()
+                remaining = survey.questions.filter(visible=True).exclude(
+                    id__in=answered_questions
+                )
             if not answer_value:
                 remaining = remaining.exclude(id=question.pk)
             question = random.choice(list(remaining)) if remaining else None
@@ -712,12 +738,22 @@ def answer_survey(request):
             user=request.user,
             question__survey=survey,
         ).values_list("question_id", flat=True)
-        remaining = survey.questions.filter(visible=True).exclude(
-            id__in=answered_questions
+        skipped_questions = SkippedQuestion.objects.filter(
+            user=request.user,
+            question__survey=survey,
+        ).values_list("question_id", flat=True)
+        remaining = (
+            survey.questions.filter(visible=True)
+            .exclude(id__in=answered_questions)
+            .exclude(id__in=skipped_questions)
         )
-        skip_id = request.GET.get("skip")
-        if skip_id:
-            remaining = remaining.exclude(id=skip_id)
+        if not remaining:
+            SkippedQuestion.objects.filter(
+                user=request.user, question__survey=survey
+            ).delete()
+            remaining = survey.questions.filter(visible=True).exclude(
+                id__in=answered_questions
+            )
         question = random.choice(list(remaining)) if remaining else None
         if not question:
             messages.info(request, _("No more questions"))
@@ -801,8 +837,14 @@ def answer_question(request, pk):
                         question=question,
                         defaults={"answer": answer_value},
                     )
+                    SkippedQuestion.objects.filter(
+                        user=request.user, question=question
+                    ).delete()
                     messages.success(request, _("Answer saved"))
                 else:
+                    SkippedQuestion.objects.get_or_create(
+                        user=request.user, question=question
+                    )
                     messages.info(request, _("Question skipped"))
 
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -831,9 +873,29 @@ def answer_question(request, pk):
                 answered_questions = Answer.objects.filter(
                     user=request.user, question__survey=survey
                 ).values_list("question_id", flat=True)
-                question = survey.questions.filter(visible=True).exclude(
-                    id__in=answered_questions
-                ).exclude(id=question.pk).order_by('?').first()
+                skipped_questions = SkippedQuestion.objects.filter(
+                    user=request.user, question__survey=survey
+                ).values_list("question_id", flat=True)
+                question = (
+                    survey.questions.filter(visible=True)
+                    .exclude(id__in=answered_questions)
+                    .exclude(id__in=skipped_questions)
+                    .exclude(id=question.pk)
+                    .order_by('?')
+                    .first()
+                )
+
+                if not question:
+                    SkippedQuestion.objects.filter(
+                        user=request.user, question__survey=survey
+                    ).delete()
+                    question = (
+                        survey.questions.filter(visible=True)
+                        .exclude(id__in=answered_questions)
+                        .exclude(id=question.pk)
+                        .order_by('?')
+                        .first()
+                    )
 
                 if not question:
                     messages.info(request, _("No more questions"))
