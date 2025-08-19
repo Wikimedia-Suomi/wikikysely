@@ -22,7 +22,7 @@
 {% translate 'Grey' as grey_label %}
 <p>
   {% blocktrans trimmed with red=red_label green=green_label grey=grey_label yes=yes_label no=no_label %}
-  <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers. <span id="unansweredInfo" style="display:none"><span class="bg-secondary text-light px-1">{{ grey }}</span> shows the share of all respondents who have not yet answered the question.</span>
+  <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers. <span id="unansweredInfo" style="display:none"><span class="bg-secondary px-1">{{ grey }}</span> shows the share of all respondents who have not yet answered the question.</span>
   {% endblocktrans %}
 </p>
 <div class="mb-3">

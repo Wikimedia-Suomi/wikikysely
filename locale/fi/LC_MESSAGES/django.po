@@ -208,8 +208,8 @@ msgid "Print wikitext"
 msgstr "Tulosta wikitekstinä"
 
 #: templates/survey/answers.html:24
-msgid "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s answers and <span class=\"bg-success text-black px-1\">%(green)s</span> means %(yes)s answers. <span id=\"unansweredInfo\"><span class=\"bg-secondary text-light px-1\">%(grey)s</span> shows the share of all respondents who have not yet answered the question.</span>"
-msgstr "<span class=\"bg-danger text-light px-1\">%(red)s</span> tarkoittaa %(no)s vastauksia ja <span class=\"bg-success text-black px-1\">%(green)s</span> tarkoittaa %(yes)s vastauksia. <span id=\"unansweredInfo\"><span class=\"bg-secondary text-light px-1\">%(grey)s</span> kertoo kuinka suuri osa kaikista vastaajista ei ole vielä vastannut kysymykseen.</span>"
+msgid "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s answers and <span class=\"bg-success text-black px-1\">%(green)s</span> means %(yes)s answers. <span id=\"unansweredInfo\"><span class=\"bg-secondary px-1\">%(grey)s</span> shows the share of all respondents who have not yet answered the question.</span>"
+msgstr "<span class=\"bg-danger text-light px-1\">%(red)s</span> tarkoittaa %(no)s vastauksia ja <span class=\"bg-success text-black px-1\">%(green)s</span> tarkoittaa %(yes)s vastauksia. <span id=\"unansweredInfo\"><span class=\"bg-secondary px-1\">%(grey)s</span> kertoo kuinka suuri osa kaikista vastaajista ei ole vielä vastannut kysymykseen.</span>"
 
 #: templates/survey/answers.html:20
 msgid "Red"
@@ -225,11 +225,11 @@ msgstr "Harmaa"
 
 #: templates/survey/answers.html:35
 msgid "Pie chart"
-msgstr "Piirakkadiagrammi"
+msgstr "Piirakkakaavio"
 
 #: templates/survey/answers.html:39
 msgid "Bar chart"
-msgstr "Palkkidiagrammi"
+msgstr "Palkkikaavio"
 
 #: templates/survey/answers.html:82 templates/survey/answers_wikitext.txt:26
 msgid "Total respondents"
@@ -274,7 +274,7 @@ msgstr "Luotu"
 
 #: templates/survey/answers_wikitext.txt:6
 msgid "Bar charts"
-msgstr "Palkkidiagrammit"
+msgstr "Palkkikaaviot"
 
 #: templates/survey/question_form.html:3 templates/survey/question_form.html:5
 msgid "Edit question"
