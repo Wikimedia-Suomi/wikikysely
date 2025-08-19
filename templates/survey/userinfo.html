@@ -109,6 +109,7 @@
 </table>
 </div>
 
+{% if skipped_questions %}
 <h2 class="mt-4">{% translate 'Skipped questions' %}</h2>
 <div class="table-responsive">
 <table class="table mb-0 stacked-table">
@@ -130,12 +131,11 @@
         {% endif %}
       </td>
     </tr>
-  {% empty %}
-    <tr><td colspan="2">{% translate 'No skipped questions' %}</td></tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
