@@ -435,7 +435,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data["yes"], 1)
         self.assertEqual(data["no"], 0)
         self.assertIn("published", data)
-        self.assertEqual(data["agree_ratio"], 100.0)
+        self.assertEqual(data["agree_ratio"], 100)
         self.assertEqual(data["my_answer"], "Yes")
         self.assertEqual(response.context["total_users"], 1)
         self.assertContains(response, "Answer table")
@@ -457,7 +457,7 @@ class SurveyFlowTests(TransactionTestCase):
 
         response = self.client.get(reverse("survey:survey_answers"))
         data = response.context["data"][0]
-        self.assertEqual(data["agree_ratio"], 20.0)
+        self.assertEqual(data["agree_ratio"], 60)
 
     def test_results_view_displays_my_answer_column(self):
         survey = self._create_survey()
@@ -545,7 +545,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         answers = list(response.context["user_answers"])
         self.assertEqual(answers[0].total_answers, 3)
-        self.assertAlmostEqual(answers[0].agree_ratio, 33.3333, places=1)
+        self.assertEqual(answers[0].agree_ratio, 67)
 
     def test_hidden_question_not_shown_to_creator(self):
         survey = self._create_survey()
@@ -619,7 +619,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         answers = list(response.context["answers"])
         self.assertEqual(answers[0].total_answers, 3)
-        self.assertAlmostEqual(answers[0].agree_ratio, 33.3333, places=1)
+        self.assertEqual(answers[0].agree_ratio, 67)
 
     def test_userinfo_includes_hidden_questions_without_edit_button(self):
         survey = self._create_survey()
