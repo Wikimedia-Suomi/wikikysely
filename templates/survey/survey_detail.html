@@ -21,10 +21,13 @@
     {% if questions %}
       <a href="{% url 'survey:survey_answers' %}" id="answers-btn" class="btn btn-info"{% if survey.state == 'running' and unanswered_questions %} style="display:none"{% endif %}>{% translate 'Answers' %}</a>
     {% endif %}
+    {% if survey.state == 'running' %}
     <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
+    {% endif %}
+
   </div>
 {% else %}
-    {% if questions %}
+    {% if questions and  survey.state == 'running' %}
         <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary">{% translate 'Answer survey' %}</a>
     {% endif %}
 {% endif %}
