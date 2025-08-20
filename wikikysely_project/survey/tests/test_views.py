@@ -242,6 +242,9 @@ class SurveyFlowTests(TransactionTestCase):
         log_survey_action(self.user, survey, "survey_update")
         response = self.client.get(reverse("survey:survey_edit"))
         self.assertContains(response, "survey_update")
+        self.assertContains(response, survey.description)
+        self.assertContains(response, survey.title)
+        self.assertContains(response, survey.state)
 
     def test_secretary_add_and_remove(self):
         survey = self._create_survey()

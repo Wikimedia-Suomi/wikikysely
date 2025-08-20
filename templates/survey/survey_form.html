@@ -58,7 +58,7 @@
   <ul class="list-group">
     {% for log in logs %}
       <li class="list-group-item">
-        {{ log.created_at|date:"Y-m-d H:i" }} - {{ log.data.username }} - {{ log.data.action }}{% if log.data.secretary_username %} - {{ log.data.secretary_username }}{% endif %}{% if log.data.question_text %} - {{ log.data.question_text }}{% endif %}
+        {{ log.created_at|date:"Y-m-d H:i" }} - {{ log.data.username }} - {{ log.data.action }}{% if log.data.secretary_username %} - {{ log.data.secretary_username }}{% endif %}{% if log.data.question_text %} - {{ log.data.question_text }}{% endif %}{% if log.data.action == "survey_update" %} - {{ log.data.survey_description }} - {{ log.data.survey_title }} - {{ log.data.survey_state }}{% endif %}
       </li>
     {% empty %}
       <li class="list-group-item">{% translate 'No log entries' %}</li>
