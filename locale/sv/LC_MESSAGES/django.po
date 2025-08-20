@@ -332,6 +332,16 @@ msgstr ""
 
 #: templates/survey/question_form.html:18
 msgid ""
+"Questions must relate to Wikipedia, the Wikimedia movement, or the activities "
+"of Wikimedia Finland, but they must not target individuals. All questions must "
+"adhere to the Wikimedia movement's <a href=\"https://foundation.wikimedia.org/wiki/Policy:Universal_Code_of_Conduct/fi\">Universal Code of Conduct</a>."
+msgstr ""
+"Frågorna ska handla om Wikipedia, Wikimediarörelsen eller Wikimedia Finlands "
+"verksamhet och frågor, men de får inte riktas mot enskilda personer. Alla "
+"frågor måste följa Wikimediarörelsens <a href=\"https://foundation.wikimedia.org/wiki/Policy:Universal_Code_of_Conduct/fi\">universella uppförandekod</a>."
+
+#: templates/survey/question_form.html:19
+msgid ""
 "You can edit or delete the question you added as long as nobody has answered "
 "it."
 msgstr ""
