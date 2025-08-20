@@ -691,6 +691,10 @@ msgstr "Vastauksen voi poistaa vain, kun kysely on käynnissä"
 msgid "Answer removed"
 msgstr "Vastaus poistettu"
 
+#: wikikysely_project/survey/forms.py:24
+msgid "Markdown formatting supported: **bold**, *italic*, [link](https://...), line breaks -> <br>"
+msgstr "Markdown: **bold**, *italic*, [link](https://...), rivinvaihdot -> <br>"
+
 #~ msgid "You must be logged in to answer questions"
 #~ msgstr "Sinun tulee olla kirjautunut sisään vastataksesi kysymyksiin"
 

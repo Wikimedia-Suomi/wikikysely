@@ -689,6 +689,10 @@ msgstr "Svar kan tas bort endast när enkäten är igång"
 msgid "Answer removed"
 msgstr "Svar borttaget"
 
+#: wikikysely_project/survey/forms.py:24
+msgid "Markdown formatting supported: **bold**, *italic*, [link](https://...), line breaks -> <br>"
+msgstr "Markdown-formatering stöds: **bold**, *italic*, [link](https://...), radbrytningar -> <br>"
+
 #~ msgid "You must be logged in to answer questions"
 #~ msgstr "Du måste vara inloggad för att kunna svara på frågorna"
 
