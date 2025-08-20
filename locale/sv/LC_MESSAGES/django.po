@@ -613,6 +613,11 @@ msgstr "Inga fler frågor"
 msgid "Answer saved"
 msgstr "Svar sparat"
 
+#: wikikysely_project/survey/views.py:735
+#: wikikysely_project/survey/views.py:915
+msgid "Answer saved. No more questions"
+msgstr "Svar sparat. Inga fler frågor"
+
 #: wikikysely_project/survey/views.py:707
 #: wikikysely_project/survey/views.py:848
 msgid "Question skipped"
