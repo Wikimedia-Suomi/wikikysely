@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static markdown_extras %}
 {% block title %}{% translate 'Answers' %}{% endblock %}
 {% block content %}
-<p>{{ survey.description }}</p>
+<p>{{ survey.description|markdownify }}</p>
 {% if request.user.is_authenticated %}
     {% if data and survey.state == 'running' %}
       {% if unanswered_count %}
