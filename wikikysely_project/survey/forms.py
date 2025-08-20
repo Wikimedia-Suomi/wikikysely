@@ -20,6 +20,11 @@ class SurveyForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         model = Survey
         fields = ['title', 'description', 'state']
+        help_texts = {
+            'description': _(
+                'Markdown formatting supported: **bold**, *italic*, [link](https://...), line breaks -> <br>'
+            ),
+        }
 
 
 class SecretaryAddForm(BootstrapMixin, forms.Form):

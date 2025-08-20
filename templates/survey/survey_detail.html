@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n static %}
+{% load i18n static markdown_extras %}
 {% block title %}{{ survey.title }}{% endblock %}
 {% block content %}
 {% if survey.state == 'paused' %}
@@ -12,7 +12,7 @@
 {% if not questions %}
   <p class="alert alert-warning">{% translate 'This survey has no questions yet. Please add questions.' %}</p>
 {% endif %}
-<p>{{ survey.description }}</p>
+<p>{{ survey.description|markdownify }}</p>
 {% if request.user.is_authenticated %}
   <div class="mb-3">
     {% if survey.state == 'running' %}
