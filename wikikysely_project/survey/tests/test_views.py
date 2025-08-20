@@ -163,7 +163,7 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_survey"), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("No more questions", msgs)
+        self.assertIn("Answer skipped. No more questions", msgs)
         self.assertNotIn("Question skipped", msgs)
 
     def test_skip_last_question_no_skip_message_answer_question(self):
@@ -174,7 +174,7 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("No more questions", msgs)
+        self.assertIn("Answer skipped. No more questions", msgs)
         self.assertNotIn("Question skipped", msgs)
 
     def test_answer_last_question_combined_message_answer_survey(self):

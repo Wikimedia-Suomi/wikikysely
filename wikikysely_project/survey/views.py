@@ -734,6 +734,10 @@ def answer_survey(request):
                     messages.success(
                         request, _("Answer saved. No more questions")
                     )
+                elif skip_message:
+                    messages.info(
+                        request, _("Answer skipped. No more questions")
+                    )
                 else:
                     messages.info(request, _("No more questions"))
                 return redirect("survey:survey_detail")
@@ -913,6 +917,10 @@ def answer_question(request, pk):
                     if answer_value:
                         messages.success(
                             request, _("Answer saved. No more questions")
+                        )
+                    elif skip_message:
+                        messages.info(
+                            request, _("Answer skipped. No more questions")
                         )
                     else:
                         messages.info(request, _("No more questions"))
