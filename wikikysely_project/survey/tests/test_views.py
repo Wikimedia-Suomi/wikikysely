@@ -277,6 +277,18 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(question.text, "What do you think?")
         self.assertRedirects(response, reverse("survey:survey_detail"))
 
+    def test_add_question_page_disabled_when_paused(self):
+        survey = self._create_survey()
+        survey.state = "paused"
+        survey.save()
+        response = self.client.get(reverse("survey:question_add"))
+        self.assertContains(response, "Survey not active")
+        self.assertContains(
+            response,
+            '<button type="submit" class="btn btn-primary me-2" disabled>',
+            html=True,
+        )
+
     def test_delete_and_restore_question(self):
         survey = self._create_survey()
         question = self._create_question(survey)
