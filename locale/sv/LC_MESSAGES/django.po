@@ -212,7 +212,6 @@ msgid "Grey"
 msgstr "Grå"
 
 #: templates/survey/answers.html:24
-#, fuzzy, python-format
 #| msgid ""
 #| "<span class=\"bg-danger text-light px-1\">%(red)s</span> means %(no)s "
 #| "answers and <span class=\"bg-success text-black px-1\">%(green)s</span> "

@@ -15,9 +15,9 @@
   {% if not is_edit %}
   <hr>
   <p>{% translate "Add any question related to the survey's topic, but phrase it so it can only be answered 'Yes' or 'No'. You may also add a statement, provided the respondent can similarly answer whether they agree or disagree - yes or no." %}</p>
-  {% blocktrans trimmed as question_guidelines %}Questions must relate to Wikipedia, the Wikimedia movement, or the activities of Wikimedia Finland, but they must not target individuals. All questions must adhere to the Wikimedia movement's <a href="https://foundation.wikimedia.org/wiki/Policy:Universal_Code_of_Conduct/fi">Universal Code of Conduct</a>.{% endblocktrans %}
-  <p>{{ question_guidelines|safe }}</p>
   <p>{% translate "You can edit or delete the question you added as long as nobody has answered it." %}</p>
+  {% blocktrans trimmed asvar question_guidelines %}Questions must relate to Wikipedia, the Wikimedia movement, or the activities of Wikimedia Finland, but they must not target individuals. All questions must adhere to the Wikimedia movement's <a href="https://foundation.wikimedia.org/wiki/Policy:Universal_Code_of_Conduct/fi">Universal Code of Conduct</a>.{% endblocktrans %}
+  <p>{{ question_guidelines|safe }}</p>
   {% get_current_language as LANGUAGE_CODE %}
   <p>
     <a href="{% if LANGUAGE_CODE == 'en' %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet/en{% elif LANGUAGE_CODE == 'sv' %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet/sv{% else %}https://fi.wikipedia.org/wiki/Wikiprojekti:Wikikysely_2025/ohjeet{% endif %}" target="_blank">{% translate 'Read more instructions' %}</a>
