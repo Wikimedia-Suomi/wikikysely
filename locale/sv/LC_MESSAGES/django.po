@@ -649,6 +649,10 @@ msgid_plural "Removed %(removed)d/%(total)d surveys."
 msgstr[0] "Tog bort %(removed)d/%(total)d enkät."
 msgstr[1] "Tog bort %(removed)d/%(total)d enkäter."
 
+#: wikikysely_project/survey/views.py:1189
+msgid "Removed data from skipped questions."
+msgstr "Tog bort data om överhoppade frågor."
+
 #: wikikysely_project/survey/views.py:1195
 #, python-format
 msgid "Could not remove %(count)d question because it already had answers."

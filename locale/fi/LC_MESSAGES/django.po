@@ -649,6 +649,10 @@ msgid_plural "Removed %(removed)d/%(total)d surveys."
 msgstr[0] "Poistettu %(removed)d/%(total)d kysely."
 msgstr[1] "Poistettu %(removed)d/%(total)d kyselyä."
 
+#: wikikysely_project/survey/views.py:1189
+msgid "Removed data from skipped questions."
+msgstr "Poistettu tiedot ohitetuista kysymyksistä."
+
 #: wikikysely_project/survey/views.py:1195
 #, python-format
 msgid "Could not remove %(count)d question because it already had answers."

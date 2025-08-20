@@ -748,3 +748,14 @@ class SurveyFlowTests(TransactionTestCase):
         data = response.json()["questions"][0]
         self.assertEqual(data["my_answer"], "yes")
         self.assertIsNotNone(data.get("my_answered_at"))
+
+    def test_user_data_delete_removes_skipped_questions(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        SkippedQuestion.objects.create(user=self.user, question=q)
+
+        response = self.client.post(reverse("survey:user_data_delete"), follow=True)
+        self.assertRedirects(response, reverse("survey:userinfo"))
+        self.assertFalse(SkippedQuestion.objects.filter(user=self.user).exists())
+        self.assertContains(response, "Removed data from skipped questions.")
+

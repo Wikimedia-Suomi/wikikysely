@@ -1169,6 +1169,9 @@ def user_data_delete(request):
     answers_qs.delete()
     total_answers = removed_answers
 
+    # Delete information about skipped questions
+    SkippedQuestion.objects.filter(user=user).delete()
+
     removed_questions = 0
     kept_questions = 0
 
@@ -1215,6 +1218,7 @@ def user_data_delete(request):
             total_surveys,
         )
         % {"removed": removed_surveys, "total": total_surveys},
+        _("Removed data from skipped questions."),
     ]
 
     if kept_questions:
