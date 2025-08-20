@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext, ngettext
 from django.utils.html import format_html, format_html_join
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max, Subquery
-from django.db.models.functions import NullIf, TruncDate, Greatest
+from django.db.models.functions import NullIf, TruncDate, Greatest, Round
 from django.http import JsonResponse
 from datetime import timedelta
 from django.utils import timezone
@@ -70,13 +70,11 @@ def get_user_answers(user, survey):
         )
         .annotate(
             agree_ratio=ExpressionWrapper(
-                (
+                Round(
                     Greatest(F("yes_count"), F("total_answers") - F("yes_count"))
                     * 100.0
                     / NullIf(F("total_answers"), 0)
-                    - 50
-                )
-                * 2,
+                ),
                 output_field=FloatField(),
             )
         )
@@ -90,7 +88,7 @@ def get_question_stats(question, user=None):
     no_count = question.answers.filter(answer="no").count()
     total = yes_count + no_count
     agree_ratio = (
-        (max(yes_count, no_count) * 100.0 / total - 50) * 2
+        round((max(yes_count, no_count) / total) * 100)
     ) if total else 0
     user_answer = None
     if user and user.is_authenticated:
