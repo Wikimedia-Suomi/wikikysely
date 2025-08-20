@@ -236,6 +236,7 @@ def survey_detail(request):
         user_answers = list(user_answers_qs)
         for ans in user_answers:
             ans.agree_ratio = calculate_agree_ratio(ans.yes_count, ans.total_answers)
+            ans.no_count = ans.total_answers - ans.yes_count
     else:
         answered_ids = set()
 
@@ -245,6 +246,7 @@ def survey_detail(request):
     for question in questions:
         question.yes_count = sum(1 for a in question.answers.all() if a.answer == "yes")
         question.total_answers = question.answers.count()
+        question.no_count = question.total_answers - question.yes_count
         question.agree_ratio = calculate_agree_ratio(question.yes_count, question.total_answers)
     
     can_edit = can_edit_survey(request.user, survey)

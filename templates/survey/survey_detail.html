@@ -29,8 +29,8 @@
     {% endif %}
 {% endif %}
         <h2 id="unanswered-header" class="mt-3"{% if not unanswered_questions %} style="display:none"{% endif %}>{% translate 'Unanswered questions' %}</h2>
-      <div class="table-responsive">
-      <table id="unanswered-table" class="table mb-3 survey-detail-table stacked-table"{% if not unanswered_questions %} style="display:none"{% endif %}>
+      <div class="table-responsive d-none d-md-block">
+      <table id="unanswered-table" class="table mb-3 survey-detail-table"{% if not unanswered_questions %} style="display:none"{% endif %}>
         <thead>
       <tr>
         <th>{% translate 'ID' %}</th>
@@ -58,11 +58,26 @@
         </tbody>
       </table>
       </div>
+      <div class="d-md-none"{% if not unanswered_questions %} style="display:none"{% endif %}>
+      {% for q in unanswered_questions %}
+        <div class="card mb-3">
+          <div class="card-header">
+            {{ q.pk }}. <a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a>
+          </div>
+          <div class="card-body">
+            <div class="progress" style="height: 1.25rem;">
+              <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio q.yes_count q.total_answers 100 %}%">{{ q.yes_count }}</div>
+              <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio q.no_count q.total_answers 100 %}%">{{ q.no_count }}</div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
 
 {% if user_answers %}
 <h2 class="mt-4">{% translate 'My answers' %}</h2>
-<div class="table-responsive">
-<table class="table mb-3 survey-detail-table stacked-table">
+<div class="table-responsive d-none d-md-block">
+<table class="table mb-3 survey-detail-table">
   <thead>
   <tr>
     <th>{% translate 'ID' %}</th>
@@ -100,6 +115,34 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
+<div class="d-md-none">
+  {% for a in user_answers %}
+  <div class="card mb-3">
+    <div class="card-header">
+      {{ a.question.pk }}. <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
+    </div>
+    <div class="card-body">
+      <div class="progress mb-3" style="height: 1.25rem;">
+        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio a.yes_count a.total_answers 100 %}%">{{ a.yes_count }}</div>
+        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio a.no_count a.total_answers 100 %}%">{{ a.no_count }}</div>
+      </div>
+      {% if a.question.survey.state == 'running' %}
+      <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="d-inline ajax-answer-form">
+        {% csrf_token %}
+        <input type="hidden" name="question_id" value="{{ a.question.pk }}">
+        <div class="btn-group yes-no-group" role="group" aria-label="{% translate 'Answer' %}">
+          <input type="radio" class="btn-check" name="answer" id="mobile-answer-{{ a.pk }}-yes" value="yes"{% if a.answer == 'yes' %} checked{% endif %}>
+          <label class="btn btn-sm btn-outline-success" for="mobile-answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
+          <input type="radio" class="btn-check" name="answer" id="mobile-answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
+          <label class="btn btn-sm btn-outline-danger" for="mobile-answer-{{ a.pk }}-no">{% translate 'No' %}</label>
+        </div>
+      </form>
+      <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer">{% translate 'Remove answer' %}</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endif %}
 {% endblock %}
