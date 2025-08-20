@@ -358,7 +358,7 @@ msgid ""
 "can try the development version at <a href=\"%(dev_url)s\">wikikysely-dev."
 "toolforge.org</a>."
 msgstr ""
-"Denna enkät publiceras den 20.8. Välkommen tillbaka då! Du kan dock prova "
+"Denna enkät publiceras den 20.8. klockan 14:00. Välkommen tillbaka då! Du kan dock prova "
 "utvecklingsversionen på <a href=\"%(dev_url)s\">wikikysely-dev.toolforge."
 "org</a>."
 
