@@ -700,7 +700,6 @@ def answer_survey(request):
                 SkippedQuestion.objects.filter(
                     user=request.user, question=question
                 ).delete()
-                messages.success(request, _("Answer saved"))
             else:
                 SkippedQuestion.objects.get_or_create(
                     user=request.user, question=question
@@ -731,8 +730,15 @@ def answer_survey(request):
                 remaining = remaining.exclude(id=question.pk)
             question = random.choice(list(remaining)) if remaining else None
             if not question:
-                messages.info(request, _("No more questions"))
+                if answer_value:
+                    messages.success(
+                        request, _("Answer saved. No more questions")
+                    )
+                else:
+                    messages.info(request, _("No more questions"))
                 return redirect("survey:survey_detail")
+            if answer_value:
+                messages.success(request, _("Answer saved"))
             if skip_message:
                 messages.info(request, _("Question skipped"))
             form = AnswerForm(initial={"question_id": question.pk})
@@ -844,7 +850,6 @@ def answer_question(request, pk):
                     SkippedQuestion.objects.filter(
                         user=request.user, question=question
                     ).delete()
-                    messages.success(request, _("Answer saved"))
                 else:
                     SkippedQuestion.objects.get_or_create(
                         user=request.user, question=question
@@ -905,8 +910,15 @@ def answer_question(request, pk):
                     )
 
                 if not question:
-                    messages.info(request, _("No more questions"))
+                    if answer_value:
+                        messages.success(
+                            request, _("Answer saved. No more questions")
+                        )
+                    else:
+                        messages.info(request, _("No more questions"))
                     return redirect("survey:survey_detail")
+                if answer_value:
+                    messages.success(request, _("Answer saved"))
                 if skip_message:
                     messages.info(request, _("Question skipped"))
                 answer = None

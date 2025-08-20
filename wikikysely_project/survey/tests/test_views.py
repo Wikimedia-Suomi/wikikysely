@@ -177,6 +177,26 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertIn("No more questions", msgs)
         self.assertNotIn("Question skipped", msgs)
 
+    def test_answer_last_question_combined_message_answer_survey(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        data = {"question_id": q1.pk, "answer": "yes"}
+        response = self.client.post(
+            reverse("survey:answer_survey"), data, follow=True
+        )
+        msgs = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn("Answer saved. No more questions", msgs)
+
+    def test_answer_last_question_combined_message_answer_question(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        data = {"question_id": q1.pk, "answer": "yes"}
+        response = self.client.post(
+            reverse("survey:answer_question", args=[q1.pk]), data, follow=True
+        )
+        msgs = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn("Answer saved. No more questions", msgs)
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {
