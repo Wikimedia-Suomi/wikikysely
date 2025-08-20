@@ -268,7 +268,7 @@ def calculate_agree_ratio(yes_count, total_answers):
     """Calculate agree ratio in Python to reduce database load"""
     if total_answers == 0:
         return 0
-    return ((max(yes_count, total_answers - yes_count) * 100.0 / total_answers) - 50) * 2
+    return round((max(yes_count, total_answers - yes_count) / total_answers) * 100)
 
 
 def questions_json(request):
@@ -862,7 +862,7 @@ def answer_question(request, pk):
                     yes_count = question.answers.filter(answer="yes").count()
                     no_count = question.answers.filter(answer="no").count()
                     total = yes_count + no_count
-                    ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+                    ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
                     return JsonResponse(
                         {
                             "success": True,
@@ -1288,7 +1288,7 @@ def answer_edit(request, pk):
                 yes_count = question.answers.filter(answer="yes").count()
                 no_count = question.answers.filter(answer="no").count()
                 total = yes_count + no_count
-                ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+                ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
                 return JsonResponse(
                     {
                         "success": True,
@@ -1328,7 +1328,7 @@ def answer_delete(request, pk):
         yes_count = question.answers.filter(answer="yes").count()
         no_count = question.answers.filter(answer="no").count()
         total = yes_count + no_count
-        ratio = int(((max(yes_count, no_count) * 100 / total) - 50) * 2) if total else 0
+        ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
         # updated unanswered count after deleting the answer
         answered_ids = Answer.objects.filter(
             user=request.user,
@@ -1403,7 +1403,7 @@ def survey_answers(request):
         yes_count = q.answers.filter(answer="yes").count()
         no_count = q.answers.filter(answer="no").count()
         total = yes_count + no_count
-        agree_ratio = ((max(yes_count, no_count) * 100.0 / total) - 50) * 2 if total else 0
+        agree_ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
         row = {
             "question": q,
             "published": q.created_at,
@@ -1470,7 +1470,7 @@ def survey_answers_wikitext(request):
         yes_count = q.answers.filter(answer="yes").count()
         no_count = q.answers.filter(answer="no").count()
         total = yes_count + no_count
-        agree_ratio = ((max(yes_count, no_count) * 100.0 / total) - 50) * 2 if total else 0
+        agree_ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
         row = {
             "question": q,
             "published": q.created_at,
