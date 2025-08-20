@@ -30,7 +30,7 @@ body {
 #answerTable th:nth-child(1),
 .survey-detail-table th:nth-child(1),
 .survey-detail-table td:nth-child(1) {
-  width: 10%;
+  width: 5%;
 }
 .survey-detail-table th:nth-child(2),
 .survey-detail-table td:nth-child(2) {
