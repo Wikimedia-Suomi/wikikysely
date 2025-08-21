@@ -607,8 +607,12 @@ msgid ""
 "To answer the question you must log in. <a href=\"{0}\">Log in with your "
 "Wikimedia account</a>."
 msgstr ""
-"Vastataksesi kysymykseen sinun on kirjauduttava sisälle. <a "
-"href=\"{0}\">Kirjaudu Wikimedian tunnuksilla</a>."
+"För att svara på frågan måste du logga in. <a href=\"{0}\">Logga in med ditt Wikimedia-konto</a>."
+
+#: wikikysely_project/survey/views.py:398
+#, python-brace-format
+msgid "To add a question you must log in. <a href=\"{0}\">Log in with your Wikimedia account</a>."
+msgstr "För att lägga till en fråga måste du logga in. <a href=\"{0}\">Logga in med ditt Wikimedia-konto</a>."
 
 #: wikikysely_project/survey/views.py:680
 #: wikikysely_project/survey/views.py:733

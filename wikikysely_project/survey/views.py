@@ -375,7 +375,7 @@ def survey_edit(request):
     )
 
 
-@login_required
+
 def question_add(request):
     survey = Survey.get_main_survey()
     if survey is None:
@@ -390,7 +390,20 @@ def question_add(request):
     ):
         messages.error(request, _("No permission"))
         return redirect("survey:survey_detail")
+    login_message = None
+    if not request.user.is_authenticated:
+        login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
+        login_message = format_html(
+            _(
+                'To add a question you must log in. '
+                '<a href="{0}">Log in with your Wikimedia account</a>.'
+            ),
+            login_url,
+        )
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, _("No permission"))
+            return redirect("survey:question_add")
         form = QuestionForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"].strip()
@@ -425,7 +438,9 @@ def question_add(request):
     else:
         form = QuestionForm()
     return render(
-        request, "survey/question_form.html", {"form": form, "survey": survey}
+        request,
+        "survey/question_form.html",
+        {"form": form, "survey": survey, "login_message": login_message},
     )
 
 

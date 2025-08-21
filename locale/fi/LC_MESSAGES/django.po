@@ -610,6 +610,11 @@ msgstr ""
 "Vastataksesi kysymykseen sinun on kirjauduttava sisälle. <a "
 "href=\"{0}\">Kirjaudu Wikimedian tunnuksilla</a>."
 
+#: wikikysely_project/survey/views.py:398
+#, python-brace-format
+msgid "To add a question you must log in. <a href=\"{0}\">Log in with your Wikimedia account</a>."
+msgstr "Lisätäksesi kysymyksen sinun on kirjauduttava sisälle. <a href=\"{0}\">Kirjaudu Wikimedian tunnuksilla</a>."
+
 #: wikikysely_project/survey/views.py:680
 #: wikikysely_project/survey/views.py:733
 #: wikikysely_project/survey/views.py:759
