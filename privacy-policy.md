@@ -8,8 +8,7 @@ This prototype survey tool stores limited personal data to operate the https://w
 - When app is running in Toolforge only OAuth logins are in use.
 
 ## Survey data
-- Your submitted questions and answers are kept in the database. They may be shown with your username and included in aggregated statistics or data exports. 
-  - Note: Currently username or per user answers are not visible to others. However, user can select the export which include answers by user.
+- Questions and answers submitted by user are stored in the database. Questions and aggregated answers of all users (without usernames) are displayed to other users. Users can view, edit, and delete their own answers.
   - This is area which is currently under investigation how and what information we are showing and it is likely to changed. (ie. new aggregated statistics)
 - In Toolforge all data in database can be accessed by admin users in Wikikysely Toolforge project. Data is used for debugging and developing the app and are not shared.
 
