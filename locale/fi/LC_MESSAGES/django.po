@@ -637,6 +637,22 @@ msgstr "Vastaus tallennettu. Ei enempää kysymyksiä"
 msgid "Answer skipped. No more questions"
 msgstr "Vastaus ohitettu. Ei enempää kysymyksiä"
 
+#: wikikysely_project/survey/views.py:758 wikikysely_project/survey/views.py:992
+msgid "Answered question #{number}: \"{question}\" with \"{answer}\". No more questions"
+msgstr "Vastattu kysymykseen #{number}: \"{question}\" vastauksella \"{answer}\". Ei enempää kysymyksiä"
+
+#: wikikysely_project/survey/views.py:782 wikikysely_project/survey/views.py:940 wikikysely_project/survey/views.py:1016
+msgid "Answered question #{number}: \"{question}\" with \"{answer}\""
+msgstr "Vastattu kysymykseen #{number}: \"{question}\" vastauksella \"{answer}\""
+
+#: wikikysely_project/survey/views.py:769 wikikysely_project/survey/views.py:1003
+msgid "Skipped question #{number}: \"{question}\". No more questions"
+msgstr "Ohitettu kysymys #{number}: \"{question}\". Ei enempää kysymyksiä"
+
+#: wikikysely_project/survey/views.py:792 wikikysely_project/survey/views.py:951 wikikysely_project/survey/views.py:1026
+msgid "Skipped question #{number}: \"{question}\""
+msgstr "Ohitettu kysymys #{number}: \"{question}\""
+
 #: wikikysely_project/survey/views.py:707
 #: wikikysely_project/survey/views.py:848
 msgid "Question skipped"

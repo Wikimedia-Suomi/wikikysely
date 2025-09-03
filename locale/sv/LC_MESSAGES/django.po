@@ -636,6 +636,22 @@ msgstr "Svar sparat. Inga fler frågor"
 msgid "Answer skipped. No more questions"
 msgstr "Svar hoppat över. Inga fler frågor"
 
+#: wikikysely_project/survey/views.py:758 wikikysely_project/survey/views.py:992
+msgid "Answered question #{number}: \"{question}\" with \"{answer}\". No more questions"
+msgstr "Svarade på fråga #{number}: \"{question}\" med \"{answer}\". Inga fler frågor"
+
+#: wikikysely_project/survey/views.py:782 wikikysely_project/survey/views.py:940 wikikysely_project/survey/views.py:1016
+msgid "Answered question #{number}: \"{question}\" with \"{answer}\""
+msgstr "Svarade på fråga #{number}: \"{question}\" med \"{answer}\""
+
+#: wikikysely_project/survey/views.py:769 wikikysely_project/survey/views.py:1003
+msgid "Skipped question #{number}: \"{question}\". No more questions"
+msgstr "Hoppade över fråga #{number}: \"{question}\". Inga fler frågor"
+
+#: wikikysely_project/survey/views.py:792 wikikysely_project/survey/views.py:951 wikikysely_project/survey/views.py:1026
+msgid "Skipped question #{number}: \"{question}\""
+msgstr "Hoppade över fråga #{number}: \"{question}\""
+
 #: wikikysely_project/survey/views.py:707
 #: wikikysely_project/survey/views.py:848
 msgid "Question skipped"
