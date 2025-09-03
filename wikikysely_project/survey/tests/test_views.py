@@ -163,7 +163,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_survey"), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("Answer skipped. No more questions", msgs)
+        expected = f'Skipped question #{q1.pk}: "{q1.text}". No more questions'
+        self.assertIn(expected, msgs)
         self.assertNotIn("Question skipped", msgs)
 
     def test_skip_last_question_no_skip_message_answer_question(self):
@@ -174,7 +175,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("Answer skipped. No more questions", msgs)
+        expected = f'Skipped question #{q1.pk}: "{q1.text}". No more questions'
+        self.assertIn(expected, msgs)
         self.assertNotIn("Question skipped", msgs)
 
     def test_answer_last_question_combined_message_answer_survey(self):
@@ -185,7 +187,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_survey"), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("Answer saved. No more questions", msgs)
+        expected = f'Answered question #{q1.pk}: "{q1.text}" with "Yes". No more questions'
+        self.assertIn(expected, msgs)
 
     def test_answer_last_question_combined_message_answer_question(self):
         survey = self._create_survey()
@@ -195,7 +198,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data, follow=True
         )
         msgs = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("Answer saved. No more questions", msgs)
+        expected = f'Answered question #{q1.pk}: "{q1.text}" with "Yes". No more questions'
+        self.assertIn(expected, msgs)
 
     def test_survey_edit(self):
         survey = self._create_survey()

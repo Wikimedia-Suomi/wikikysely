@@ -704,6 +704,7 @@ def answer_survey(request):
         if form.is_valid():
             answer_value = form.cleaned_data["answer"]
             skip_message = False
+            answered_question = question
             if answer_value:
                 Answer.objects.update_or_create(
                     user=request.user,
@@ -742,22 +743,54 @@ def answer_survey(request):
             if not answer_value:
                 remaining = remaining.exclude(id=question.pk)
             question = random.choice(list(remaining)) if remaining else None
+            answer_label = (
+                gettext("Yes") if answer_value == "yes" else gettext("No")
+                if answer_value else ""
+            )
             if not question:
                 if answer_value:
                     messages.success(
-                        request, _("Answer saved. No more questions")
+                        request,
+                        gettext(
+                            'Answered question #{number}: "{question}" with "{answer}". No more questions'
+                        ).format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                            answer=answer_label,
+                        ),
                     )
                 elif skip_message:
                     messages.info(
-                        request, _("Answer skipped. No more questions")
+                        request,
+                        gettext(
+                            'Skipped question #{number}: "{question}". No more questions'
+                        ).format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                        ),
                     )
                 else:
                     messages.info(request, _("No more questions"))
                 return redirect("survey:survey_detail")
             if answer_value:
-                messages.success(request, _("Answer saved"))
+                messages.success(
+                    request,
+                    gettext(
+                        'Answered question #{number}: "{question}" with "{answer}"'
+                    ).format(
+                        number=answered_question.pk,
+                        question=answered_question.text,
+                        answer=answer_label,
+                    ),
+                )
             if skip_message:
-                messages.info(request, _("Question skipped"))
+                messages.info(
+                    request,
+                    gettext('Skipped question #{number}: "{question}"').format(
+                        number=answered_question.pk,
+                        question=answered_question.text,
+                    ),
+                )
             form = AnswerForm(initial={"question_id": question.pk})
     else:
         answered_questions = Answer.objects.filter(
@@ -858,6 +891,7 @@ def answer_question(request, pk):
             if form.is_valid():
                 answer_value = form.cleaned_data["answer"]
                 skip_message = False
+                answered_question = question
                 if answer_value:
                     Answer.objects.update_or_create(
                         user=request.user,
@@ -888,14 +922,35 @@ def answer_question(request, pk):
                         }
                     )
 
+                answer_label = (
+                    gettext("Yes") if answer_value == "yes" else gettext("No")
+                    if answer_value else ""
+                )
+
                 if answer is not None and next_url:
                     from urllib.parse import urlparse
-                    print(next_url)
-
                     if urlparse(next_url).path != request.path:
-                        print("REDIRECT")
-                        if skip_message:
-                            messages.info(request, _("Question skipped"))
+                        if answer_value:
+                            messages.success(
+                                request,
+                                gettext(
+                                    'Answered question #{number}: "{question}" with "{answer}"'
+                                ).format(
+                                    number=answered_question.pk,
+                                    question=answered_question.text,
+                                    answer=answer_label,
+                                ),
+                            )
+                        elif skip_message:
+                            messages.info(
+                                request,
+                                gettext(
+                                    'Skipped question #{number}: "{question}"'
+                                ).format(
+                                    number=answered_question.pk,
+                                    question=answered_question.text,
+                                ),
+                            )
                         return redirect(next_url)
 
                 answered_questions = Answer.objects.filter(
@@ -929,19 +984,47 @@ def answer_question(request, pk):
                 if not question:
                     if answer_value:
                         messages.success(
-                            request, _("Answer saved. No more questions")
+                            request,
+                            gettext(
+                                'Answered question #{number}: "{question}" with "{answer}". No more questions'
+                            ).format(
+                                number=answered_question.pk,
+                                question=answered_question.text,
+                                answer=answer_label,
+                            ),
                         )
                     elif skip_message:
                         messages.info(
-                            request, _("Answer skipped. No more questions")
+                            request,
+                            gettext(
+                                'Skipped question #{number}: "{question}". No more questions'
+                            ).format(
+                                number=answered_question.pk,
+                                question=answered_question.text,
+                            ),
                         )
                     else:
                         messages.info(request, _("No more questions"))
                     return redirect("survey:survey_detail")
                 if answer_value:
-                    messages.success(request, _("Answer saved"))
+                    messages.success(
+                        request,
+                        gettext(
+                            'Answered question #{number}: "{question}" with "{answer}"'
+                        ).format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                            answer=answer_label,
+                        ),
+                    )
                 if skip_message:
-                    messages.info(request, _("Question skipped"))
+                    messages.info(
+                        request,
+                        gettext('Skipped question #{number}: "{question}"').format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                        ),
+                    )
                 answer = None
                 form = AnswerForm(initial={"question_id": question.pk})
             else:
