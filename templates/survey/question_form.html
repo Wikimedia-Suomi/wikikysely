@@ -2,10 +2,10 @@
 {% load i18n %}
 {% block title %}{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}{% endblock %}
 {% block content %}
-<h1>{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}</h1>
-  {% if login_message %}
+{% if login_message %}
   <div class="alert alert-info">{{ login_message|safe }}</div>
-  {% endif %}
+{% endif %}
+<h1>{% if is_edit %}{% translate 'Edit question' %}{% else %}{% translate 'Add question' %}{% endif %}</h1>
   {% if survey.state == 'paused' %}
   <div class="alert alert-info">{% translate 'Survey not active' %}</div>
   {% endif %}

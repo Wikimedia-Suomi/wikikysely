@@ -20,7 +20,7 @@ msgstr "Kysymykset"
 #: templates/survey/survey_detail.html:19
 #: templates/survey/survey_detail.html:28
 msgid "Answer survey"
-msgstr "Vastaa"
+msgstr "Vastaa kysymyksiin"
 
 #: templates/base.html:43 templates/survey/answer_form.html:102
 #: templates/survey/answer_form.html:113 templates/survey/answers.html:3
