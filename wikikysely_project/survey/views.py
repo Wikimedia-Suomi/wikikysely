@@ -433,7 +433,10 @@ def question_add(request):
                 question.survey = survey
                 question.creator = request.user
                 question.save()
-                messages.success(request, _("Question added"))
+                messages.success(
+                    request,
+                    _("Question added") + f": {question.text}",
+                )
                 return redirect("survey:survey_detail")
     else:
         form = QuestionForm()

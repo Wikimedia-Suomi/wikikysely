@@ -275,11 +275,15 @@ class SurveyFlowTests(TransactionTestCase):
     def test_add_question(self):
         survey = self._create_survey()
         data = {"text": "What do you think?"}
-        response = self.client.post(reverse("survey:question_add"), data)
+        response = self.client.post(
+            reverse("survey:question_add"), data, follow=True
+        )
         self.assertEqual(survey.questions.filter(visible=True).count(), 1)
         question = survey.questions.first()
         self.assertEqual(question.text, "What do you think?")
         self.assertRedirects(response, reverse("survey:survey_detail"))
+        msgs = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(f"Question added: {question.text}", msgs)
 
     def test_add_question_page_disabled_when_paused(self):
         survey = self._create_survey()
@@ -289,7 +293,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertContains(response, "Survey not active")
         self.assertContains(
             response,
-            '<button type="submit" class="btn btn-primary me-2" disabled>',
+            '<button type="submit" class="btn btn-primary me-2" disabled>Save</button>',
             html=True,
         )
 
@@ -774,7 +778,7 @@ class SurveyFlowTests(TransactionTestCase):
         SkippedQuestion.objects.create(user=self.user, question=q)
 
         response = self.client.post(reverse("survey:user_data_delete"), follow=True)
-        self.assertRedirects(response, reverse("survey:userinfo"))
+        self.assertRedirects(response, reverse("survey:survey_detail"))
         self.assertFalse(SkippedQuestion.objects.filter(user=self.user).exists())
         self.assertContains(response, "Removed data from skipped questions.")
 
