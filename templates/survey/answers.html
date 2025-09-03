@@ -46,8 +46,8 @@
     </td>
     <td class="w-100">
       <div class="progress" style="height: 1.25rem;">
-        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%">{{ row.yes }}</div>
-        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%">{{ row.no }}</div>
+        <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%" aria-valuenow="{{ row.yes }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.yes }}</div>
+        <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%" aria-valuenow="{{ row.no }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.no }}</div>
       </div>
     </td>
   </tr>
