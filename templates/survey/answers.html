@@ -20,7 +20,7 @@
 {% translate 'Red' as red_label %}
 {% translate 'Green' as green_label %}
 {% translate 'Grey' as grey_label %}
-<p>
+<p id="chartInfo">
   {% blocktrans trimmed with red=red_label green=green_label grey=grey_label yes=yes_label no=no_label %}
   <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers. <span id="unansweredInfo" style="display:none"><span class="bg-secondary px-1">{{ grey }}</span> shows the share of all respondents who have not yet answered the question.</span> <span id="pieSizeInfo" style="display:none">The size of the circle is proportional to the number of respondents.</span>
   {% endblocktrans %}
@@ -33,6 +33,10 @@
   <div class="form-check form-check-inline">
     <input class="form-check-input" type="radio" name="chartType" id="barChartRadio" value="bar">
     <label class="form-check-label" for="barChartRadio">{% translate 'Bar chart' %}</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="chartType" id="tableChartRadio" value="table">
+    <label class="form-check-label" for="tableChartRadio">{% translate 'Answer table' %}</label>
   </div>
 </div>
 <div class="table-responsive">
@@ -68,42 +72,44 @@
 </div>
 </div>
 <p class="mt-3">{% translate 'Total respondents' %}: {{ total_users }}</p>
-<h2>{% translate 'Answer table' %}</h2>
-<div class="table-responsive">
-<table id="answerTable" class="table stacked-table">
-<thead>
-<tr>
-  <th>{% translate 'ID' %}</th>
-  <th>{% translate 'Published' %}</th>
-  <th>{% translate 'Question' %}</th>
-  {% if request.user.is_authenticated %}
-  <th>{% translate 'My answer' %}</th>
-  {% endif %}
-  <th>{% translate 'Yes' %}</th>
-  <th>{% translate 'No' %}</th>
-  <th>{% translate 'Total' %}</th>
-  <th>{% translate 'Agree' %}</th>
-</tr>
-</thead>
-<tbody>
-{% for row in data %}
-<tr>
-  <td data-label="{% translate 'ID' %}">{{ row.question.pk }}</td>
-  <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
-  <td data-label="{% translate 'Question' %}">
-      <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
-  </td>
-  {% if request.user.is_authenticated %}
-  <td data-label="{% translate 'My answer' %}">{{ row.my_answer | default:""}}</td>
-  {% endif %}
-  <td data-label="{% translate 'Yes' %}">{{ row.yes }}</td>
-  <td data-label="{% translate 'No' %}">{{ row.no }}</td>
-  <td data-label="{% translate 'Total' %}">{{ row.total }}</td>
-  <td data-label="{% translate 'Agree' %}">{{ row.agree_ratio|floatformat:1 }}%</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<div id="answerTableContainer" style="display:none">
+  <h2>{% translate 'Answer table' %}</h2>
+  <div class="table-responsive">
+  <table id="answerTable" class="table stacked-table">
+  <thead>
+  <tr>
+    <th>{% translate 'ID' %}</th>
+    <th>{% translate 'Published' %}</th>
+    <th>{% translate 'Question' %}</th>
+    {% if request.user.is_authenticated %}
+    <th>{% translate 'My answer' %}</th>
+    {% endif %}
+    <th>{% translate 'Yes' %}</th>
+    <th>{% translate 'No' %}</th>
+    <th>{% translate 'Total' %}</th>
+    <th>{% translate 'Agree' %}</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for row in data %}
+  <tr>
+    <td data-label="{% translate 'ID' %}">{{ row.question.pk }}</td>
+    <td data-label="{% translate 'Published' %}">{{ row.published|date:"Y-m-d" }}</td>
+    <td data-label="{% translate 'Question' %}">
+        <a href="{% url 'survey:answer_question' row.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ row.question.text }}</a>
+    </td>
+    {% if request.user.is_authenticated %}
+    <td data-label="{% translate 'My answer' %}">{{ row.my_answer | default:""}}</td>
+    {% endif %}
+    <td data-label="{% translate 'Yes' %}">{{ row.yes }}</td>
+    <td data-label="{% translate 'No' %}">{{ row.no }}</td>
+    <td data-label="{% translate 'Total' %}">{{ row.total }}</td>
+    <td data-label="{% translate 'Agree' %}">{{ row.agree_ratio|floatformat:1 }}%</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+  </div>
 </div>
 <!--h2>{% translate 'Survey information' %}</h2>
 <dl class='survey-data'>
@@ -185,20 +191,33 @@ pieContainers.forEach(el => {
 function updateChartVisibility(type) {
     const barEl = document.getElementById('barChartTable');
     const pieEl = document.getElementById('pieChartsContainer');
+    const tableEl = document.getElementById('answerTableContainer');
+    const infoTextEl = document.getElementById('chartInfo');
     const greyInfoEl = document.getElementById('unansweredInfo');
     const pieSizeInfoEl = document.getElementById('pieSizeInfo');
     if (type === 'bar') {
         barEl.style.display = '';
         pieEl.style.display = 'none';
+        tableEl.style.display = 'none';
+        infoTextEl.style.display = '';
         greyInfoEl.style.display = '';
         pieSizeInfoEl.style.display = 'none';
-    } else {
+    } else if (type === 'pie') {
         barEl.style.display = 'none';
         pieEl.style.display = '';
+        tableEl.style.display = 'none';
+        infoTextEl.style.display = '';
         greyInfoEl.style.display = 'none';
         pieSizeInfoEl.style.display = '';
+    } else {
+        barEl.style.display = 'none';
+        pieEl.style.display = 'none';
+        tableEl.style.display = '';
+        infoTextEl.style.display = 'none';
+        greyInfoEl.style.display = 'none';
+        pieSizeInfoEl.style.display = 'none';
     }
-}
+ }
 
 const chartTypeKey = 'resultsChartType';
 let savedType = localStorage.getItem(chartTypeKey) || 'pie';
