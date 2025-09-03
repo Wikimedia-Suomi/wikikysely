@@ -1,3 +1,13 @@
+/* Improve link color contrast for accessibility */
+:root {
+  --bs-link-color: #0b7285;
+  --bs-link-hover-color: #095c65;
+}
+[data-bs-theme="dark"] {
+  --bs-link-color: #4dabf7;
+  --bs-link-hover-color: #339af0;
+}
+
 body {
   padding-bottom: 60px;
 }
