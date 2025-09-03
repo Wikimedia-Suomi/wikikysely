@@ -508,6 +508,13 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(data["survey"]["title"], survey.title)
         self.assertEqual(len(data["data"]), 1)
 
+    def test_answers_wikitext_has_question_links(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        response = self.client.get(reverse("survey:survey_answers_wikitext"))
+        expected = f"[https://wikikysely.toolforge.org/fi/question/{question.pk} {question.text}]"
+        self.assertContains(response, expected)
+
     def test_answer_saved_to_correct_question_and_user(self):
         survey = self._create_survey()
         questions = self._create_questions(survey, 10)
