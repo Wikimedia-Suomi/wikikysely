@@ -159,47 +159,41 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         q1 = self._create_question(survey)
         data = {"question_id": q1.pk, "answer": ""}
-        response = self.client.post(
-            reverse("survey:answer_survey"), data, follow=True
-        )
-        msgs = [m.message for m in get_messages(response.wsgi_request)]
-        expected = f'Skipped question #{q1.pk}: "{q1.text}". No more questions'
-        self.assertIn(expected, msgs)
-        self.assertNotIn("Question skipped", msgs)
+        response = self.client.post(reverse("survey:answer_survey"), data)
+        self.assertTemplateUsed(response, "survey/completion.html")
+        self.assertContains(response, "Kiitos vastaamisesta")
+        self.assertContains(response, "Palaa ohitettuihin kysymyksiin")
 
     def test_skip_last_question_no_skip_message_answer_question(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)
         data = {"question_id": q1.pk, "answer": ""}
         response = self.client.post(
-            reverse("survey:answer_question", args=[q1.pk]), data, follow=True
+            reverse("survey:answer_question", args=[q1.pk]), data
         )
-        msgs = [m.message for m in get_messages(response.wsgi_request)]
-        expected = f'Skipped question #{q1.pk}: "{q1.text}". No more questions'
-        self.assertIn(expected, msgs)
-        self.assertNotIn("Question skipped", msgs)
+        self.assertTemplateUsed(response, "survey/completion.html")
+        self.assertContains(response, "Kiitos vastaamisesta")
+        self.assertContains(response, "Palaa ohitettuihin kysymyksiin")
 
     def test_answer_last_question_combined_message_answer_survey(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)
         data = {"question_id": q1.pk, "answer": "yes"}
-        response = self.client.post(
-            reverse("survey:answer_survey"), data, follow=True
-        )
-        msgs = [m.message for m in get_messages(response.wsgi_request)]
-        expected = f'Answered question #{q1.pk}: "{q1.text}" with "Yes". No more questions'
-        self.assertIn(expected, msgs)
+        response = self.client.post(reverse("survey:answer_survey"), data)
+        self.assertTemplateUsed(response, "survey/completion.html")
+        self.assertContains(response, "Kiitos vastaamisesta")
+        self.assertNotContains(response, "Palaa ohitettuihin kysymyksiin")
 
     def test_answer_last_question_combined_message_answer_question(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)
         data = {"question_id": q1.pk, "answer": "yes"}
         response = self.client.post(
-            reverse("survey:answer_question", args=[q1.pk]), data, follow=True
+            reverse("survey:answer_question", args=[q1.pk]), data
         )
-        msgs = [m.message for m in get_messages(response.wsgi_request)]
-        expected = f'Answered question #{q1.pk}: "{q1.text}" with "Yes". No more questions'
-        self.assertIn(expected, msgs)
+        self.assertTemplateUsed(response, "survey/completion.html")
+        self.assertContains(response, "Kiitos vastaamisesta")
+        self.assertNotContains(response, "Palaa ohitettuihin kysymyksiin")
 
     def test_survey_edit(self):
         survey = self._create_survey()
