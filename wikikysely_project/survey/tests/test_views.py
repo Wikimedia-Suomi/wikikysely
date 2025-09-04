@@ -131,7 +131,7 @@ class SurveyFlowTests(TransactionTestCase):
             self.assertEqual(
                 SkippedQuestion.objects.filter(user=self.user).count(), 0
             )
-            self.assertEqual(response.context["question"], q1)
+            self.assertTemplateUsed(response, "survey/completion.html")
 
     def test_skipping_all_questions_via_answer_question(self):
         survey = self._create_survey()
@@ -161,8 +161,8 @@ class SurveyFlowTests(TransactionTestCase):
         data = {"question_id": q1.pk, "answer": ""}
         response = self.client.post(reverse("survey:answer_survey"), data)
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Kiitos vastaamisesta")
-        self.assertContains(response, "Palaa ohitettuihin kysymyksiin")
+        self.assertContains(response, "Thank you for answering")
+        self.assertContains(response, "Return to skipped questions")
 
     def test_skip_last_question_no_skip_message_answer_question(self):
         survey = self._create_survey()
@@ -172,8 +172,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data
         )
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Kiitos vastaamisesta")
-        self.assertContains(response, "Palaa ohitettuihin kysymyksiin")
+        self.assertContains(response, "Thank you for answering")
+        self.assertContains(response, "Return to skipped questions")
 
     def test_answer_last_question_combined_message_answer_survey(self):
         survey = self._create_survey()
@@ -181,8 +181,8 @@ class SurveyFlowTests(TransactionTestCase):
         data = {"question_id": q1.pk, "answer": "yes"}
         response = self.client.post(reverse("survey:answer_survey"), data)
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Kiitos vastaamisesta")
-        self.assertNotContains(response, "Palaa ohitettuihin kysymyksiin")
+        self.assertContains(response, "Thank you for answering")
+        self.assertNotContains(response, "Return to skipped questions")
 
     def test_answer_last_question_combined_message_answer_question(self):
         survey = self._create_survey()
@@ -192,8 +192,8 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data
         )
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Kiitos vastaamisesta")
-        self.assertNotContains(response, "Palaa ohitettuihin kysymyksiin")
+        self.assertContains(response, "Thank you for answering")
+        self.assertNotContains(response, "Return to skipped questions")
 
     def test_survey_edit(self):
         survey = self._create_survey()
