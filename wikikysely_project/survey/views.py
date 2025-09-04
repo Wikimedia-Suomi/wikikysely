@@ -737,11 +737,16 @@ def answer_survey(request):
                 .exclude(id__in=skipped_questions)
             )
             if not remaining:
+                has_skipped = SkippedQuestion.objects.filter(
+                    user=request.user, question__survey=survey
+                ).exists()
                 SkippedQuestion.objects.filter(
                     user=request.user, question__survey=survey
                 ).delete()
-                remaining = survey.questions.filter(visible=True).exclude(
-                    id__in=answered_questions
+                return render(
+                    request,
+                    "survey/completion.html",
+                    {"survey": survey, "has_skipped": has_skipped},
                 )
             if not answer_value:
                 remaining = remaining.exclude(id=question.pk)
@@ -750,31 +755,6 @@ def answer_survey(request):
                 gettext("Yes") if answer_value == "yes" else gettext("No")
                 if answer_value else ""
             )
-            if not question:
-                if answer_value:
-                    messages.success(
-                        request,
-                        gettext(
-                            'Answered question #{number}: "{question}" with "{answer}". No more questions'
-                        ).format(
-                            number=answered_question.pk,
-                            question=answered_question.text,
-                            answer=answer_label,
-                        ),
-                    )
-                elif skip_message:
-                    messages.info(
-                        request,
-                        gettext(
-                            'Skipped question #{number}: "{question}". No more questions'
-                        ).format(
-                            number=answered_question.pk,
-                            question=answered_question.text,
-                        ),
-                    )
-                else:
-                    messages.info(request, _("No more questions"))
-                return redirect("survey:survey_detail")
             if answer_value:
                 messages.success(
                     request,
@@ -794,6 +774,13 @@ def answer_survey(request):
                         question=answered_question.text,
                     ),
                 )
+            if not question:
+                has_skipped = False
+                return render(
+                    request,
+                    "survey/completion.html",
+                    {"survey": survey, "has_skipped": has_skipped},
+                )
             form = AnswerForm(initial={"question_id": question.pk})
     else:
         answered_questions = Answer.objects.filter(
@@ -810,16 +797,22 @@ def answer_survey(request):
             .exclude(id__in=skipped_questions)
         )
         if not remaining:
+            has_skipped = SkippedQuestion.objects.filter(
+                user=request.user, question__survey=survey
+            ).exists()
             SkippedQuestion.objects.filter(
                 user=request.user, question__survey=survey
             ).delete()
             remaining = survey.questions.filter(visible=True).exclude(
                 id__in=answered_questions
             )
+            if not remaining:
+                return render(
+                    request,
+                    "survey/completion.html",
+                    {"survey": survey, "has_skipped": has_skipped},
+                )
         question = random.choice(list(remaining)) if remaining else None
-        if not question:
-            messages.info(request, _("No more questions"))
-            return redirect("survey:survey_detail")
         form = AnswerForm(initial={"question_id": question.pk})
 
     user_answers = get_user_answers(request.user, survey)
@@ -973,6 +966,9 @@ def answer_question(request, pk):
                 )
 
                 if not question:
+                    has_skipped = SkippedQuestion.objects.filter(
+                        user=request.user, question__survey=survey
+                    ).exists()
                     SkippedQuestion.objects.filter(
                         user=request.user, question__survey=survey
                     ).delete()
@@ -983,32 +979,12 @@ def answer_question(request, pk):
                         .order_by('?')
                         .first()
                     )
-
-                if not question:
-                    if answer_value:
-                        messages.success(
+                    if not question:
+                        return render(
                             request,
-                            gettext(
-                                'Answered question #{number}: "{question}" with "{answer}". No more questions'
-                            ).format(
-                                number=answered_question.pk,
-                                question=answered_question.text,
-                                answer=answer_label,
-                            ),
+                            "survey/completion.html",
+                            {"survey": survey, "has_skipped": has_skipped},
                         )
-                    elif skip_message:
-                        messages.info(
-                            request,
-                            gettext(
-                                'Skipped question #{number}: "{question}". No more questions'
-                            ).format(
-                                number=answered_question.pk,
-                                question=answered_question.text,
-                            ),
-                        )
-                    else:
-                        messages.info(request, _("No more questions"))
-                    return redirect("survey:survey_detail")
                 if answer_value:
                     messages.success(
                         request,
