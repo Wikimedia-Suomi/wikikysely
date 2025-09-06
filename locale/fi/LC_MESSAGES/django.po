@@ -733,19 +733,23 @@ msgstr "Markdown: **bold**, *italic*, [link](https://...), rivinvaihdot -> <br>"
 msgid "Thank you for answering"
 msgstr "Kiitos vastaamisesta"
 
-#: templates/survey/completion.html:6
+#: templates/survey/completion.html:7
 msgid "Thank you for answering, you have now seen all the questions!"
 msgstr "Kiitos vastaamisesta, olet nyt nähnyt kaikki kysymykset!"
 
 #: templates/survey/completion.html:9
+msgid "Thank you for answering, you have now answered all the questions!"
+msgstr "Kiitos vastaamisesta, olet nyt vastannut kaikkiin kysymyksiin!"
+
+#: templates/survey/completion.html:13
 msgid "Answers are knowledge that produces benefit only when used. Participate in Wikipedia and Wikimedia <a href=\"https://fi.wikipedia.org/wiki/Keskustelu_wikiprojektista:Wikikysely_2025\">discussions</a> and in Wikimedia Finland's decision-making and bring out your interpretation of the common good. Now you can base your opinion and refer to measured information about the community's opinions. You may cite as a source: Wikikysely 2025, question no. #1, date DD.MM.YYYY time HH.MM https://wikikysely.toolforge.org/fi/answers/"
 msgstr "Vastaukset ovat tietoa joka tuottaa hyötyä vasta käytettäessä. Osallistu Wikipedian ja Wikimedian <a href=\"https://fi.wikipedia.org/wiki/Keskustelu_wikiprojektista:Wikikysely_2025\">keskusteluihin</a> ja Wikimedia Suomen päätöksentekoon ja tuo esiin oma tulkintasi yhteisestä hyvästä. Nyt voit perustaa mielipiteesi ja viitata mitattuun tietoon yhteisön mielipiteistä. Lähteeksi voit ilmoittaa: Wikikysely 2025, kysymys nro #1,  päivämäärä DD.MM.YYYY kello HH.MM  https://wikikysely.toolforge.org/fi/answers/"
 
-#: templates/survey/completion.html:12
+#: templates/survey/completion.html:16
 msgid "View all answers"
 msgstr "Katso kaikkien vastaukset"
 
-#: templates/survey/completion.html:14
+#: templates/survey/completion.html:18
 msgid "Return to skipped questions"
 msgstr "Palaa ohitettuihin kysymyksiin"
 

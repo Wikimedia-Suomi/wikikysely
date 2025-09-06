@@ -3,7 +3,11 @@
 {% block title %}{% translate 'Thank you for answering' %}{% endblock %}
 {% block content %}
 <div class="alert alert-info">
-{% translate 'Thank you for answering, you have now seen all the questions!' %}
+  {% if has_skipped %}
+    {% translate 'Thank you for answering, you have now seen all the questions!' %}
+  {% else %}
+    {% translate 'Thank you for answering, you have now answered all the questions!' %}
+  {% endif %}
 </div>
 <p>
 {% blocktranslate trimmed %}Answers are knowledge that produces benefit only when used. Participate in Wikipedia and Wikimedia <a href="https://fi.wikipedia.org/wiki/Keskustelu_wikiprojektista:Wikikysely_2025">discussions</a> and in Wikimedia Finland's decision-making and bring out your interpretation of the common good. Now you can base your opinion and refer to measured information about the community's opinions. You may cite as a source: Wikikysely 2025, question no. #1, date DD.MM.YYYY time HH.MM https://wikikysely.toolforge.org/fi/answers/{% endblocktranslate %}

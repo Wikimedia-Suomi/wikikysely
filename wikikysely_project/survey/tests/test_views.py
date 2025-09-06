@@ -161,7 +161,10 @@ class SurveyFlowTests(TransactionTestCase):
         data = {"question_id": q1.pk, "answer": ""}
         response = self.client.post(reverse("survey:answer_survey"), data)
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Thank you for answering")
+        self.assertContains(
+            response,
+            "Thank you for answering, you have now seen all the questions!",
+        )
         self.assertContains(response, "Return to skipped questions")
 
     def test_skip_last_question_no_skip_message_answer_question(self):
@@ -172,7 +175,10 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data
         )
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Thank you for answering")
+        self.assertContains(
+            response,
+            "Thank you for answering, you have now seen all the questions!",
+        )
         self.assertContains(response, "Return to skipped questions")
 
     def test_answer_last_question_combined_message_answer_survey(self):
@@ -181,7 +187,10 @@ class SurveyFlowTests(TransactionTestCase):
         data = {"question_id": q1.pk, "answer": "yes"}
         response = self.client.post(reverse("survey:answer_survey"), data)
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Thank you for answering")
+        self.assertContains(
+            response,
+            "Thank you for answering, you have now answered all the questions!",
+        )
         self.assertNotContains(response, "Return to skipped questions")
 
     def test_answer_last_question_combined_message_answer_question(self):
@@ -192,7 +201,10 @@ class SurveyFlowTests(TransactionTestCase):
             reverse("survey:answer_question", args=[q1.pk]), data
         )
         self.assertTemplateUsed(response, "survey/completion.html")
-        self.assertContains(response, "Thank you for answering")
+        self.assertContains(
+            response,
+            "Thank you for answering, you have now answered all the questions!",
+        )
         self.assertNotContains(response, "Return to skipped questions")
 
     def test_survey_edit(self):
