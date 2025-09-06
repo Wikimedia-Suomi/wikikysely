@@ -738,9 +738,14 @@ msgstr "Tack för att du svarade, du har nu besvarat frågorna, förutom de du h
 msgid "Thank you for answering, you have now answered all the questions!"
 msgstr "Tack för att du svarade, du har nu besvarat alla frågor!"
 
-#: templates/survey/completion.html:13
-msgid "Answers are knowledge that produces benefit only when used. Participate in Wikipedia and Wikimedia <a href=\"https://fi.wikipedia.org/wiki/Keskustelu_wikiprojektista:Wikikysely_2025\">discussions</a> and in Wikimedia Finland's decision-making and bring out your interpretation of the common good. Now you can base your opinion and refer to measured information about the community's opinions. You may cite as a source: Wikikysely 2025, question no. #1, date DD.MM.YYYY time HH.MM https://wikikysely.toolforge.org/fi/answers/"
-msgstr "Svar är kunskap som ger nytta först när den används. Delta i Wikipedia och Wikimedias <a href=\"https://fi.wikipedia.org/wiki/Keskustelu_wikiprojektista:Wikikysely_2025\">diskussioner</a> och i Wikimedia Finlands beslutsfattande och lyft fram din tolkning av det gemensamma bästa. Nu kan du grunda din åsikt och hänvisa till uppmätt information om gemenskapens åsikter. Som källa kan du ange: Wikikysely 2025, fråga nr #1, datum DD.MM.YYYY klockan HH.MM https://wikikysely.toolforge.org/fi/answers/"
+#: templates/survey/completion.html:14
+#: templates/survey/completion.html:14
+msgid "Answers are knowledge that produces benefit only when used. Participate in discussions on Wikipedia and Wikimedia and in Wikimedia Finland's decision-making and bring out your interpretation of the common good. Now you can base your opinion and refer to measured information about the community's opinions."
+msgstr "Svar är kunskap som ger nytta först när den används. Delta i Wikipedia- och Wikimedia-diskussioner och i Wikimedia Finlands beslutsfattande och lyft fram din tolkning av det gemensamma bästa. Nu kan du grunda din åsikt och hänvisa till uppmätt information om gemenskapens åsikter."
+
+#: templates/survey/completion.html:17
+msgid "You may cite as a source: Wikikysely 2025, question number #1, %(date)s https://wikikysely.toolforge.org/%(language_code)s/answers/"
+msgstr "Som källa kan du ange: Wikikysely 2025, fråga nummer #1, %(date)s https://wikikysely.toolforge.org/%(language_code)s/answers/"
 
 #: templates/survey/completion.html:16
 msgid "View all answers"
