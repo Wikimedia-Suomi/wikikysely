@@ -1,4 +1,5 @@
 from django.contrib import admin
+from parler.admin import TranslatableAdmin
 from .models import Survey, Question, Answer
 
 
@@ -7,7 +8,7 @@ class QuestionInline(admin.TabularInline):
     extra = 0
 
 
-class SurveyAdmin(admin.ModelAdmin):
+class SurveyAdmin(TranslatableAdmin):
     inlines = [QuestionInline]
     list_display = ('title', 'state', 'deleted')
     list_filter = ('state', 'deleted')
