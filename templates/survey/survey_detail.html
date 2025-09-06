@@ -19,7 +19,7 @@
       <a href="{% url 'survey:answer_survey' %}" id="answer-survey-btn" class="btn btn-primary  me-2"{% if not unanswered_questions %} style="display:none"{% endif %}>{% translate 'Answer survey' %}</a>
     {% endif %}
     {% if questions %}
-      <a href="{% url 'survey:survey_answers' %}" id="answers-btn" class="btn btn-info  me-2"{% if survey.state == 'running' and unanswered_questions %} style="display:none"{% endif %}>{% translate 'Answers' %}</a>
+      <a href="{% url 'survey:survey_answers' %}" id="answers-btn" class="btn btn-info  me-2"{% if survey.state == 'running' and unanswered_questions %} style="display:none"{% endif %}>{% translate 'View all answers' %}</a>
     {% endif %}
     {% if survey.state == 'running' %}
     <a href="{% url 'survey:question_add' %}" class="btn btn-secondary">{% translate 'Add question' %}</a>
