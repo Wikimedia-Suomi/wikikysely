@@ -153,7 +153,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(
             SkippedQuestion.objects.filter(user=self.user).count(), 0
         )
-        self.assertEqual(response.context["question"], q1)
+        self.assertTemplateUsed(response, "survey/completion.html")
 
     def test_skip_last_question_no_skip_message_answer_survey(self):
         survey = self._create_survey()
