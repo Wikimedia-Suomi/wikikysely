@@ -5,9 +5,6 @@
 <div class="alert alert-info">
   {% if has_skipped %}
     {% translate 'Thank you for answering, you have now seen all the questions!' %}
-    <a href="{% url 'survey:answer_survey' %}" class="btn btn-secondary btn-sm ms-3">
-      {% translate 'Return to skipped questions' %}
-    </a>
   {% else %}
     {% translate 'Thank you for answering, you have now answered all the questions!' %}
   {% endif %}
@@ -17,6 +14,9 @@
 </p>
 <div class="mt-3">
   <a href="{% url 'survey:survey_answers' %}" class="btn btn-primary mb-2">{% translate 'View all answers' %}</a>
+  {% if has_skipped %}
+  <a href="{% url 'survey:answer_survey' %}" class="btn btn-secondary mb-2">{% translate 'Return to skipped questions' %}</a>
+  {% endif %}
   <a href="{% url 'survey:question_add' %}" class="btn btn-secondary mb-2">{% translate 'Add question' %}</a>
 </div>
 {% endblock %}
