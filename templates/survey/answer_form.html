@@ -45,8 +45,9 @@
 {% endif %}
   </div>
   {% if show_skip_help %}
-  {% blocktrans trimmed asvar skip_help_message %}
-  If the question was poorly worded, you can <a href='http://127.0.0.1:8000/fi/survey/question/add/'>add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
+  {% url 'survey:question_add' as question_add_url %}
+  {% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
+  If the question was poorly worded, you can <a href="{{ question_add_url }}">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
   {% endblocktrans %}
   <div class="card-footer"><p class="fst-italic mb-0">{{ skip_help_message|safe }}</p></div>
   {% endif %}

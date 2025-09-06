@@ -790,6 +790,6 @@ msgstr "Palaa ohitettuihin kysymyksiin"
 
 #~ msgid "Submit"
 #~ msgstr "Lähetä"
-#: templates/survey/answer_form.html:49
-msgid "If the question was poorly worded, you can <a href='http://127.0.0.1:8000/fi/survey/question/add/'>add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data."
-msgstr "Jos kysymys oli huonosti muotoiltu, niin voit <a href='http://127.0.0.1:8000/fi/survey/question/add/'>lisätä</a> samasta aiheesta vain vähänkin poikkeavan uuden kysymyksen. Eri näkökulmat samoihin aiheisiin auttavat tekemään perustellumpia tulkintoja vastausaineistosta."
+#: templates/survey/answer_form.html:50
+msgid "If the question was poorly worded, you can <a href=\"%(question_add_url)s\">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data."
+msgstr "Jos kysymys oli huonosti muotoiltu, niin voit <a href=\"%(question_add_url)s\">lisätä</a> samasta aiheesta vain vähänkin poikkeavan uuden kysymyksen. Eri näkökulmat samoihin aiheisiin auttavat tekemään perustellumpia tulkintoja vastausaineistosta."
