@@ -187,3 +187,9 @@ body {
   content: " \25BC"; /* Up arrow when expanded */
   font-size:0.75em;
 }
+
+.skip-help-container {
+  text-align:center; 
+  margin:auto; 
+  max-width:65rem;'
+}
