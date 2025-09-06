@@ -1,6 +1,7 @@
 from django import forms
-from .models import Survey, Question, Answer
 from django.utils.translation import gettext_lazy as _
+from parler.forms import TranslatableModelForm
+from .models import Survey, Question, Answer
 
 
 class BootstrapMixin:
@@ -16,7 +17,7 @@ class BootstrapMixin:
                 field.widget.attrs["class"] = f"{classes} form-control".strip()
 
 
-class SurveyForm(BootstrapMixin, forms.ModelForm):
+class SurveyForm(BootstrapMixin, TranslatableModelForm):
     class Meta:
         model = Survey
         fields = ['title', 'description', 'state']

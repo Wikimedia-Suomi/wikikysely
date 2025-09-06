@@ -29,6 +29,8 @@ class Command(BaseCommand):
                 survey = Survey.objects.create(
                     title=_('Main Survey'),
                     description='',
+                    title_old=_('Main Survey'),
+                    description_old='',
                     creator=users[0],
                     state='running',
                 )

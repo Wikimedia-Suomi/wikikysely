@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'parler',
     'wikikysely_project.survey',
 ]
 
@@ -80,6 +81,18 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [BASE_DIR / 'locale']
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'fi'},
+        {'code': 'sv'},
+        {'code': 'en'},
+    ),
+    'default': {
+        'fallbacks': ['fi'],
+        'hide_untranslated': False,
+    }
+}
 
 TIME_ZONE = 'UTC'
 
