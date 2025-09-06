@@ -972,19 +972,11 @@ def answer_question(request, pk):
                     SkippedQuestion.objects.filter(
                         user=request.user, question__survey=survey
                     ).delete()
-                    question = (
-                        survey.questions.filter(visible=True)
-                        .exclude(id__in=answered_questions)
-                        .exclude(id=current_question_pk)
-                        .order_by('?')
-                        .first()
+                    return render(
+                        request,
+                        "survey/completion.html",
+                        {"survey": survey, "has_skipped": has_skipped},
                     )
-                    if not question:
-                        return render(
-                            request,
-                            "survey/completion.html",
-                            {"survey": survey, "has_skipped": has_skipped},
-                        )
                 if answer_value:
                     messages.success(
                         request,
