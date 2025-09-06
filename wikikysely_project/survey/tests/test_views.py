@@ -163,7 +163,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertTemplateUsed(response, "survey/completion.html")
         self.assertContains(
             response,
-            "Thank you for answering, you have now seen all the questions!",
+            "Thank you for answering, you have now answered the questions, except those you skipped!",
         )
         self.assertContains(response, "Return to skipped questions")
 
@@ -177,7 +177,7 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertTemplateUsed(response, "survey/completion.html")
         self.assertContains(
             response,
-            "Thank you for answering, you have now seen all the questions!",
+            "Thank you for answering, you have now answered the questions, except those you skipped!",
         )
         self.assertContains(response, "Return to skipped questions")
 
