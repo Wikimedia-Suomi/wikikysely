@@ -793,3 +793,6 @@ msgstr "Återvänd till överhoppade frågor"
 
 #~ msgid "Submit"
 #~ msgstr "Skicka"
+#: templates/survey/answer_form.html:49
+msgid "If the question was poorly worded, you can <a href='http://127.0.0.1:8000/fi/survey/question/add/'>add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data."
+msgstr "Om frågan var dåligt formulerad kan du <a href='http://127.0.0.1:8000/fi/survey/question/add/'>lägga till</a> en ny fråga om samma ämne även om den bara skiljer sig lite. Olika perspektiv på samma ämnen hjälper till att göra mer välgrundade tolkningar av svarsmaterialet."

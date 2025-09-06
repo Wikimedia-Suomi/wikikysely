@@ -866,6 +866,7 @@ def answer_question(request, pk):
     answer = None
     can_delete_question = False
     next_url = request.GET.get("next") or request.POST.get("next")
+    show_skip_help = False
 
     if not request.user.is_authenticated:
         login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
@@ -902,6 +903,7 @@ def answer_question(request, pk):
                         user=request.user, question=question
                     )
                     skip_message = True
+                    show_skip_help = True
 
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     yes_count = question.answers.filter(answer="yes").count()
@@ -1043,6 +1045,7 @@ def answer_question(request, pk):
             "no_label": no_label,
             "no_answers_label": no_answers_label,
             "next": next_url,
+            "show_skip_help": show_skip_help,
         },
     )
 
