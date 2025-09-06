@@ -731,8 +731,8 @@ msgid "Thank you for answering"
 msgstr "Tack för att du svarade"
 
 #: templates/survey/completion.html:7
-msgid "Thank you for answering, you have now seen all the questions!"
-msgstr "Tack för att du svarade, du har nu sett alla frågor!"
+msgid "Thank you for answering, you have now answered the questions, except those you skipped!"
+msgstr "Tack för att du svarade, du har nu besvarat frågorna, förutom de du hoppade över!"
 
 #: templates/survey/completion.html:9
 msgid "Thank you for answering, you have now answered all the questions!"
