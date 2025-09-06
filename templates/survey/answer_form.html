@@ -44,14 +44,15 @@
 </form>
 {% endif %}
   </div>
-  {% if show_skip_help %}
+</div>
+{% if show_skip_help %}
   {% url 'survey:question_add' as question_add_url %}
   {% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
   If the question was poorly worded, you can <a href="{{ question_add_url }}">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
   {% endblocktrans %}
   <div class="card-footer"><p class="fst-italic mb-0">{{ skip_help_message|safe }}</p></div>
-  {% endif %}
-</div>
+{% endif %}
+
 {% if question_stats %}
   <h2 class="mt-4">
     <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
