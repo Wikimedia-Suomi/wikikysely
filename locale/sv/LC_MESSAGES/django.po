@@ -796,3 +796,7 @@ msgstr "Återvänd till överhoppade frågor"
 #: templates/survey/answer_form.html:50
 msgid "If the question was poorly worded, you can <a href=\"%(question_add_url)s\">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data."
 msgstr "Om frågan var dåligt formulerad kan du <a href=\"%(question_add_url)s\">lägga till</a> en ny fråga om samma ämne även om den bara skiljer sig lite. Olika perspektiv på samma ämnen hjälper till att göra mer välgrundade tolkningar av svarsmaterialet."
+
+#: templates/survey/answer_form.html:55
+msgid "Tip:"
+msgstr "Tips:"
