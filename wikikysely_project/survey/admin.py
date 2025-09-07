@@ -1,9 +1,9 @@
 from django.contrib import admin
-from parler.admin import TranslatableAdmin
+from parler.admin import TranslatableAdmin, TranslatableTabularInline
 from .models import Survey, Question, Answer
 
 
-class QuestionInline(admin.TabularInline):
+class QuestionInline(TranslatableTabularInline):
     model = Question
     extra = 0
 
@@ -15,5 +15,11 @@ class SurveyAdmin(TranslatableAdmin):
 
 
 admin.site.register(Survey, SurveyAdmin)
-admin.site.register(Question)
+
+
+class QuestionAdmin(TranslatableAdmin):
+    list_display = ("text", "survey", "visible")
+
+
+admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer)

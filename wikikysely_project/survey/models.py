@@ -42,17 +42,20 @@ class Survey(TranslatableModel):
         return self.safe_translation_getter('title') or self.title_old
 
 
-class Question(models.Model):
+class Question(TranslatableModel):
     survey = models.ForeignKey(
         Survey, related_name="questions", on_delete=models.PROTECT
     )
-    text = models.CharField(max_length=500)
+    text_old = models.CharField(max_length=500, blank=True)
+    translations = TranslatedFields(
+        text=models.CharField(max_length=500),
+    )
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     visible = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.text
+        return self.safe_translation_getter('text') or self.text_old
 
 
 class Answer(models.Model):
