@@ -32,7 +32,7 @@ class SecretaryAddForm(BootstrapMixin, forms.Form):
     username = forms.CharField(label=_('Username'))
 
 
-class QuestionForm(BootstrapMixin, forms.ModelForm):
+class QuestionForm(BootstrapMixin, TranslatableModelForm):
     class Meta:
         model = Question
         fields = ['text']
