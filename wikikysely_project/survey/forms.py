@@ -1,5 +1,6 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _, get_language
 from parler.forms import TranslatableModelForm
 from .models import Survey, Question, Answer
 
@@ -33,6 +34,26 @@ class SecretaryAddForm(BootstrapMixin, forms.Form):
 
 
 class QuestionForm(BootstrapMixin, TranslatableModelForm):
+    language = forms.ChoiceField(
+        choices=settings.LANGUAGES, label=_('Language')
+    )
+
+    def __init__(self, *args, **kwargs):
+        data = args[0] if args else kwargs.get('data')
+        lang = (data.get('language') if data else None) or get_language()
+        instance = kwargs.get('instance')
+        if instance:
+            instance.set_current_language(lang)
+        kwargs['_current_language'] = lang
+        super().__init__(*args, **kwargs)
+        self.fields['language'].initial = lang
+
+    def save(self, commit=True):
+        lang = self.cleaned_data['language']
+        self.instance.set_current_language(lang)
+        self.language_code = lang
+        return super().save(commit=commit)
+
     class Meta:
         model = Question
         fields = ['text']
