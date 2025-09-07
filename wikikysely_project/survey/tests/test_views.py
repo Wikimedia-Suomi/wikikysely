@@ -280,7 +280,7 @@ class SurveyFlowTests(TransactionTestCase):
 
     def test_add_question(self):
         survey = self._create_survey()
-        data = {"text": "What do you think?"}
+        data = {"text": "What do you think?", "language": "en"}
         response = self.client.post(
             reverse("survey:question_add"), data, follow=True
         )
@@ -351,7 +351,7 @@ class SurveyFlowTests(TransactionTestCase):
     def test_edit_question(self):
         survey = self._create_survey()
         question = self._create_question(survey)
-        data = {"text": "Updated question?"}
+        data = {"text": "Updated question?", "language": "en"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
             data,
@@ -364,7 +364,7 @@ class SurveyFlowTests(TransactionTestCase):
         survey = self._create_survey()
         question = self._create_question(survey)
         Answer.objects.create(question=question, user=self.user, answer="yes")
-        data = {"text": "Updated question?"}
+        data = {"text": "Updated question?", "language": "en"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
             data,
@@ -382,7 +382,7 @@ class SurveyFlowTests(TransactionTestCase):
             survey=survey, text="Original?", creator=self.user
         )
         Answer.objects.create(question=question, user=other_user, answer="yes")
-        data = {"text": "Updated?"}
+        data = {"text": "Updated?", "language": "en"}
         response = self.client.post(
             reverse("survey:question_edit", kwargs={"pk": question.pk}),
             data,
