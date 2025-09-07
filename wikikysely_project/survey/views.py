@@ -407,7 +407,10 @@ def question_add(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"].strip()
-            existing = survey.questions.filter(text__iexact=text, visible=True).first()
+            existing = (
+                survey.questions.filter(translations__text__iexact=text, visible=True)
+                .first()
+            )
             if existing:
                 yes_count = existing.answers.filter(answer="yes").count()
                 no_count = existing.answers.filter(answer="no").count()
@@ -625,7 +628,7 @@ def question_edit(request, pk):
         if form.is_valid():
             text = form.cleaned_data["text"].strip()
             existing = (
-                survey.questions.filter(text__iexact=text, visible=True)
+                survey.questions.filter(translations__text__iexact=text, visible=True)
                 .exclude(pk=question.pk)
                 .first()
             )
