@@ -136,19 +136,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.dataset.questionId = data.question_id;
 
-            const tdTitle = document.createElement('td');
-            tdTitle.dataset.label = data.title_label;
-            const titleLink = document.createElement('a');
-            const nextParam = encodeURIComponent(window.location.pathname + window.location.search);
-            titleLink.href = `${data.question_url}?next=${nextParam}`;
-            titleLink.textContent = data.question_text;
-            tdTitle.appendChild(titleLink);
-            tr.appendChild(tdTitle);
+              const tdIdDesktop = document.createElement('td');
+              tdIdDesktop.className = 'id-cell d-none d-md-table-cell';
+              tdIdDesktop.textContent = data.question_id;
+              tr.appendChild(tdIdDesktop);
 
-            const tdId = document.createElement('td');
-            tdId.dataset.label = data.id_label;
-            tdId.textContent = data.question_id;
-            tr.appendChild(tdId);
+              const tdTitle = document.createElement('td');
+              tdTitle.dataset.label = data.title_label;
+              const titleLink = document.createElement('a');
+              const nextParam = encodeURIComponent(window.location.pathname + window.location.search);
+              titleLink.href = `${data.question_url}?next=${nextParam}`;
+              titleLink.textContent = data.question_text;
+              tdTitle.appendChild(titleLink);
+              tr.appendChild(tdTitle);
+
+              const tdIdMobile = document.createElement('td');
+              tdIdMobile.className = 'id-cell d-md-none';
+              tdIdMobile.dataset.label = data.id_label;
+              tdIdMobile.textContent = data.question_id;
+              tr.appendChild(tdIdMobile);
 
             const tdTotal = document.createElement('td');
             tdTotal.className = 'total-answers';
