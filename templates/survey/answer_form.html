@@ -31,7 +31,9 @@
     {% if is_edit %}
       {% if survey.state == 'running' %}
       <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-danger me-2 d-none d-md-inline-block" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="link-danger d-md-none me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}"
+         class="btn btn-sm btn-secondary d-block w-100 mx-auto mb-2 d-md-none"
+         data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
       <a href="{% url 'survey:question_delete' question.pk %}?next={{ next|urlencode }}" class="btn btn-danger">{% translate 'Remove question' %}</a>
