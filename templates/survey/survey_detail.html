@@ -96,8 +96,8 @@
             <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
             <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
           </div>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer">{% translate 'Remove answer' %}</a>
         </form>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer">{% translate 'Remove answer' %}</a>
         {% endif %}
       </td>
     </tr>
