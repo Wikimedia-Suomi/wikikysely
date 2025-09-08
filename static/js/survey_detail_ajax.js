@@ -39,6 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function updateSelectColor(select) {
+    select.classList.remove('bg-success', 'bg-danger', 'text-white');
+    if (select.value === 'yes') {
+      select.classList.add('bg-success', 'text-white');
+    } else if (select.value === 'no') {
+      select.classList.add('bg-danger', 'text-white');
+    }
+  }
+
   const initialNavCount = document.getElementById('unanswered-count');
   if (initialNavCount) {
     const initialCount = parseInt(initialNavCount.textContent, 10) || 0;
@@ -66,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('form.ajax-answer-form').forEach(form => {
     form.addEventListener('change', event => {
       if (event.target.name !== 'answer') return;
+      if (event.target.value === 'remove') {
+        const delLink = form.querySelector('a.ajax-delete-answer');
+        if (delLink) delLink.click();
+        return;
+      }
       const formData = new FormData(form);
       fetch(form.action, {
         method: 'POST',
@@ -89,9 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (totalCell) totalCell.textContent = data.total;
           if (ratioCell) ratioCell.textContent = `${formatPercentage(data.agree_ratio)}%`;
         }
+        updateSelectColor(event.target);
       }).catch(() => window.location.reload());
     });
   });
+
+  document.querySelectorAll('select.answer-select').forEach(updateSelectColor);
 
   function attachDeleteAnswer(link) {
     link.addEventListener('click', ev => {

@@ -75,7 +75,6 @@
     <th>{% translate 'Answer' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
-    <th></th>
   </tr>
   </thead>
   <tbody>
@@ -90,24 +89,18 @@
         <form method="post" action="{% url 'survey:answer_edit' a.pk %}" class="ajax-answer-form">
           {% csrf_token %}
           <input type="hidden" name="question_id" value="{{ a.question.pk }}">
-          <div class="btn-group yes-no-group" role="group" aria-label="{% translate 'Answer' %}">
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-yes" value="yes"{% if a.answer == 'yes' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-success" for="answer-{{ a.pk }}-yes">{% translate 'Yes' %}</label>
-            <input type="radio" class="btn-check" name="answer" id="answer-{{ a.pk }}-no" value="no"{% if a.answer == 'no' %} checked{% endif %}>
-            <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
-          </div>
+          <select name="answer" class="form-select form-select-sm answer-select">
+            <option value="yes"{% if a.answer == 'yes' %} selected{% endif %}>{% translate 'Yes' %}</option>
+            <option value="no"{% if a.answer == 'no' %} selected{% endif %}>{% translate 'No' %}</option>
+            <option value="remove">{% translate 'Remove answer' %}</option>
+          </select>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="ajax-delete-answer d-none">{% translate 'Remove answer' %}</a>
         </form>
         {% endif %}
       </td>
       <td data-label="{% translate 'ID' %}" class="id-cell d-md-none">{{ a.question.pk }}</td>
       <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
       <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
-      <td class="text-center text-md-end actions" data-label="">
-        {% if a.question.survey.state == 'running' %}
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ajax-delete-answer d-none d-md-inline-block">{% translate 'Remove answer' %}</a>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-outline-secondary ajax-delete-answer d-md-none w-100 mx-auto">{% translate 'Remove answer' %}</a>
-        {% endif %}
-      </td>
     </tr>
   {% endfor %}
   </tbody>
