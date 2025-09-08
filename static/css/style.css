@@ -149,7 +149,6 @@ body {
     display: inline;
   }
   .card-table td.question-cell {
-    font-weight: bold;
   }
   .card-table  td.answer-cell::before,
   .card-table  td.actions::before,
