@@ -30,7 +30,7 @@
     </div>
     {% if is_edit %}
       {% if survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-outline-secondary btn-sm ajax-delete-answer remove-answer-btn me-md-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
       <a href="{% url 'survey:question_delete' question.pk %}?next={{ next|urlencode }}" class="btn btn-danger">{% translate 'Remove question' %}</a>
