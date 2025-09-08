@@ -121,6 +121,71 @@ body {
   }
 }
 
+/* Mobile card layout for question lists */
+.card-table td.question-cell .mobile-id {
+  display: none;
+}
+@media (max-width: 800px) {
+  .card-table thead {
+    display: none;
+  }
+  .card-table,
+  .card-table tbody,
+  .card-table tr,
+  .card-table td {
+    display: block;
+    width: 100%;
+  }
+  .card-table tr {
+    border: 1px solid var(--bs-table-border-color, #dee2e6);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-table td {
+    border: none;
+    padding: 0;
+    margin-bottom: 0.5rem;
+  }
+  .card-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+  .card-table td.id-cell {
+    display: none;
+  }
+  .card-table td.question-cell {
+    font-weight: bold;
+  }
+  .card-table td.question-cell::before {
+    content: '';
+  }
+  .card-table td.question-cell .mobile-id {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  .card-table td.actions {
+    text-align: left;
+  }
+  .card-table td.actions::before {
+    content: '';
+  }
+  .card-table td.actions .btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+  .card-table td.actions .btn-group.yes-no-group {
+    width: 100%;
+  }
+  .card-table td.actions .btn-group.yes-no-group .btn {
+    width: 50%;
+    margin-right: 0;
+  }
+}
+
 .mobile-sort {
   display: none;
 }
