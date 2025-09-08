@@ -30,7 +30,8 @@
     </div>
     {% if is_edit %}
       {% if survey.state == 'running' %}
-      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-danger me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="btn btn-danger me-2 d-none d-md-inline-block" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
+      <a href="{% url 'survey:answer_delete' form.instance.pk %}?next={{ next|urlencode }}" class="link-danger d-md-none me-2" data-question-id="{{ question.pk }}">{% translate 'Remove answer' %}</a>
       {% endif %}
       {% if can_delete_question %}
       <a href="{% url 'survey:question_delete' question.pk %}?next={{ next|urlencode }}" class="btn btn-danger">{% translate 'Remove question' %}</a>
@@ -137,7 +138,8 @@
               <label class="btn btn-sm btn-outline-danger" for="answer-{{ a.pk }}-no">{% translate 'No' %}</label>
             </div>
           </form>
-          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ms-2 d-none d-md-inline-block ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
+          <a href="{% url 'survey:answer_delete' a.pk %}" class="link-danger ms-2 d-md-none ajax-delete-answer" data-question-id="{{ a.question.pk }}" data-no-reload="true">{% translate 'Remove answer' %}</a>
           {% endif %}
         </td>
       </tr>
