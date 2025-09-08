@@ -122,9 +122,6 @@ body {
 }
 
 /* Mobile card layout for question lists */
-.card-table td.question-cell .mobile-id {
-  display: none;
-}
 @media (max-width: 800px) {
   .card-table thead {
     display: none;
@@ -153,18 +150,11 @@ body {
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-  .card-table td.id-cell {
-    display: none;
-  }
   .card-table td.question-cell {
     font-weight: bold;
   }
   .card-table td.question-cell::before {
     content: '';
-  }
-  .card-table td.question-cell .mobile-id {
-    display: inline;
-    margin-right: 0.5rem;
   }
   .card-table td.actions {
     text-align: left;
@@ -177,10 +167,10 @@ body {
     width: 100%;
     margin-top: 0.25rem;
   }
-  .card-table td.actions .btn-group.yes-no-group {
+  .card-table td.answer-cell .btn-group.yes-no-group {
     width: 100%;
   }
-  .card-table td.actions .btn-group.yes-no-group .btn {
+  .card-table td.answer-cell .btn-group.yes-no-group .btn {
     width: 50%;
     margin-right: 0;
   }
