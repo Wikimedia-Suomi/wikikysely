@@ -37,8 +37,8 @@
       <table id="unanswered-table" class="table mb-3 survey-detail-table card-table"{% if not unanswered_questions %} style="display:none"{% endif %}>
         <thead>
       <tr>
-        <th>{% translate 'Title' %}</th>
         <th>{% translate 'ID' %}</th>
+        <th>{% translate 'Title' %}</th>
         <th>{% translate 'Answers' %}</th>
         <th>{% translate 'Agree' %}</th>
         <th></th>
@@ -47,8 +47,9 @@
       <tbody>
       {% for q in unanswered_questions %}
         <tr>
+        <td class="id-cell d-none d-md-table-cell">{{ q.pk }}</td>
         <td data-label="{% translate 'Title' %}" class="question-cell"><a href="{% url 'survey:answer_question' q.pk %}?next={{ request.get_full_path|urlencode }}">{{ q.text }}</a></td>
-        <td data-label="{% translate 'ID' %}" class="id-cell">{{ q.pk }}</td>
+        <td data-label="{% translate 'ID' %}" class="id-cell d-md-none">{{ q.pk }}</td>
         <td class="total-answers" data-label="{% translate 'Answers' %}">{{ q.total_answers }}</td>
         <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ q.agree_ratio|floatformat:1 }}%</td>
         <td class="text-end actions" data-label="">
@@ -69,9 +70,9 @@
 <table class="table mb-3 survey-detail-table card-table">
   <thead>
   <tr>
+    <th>{% translate 'ID' %}</th>
     <th>{% translate 'Title' %}</th>
     <th>{% translate 'Answer' %}</th>
-    <th>{% translate 'ID' %}</th>
     <th>{% translate 'Answers' %}</th>
     <th>{% translate 'Agree' %}</th>
     <th></th>
@@ -80,6 +81,7 @@
   <tbody>
   {% for a in user_answers %}
     <tr>
+      <td class="id-cell d-none d-md-table-cell">{{ a.question.pk }}</td>
       <td data-label="{% translate 'Title' %}" class="question-cell">
         <a href="{% url 'survey:answer_question' a.question.pk %}?next={{ request.get_full_path|urlencode }}">{{ a.question.text }}</a>
       </td>
@@ -97,7 +99,7 @@
         </form>
         {% endif %}
       </td>
-      <td data-label="{% translate 'ID' %}" class="id-cell">{{ a.question.pk }}</td>
+      <td data-label="{% translate 'ID' %}" class="id-cell d-md-none">{{ a.question.pk }}</td>
       <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
       <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
       <td class="text-end actions" data-label="">
@@ -116,7 +118,7 @@
 <script src="{% static 'js/sort_tables.js' %}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    initSortableTables(".survey-detail-table", 0);
+    initSortableTables(".survey-detail-table", 1);
 });
 </script>
 <script src="{% static 'js/survey_detail_ajax.js' %}"></script>
