@@ -102,9 +102,10 @@
       <td data-label="{% translate 'ID' %}" class="id-cell d-md-none">{{ a.question.pk }}</td>
       <td class="total-answers" data-label="{% translate 'Answers' %}">{{ a.total_answers }}</td>
       <td class="agree-ratio" data-label="{% translate 'Agree' %}">{{ a.agree_ratio|floatformat:1 }}%</td>
-      <td class="text-end actions" data-label="">
+      <td class="text-center text-md-end actions" data-label="">
         {% if a.question.survey.state == 'running' %}
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ajax-delete-answer">{% translate 'Remove answer' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ajax-delete-answer d-none d-md-inline-block">{% translate 'Remove answer' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-secondary ajax-delete-answer d-md-none w-100 mx-auto">{% translate 'Remove answer' %}</a>
         {% endif %}
       </td>
     </tr>
