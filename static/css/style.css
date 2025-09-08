@@ -108,16 +108,41 @@ body {
   }
   .stacked-table tr {
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--bs-table-border-color, #dee2e6);
+    border: 1px solid var(--bs-table-border-color, #dee2e6);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
   }
   .stacked-table td {
-    display: flex !important;
-    justify-content: space-between;
+    display: block !important;
+    margin-top: 0.25rem;
   }
-  .stacked-table td::before {
-    content: attr(data-label);
+  .stacked-table td[data-label="ID"],
+  .stacked-table td[data-label="Title"] {
+    display: inline;
+    width: auto !important;
+    margin-top: 0;
+  }
+  .stacked-table td[data-label="Title"] {
+    margin-left: 0.5rem;
+  }
+  .stacked-table td[data-label="ID"]::before,
+  .stacked-table td[data-label="Title"]::before {
+    content: "";
+  }
+  .stacked-table td[data-label="Answers"]::before,
+  .stacked-table td[data-label="Agree"]::before {
+    content: attr(data-label) ": ";
     font-weight: bold;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
+  }
+  .stacked-table td:last-child {
+    margin-top: 0.5rem;
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .stacked-table td:last-child::before {
+    content: "";
   }
 }
 
