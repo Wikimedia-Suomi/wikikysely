@@ -69,10 +69,13 @@ Unit tests use Django's built-in test runner. After installing the dependencies
 and setting up the virtual environment, run:
 
 ```bash
+python manage.py makemigrations
+python manage.py migrate
 DJANGO_DEV_SERVER=1 python manage.py test -v 2
 ```
 
-The command will create a temporary database and execute the test suite.
+The migration commands ensure the test database is up to date before executing
+the suite. The final command will create a temporary database and execute all tests.
 
 ## Resetting the local environment
 
