@@ -136,16 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.dataset.questionId = data.question_id;
 
-            const tdId = document.createElement('td');
-            tdId.dataset.label = data.id_label;
-            tdId.textContent = data.question_id;
-            tr.appendChild(tdId);
-
-            const tdPublished = document.createElement('td');
-            tdPublished.dataset.label = data.published_label;
-            tdPublished.textContent = data.question_published;
-            tr.appendChild(tdPublished);
-
             const tdTitle = document.createElement('td');
             tdTitle.dataset.label = data.title_label;
             const titleLink = document.createElement('a');
@@ -154,6 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
             titleLink.textContent = data.question_text;
             tdTitle.appendChild(titleLink);
             tr.appendChild(tdTitle);
+
+            const tdId = document.createElement('td');
+            tdId.dataset.label = data.id_label;
+            tdId.textContent = data.question_id;
+            tr.appendChild(tdId);
 
             const tdTotal = document.createElement('td');
             tdTotal.className = 'total-answers';
