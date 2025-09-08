@@ -105,7 +105,7 @@
       <td class="text-center text-md-end actions" data-label="">
         {% if a.question.survey.state == 'running' %}
         <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-danger ajax-delete-answer d-none d-md-inline-block">{% translate 'Remove answer' %}</a>
-        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-secondary ajax-delete-answer d-md-none w-100 mx-auto">{% translate 'Remove answer' %}</a>
+        <a href="{% url 'survey:answer_delete' a.pk %}" class="btn btn-sm btn-outline-secondary ajax-delete-answer d-md-none w-100 mx-auto">{% translate 'Remove answer' %}</a>
         {% endif %}
       </td>
     </tr>
