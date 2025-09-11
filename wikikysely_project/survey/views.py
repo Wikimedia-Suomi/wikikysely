@@ -907,11 +907,31 @@ def answer_question(request, pk):
                     skip_message = True
                     show_skip_help = True
 
+                answer_label = (
+                    gettext("Yes") if answer_value == "yes" else gettext("No")
+                    if answer_value else ""
+                )
+
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     yes_count = question.answers.filter(answer="yes").count()
                     no_count = question.answers.filter(answer="no").count()
                     total = yes_count + no_count
                     ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
+                    answered_ids = Answer.objects.filter(
+                        user=request.user, question__survey=survey
+                    ).values_list("question_id", flat=True)
+                    unanswered_count = survey.questions.filter(visible=True).exclude(
+                        id__in=answered_ids
+                    ).count()
+                    message = (
+                        gettext(
+                            'Answered question #{number}: "{question}" with "{answer}"'
+                        ).format(number=question.pk, question=question.text, answer=answer_label)
+                        if answer_value
+                        else gettext('Skipped question #{number}: "{question}"').format(
+                            number=question.pk, question=question.text
+                        )
+                    )
                     return JsonResponse(
                         {
                             "success": True,
@@ -919,13 +939,10 @@ def answer_question(request, pk):
                             "total": total,
                             "agree_ratio": ratio,
                             "question_id": question.pk,
+                            "unanswered_count": unanswered_count,
+                            "message": message,
                         }
                     )
-
-                answer_label = (
-                    gettext("Yes") if answer_value == "yes" else gettext("No")
-                    if answer_value else ""
-                )
 
                 if answer is not None and next_url:
                     from urllib.parse import urlparse

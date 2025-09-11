@@ -6,8 +6,9 @@
 <div class="card mx-auto mb-4" style="max-width: 40rem;">
   <div id="answerbox" class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
+    <div id="ajax-message"></div>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
+<form id="answer-question-form" method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
   {% csrf_token %}
   {% if next %}
   <input type="hidden" name="next" value="{{ next }}">
@@ -95,10 +96,10 @@
       <tr>
         <td data-label="{% translate 'ID' %}">{{ question.pk }}</td>
         <td data-label="{% translate 'Published' %}">{{ question_stats.published|date:"Y-m-d" }}</td>
-        <td data-label="{% translate 'Yes' %}">{{ question_stats.yes }}</td>
-        <td data-label="{% translate 'No' %}">{{ question_stats.no }}</td>
-        <td data-label="{% translate 'Total' %}">{{ question_stats.total }}</td>
-        <td data-label="{% translate 'Agree' %}">{{ question_stats.agree_ratio|floatformat:1 }}%</td>
+        <td id="yes-count" data-label="{% translate 'Yes' %}">{{ question_stats.yes }}</td>
+        <td id="no-count" data-label="{% translate 'No' %}">{{ question_stats.no }}</td>
+        <td id="total-count" data-label="{% translate 'Total' %}">{{ question_stats.total }}</td>
+        <td id="agree-ratio" data-label="{% translate 'Agree' %}">{{ question_stats.agree_ratio|floatformat:1 }}%</td>
       </tr>
     </tbody>
   </table>
@@ -248,4 +249,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script src="{% static 'js/survey_detail_ajax.js' %}"></script>
+<script src="{% static 'js/answer_form_ajax.js' %}"></script>
 {% endblock %}
