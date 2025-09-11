@@ -867,6 +867,7 @@ def answer_question(request, pk):
     can_delete_question = False
     next_url = request.GET.get("next") or request.POST.get("next")
     show_skip_help = False
+    show_thanks_message = False
 
     if not request.user.is_authenticated:
         login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
@@ -898,6 +899,7 @@ def answer_question(request, pk):
                     SkippedQuestion.objects.filter(
                         user=request.user, question=question
                     ).delete()
+                    show_thanks_message = True
                 else:
                     SkippedQuestion.objects.get_or_create(
                         user=request.user, question=question
@@ -1046,6 +1048,7 @@ def answer_question(request, pk):
             "no_answers_label": no_answers_label,
             "next": next_url,
             "show_skip_help": show_skip_help,
+            "show_thanks_message": show_thanks_message,
         },
     )
 

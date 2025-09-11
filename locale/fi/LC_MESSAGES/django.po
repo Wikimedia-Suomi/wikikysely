@@ -801,3 +801,7 @@ msgstr "Jos kysymys oli huonosti muotoiltu, niin voit <a href=\"%(question_add_u
 #: templates/survey/answer_form.html:55
 msgid "Tip:"
 msgstr "Vinkki:"
+
+#: templates/survey/answer_form.html:62
+msgid "Thank you in advance for each of your answers. You can stop whenever you like, as questions are shown in random order."
+msgstr "Kiitos jo etukäteen jokaisesta vastauksestasi. Voit lopettaa kun siltä tuntuu, sillä kysymyksiä näytetään satunnaisessa järjestyksessä."
