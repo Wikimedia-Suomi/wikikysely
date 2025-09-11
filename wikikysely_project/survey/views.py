@@ -317,6 +317,59 @@ def questions_json(request):
 
 
 @login_required
+def unanswered_questions_json(request):
+    """Return unanswered and unskipped questions for the current user."""
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return JsonResponse({"questions": []})
+
+    answered_ids = Answer.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+    skipped_ids = SkippedQuestion.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+
+    questions = survey.questions.filter(visible=True).exclude(
+        id__in=answered_ids
+    ).exclude(id__in=skipped_ids)
+
+    data = [{"id": q.id, "text": q.text} for q in questions]
+    return JsonResponse({"questions": data})
+
+
+@login_required
+def answer_ajax(request):
+    """Store an answer or mark a question as skipped via AJAX."""
+    if request.method != "POST":
+        return JsonResponse({"success": False}, status=405)
+
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return JsonResponse({"success": False})
+
+    question = get_object_or_404(
+        Question,
+        pk=request.POST.get("question_id"),
+        survey=survey,
+        visible=True,
+    )
+    answer_value = request.POST.get("answer")
+
+    if answer_value in ["yes", "no"]:
+        Answer.objects.update_or_create(
+            user=request.user,
+            question=question,
+            defaults={"answer": answer_value},
+        )
+        SkippedQuestion.objects.filter(user=request.user, question=question).delete()
+    else:
+        SkippedQuestion.objects.get_or_create(user=request.user, question=question)
+
+    return JsonResponse({"success": True})
+
+
+@login_required
 def survey_create(request):
     """Create a new survey when none exists."""
     if Survey.objects.filter(deleted=False).exists():
@@ -844,6 +897,9 @@ def answer_survey(request):
             "yes_label": yes_label,
             "no_label": no_label,
             "no_answers_label": no_answers_label,
+            "questions_url": reverse("survey:unanswered_questions_json"),
+            "submit_url": reverse("survey:answer_ajax"),
+            "use_ajax_navigation": True,
         },
     )
 
