@@ -5,7 +5,7 @@
 {% block content %}
 <div class="card mx-auto mb-4" style="max-width: 40rem;">
   <div id="answerbox" class="card-body text-center">
-    <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
+    <h2 id="question-text" class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
     <div id="ajax-message"></div>
 {% if request.user.is_authenticated %}
 <form id="answer-question-form" method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center">
@@ -24,9 +24,9 @@
   <div class="answer-buttons mb-2" role="group" aria-label="{% translate 'Answer' %}">
 
     <div class="btn-group yes-no-group me-2" role="group">
-      <button type="submit" name="answer" value="yes"
+      <button id="btn-yes" type="submit" name="answer" value="yes"
               class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'yes' %}btn-success{% else %}btn-outline-success{% endif %}{% else %}btn-success{% endif %}">{% translate 'Yes' %}</button>
-      <button type="submit" name="answer" value="no"
+      <button id="btn-no" type="submit" name="answer" value="no"
               class="btn {% if form.answer.value and is_edit %}{% if form.answer.value == 'no' %}btn-danger{% else %}btn-outline-danger{% endif %}{% else %}btn-danger{% endif %}">{% translate 'No' %}</button>
     </div>
     {% if is_edit %}
@@ -37,7 +37,7 @@
       <a href="{% url 'survey:question_delete' question.pk %}?next={{ next|urlencode }}" class="btn btn-danger">{% translate 'Remove question' %}</a>
       {% endif %}
     {% else %}
-      <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
+      <button id="btn-skip" type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
     {% endif %}
 
   </div>
@@ -65,6 +65,7 @@
   </div>
 {% endif %}
 
+{% if not use_ajax_navigation %}
 {% if question_stats %}
   <h2 class="mt-4">
     <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#answerDetails" role="button" aria-expanded="false" aria-controls="answerDetails">{% translate 'Answer details' %}</a>
@@ -153,6 +154,7 @@
   </table>
   </div>
   </div>
+{% endif %}
 {% endif %}
 {% endif %}
 {% endblock %}
@@ -249,5 +251,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script src="{% static 'js/survey_detail_ajax.js' %}"></script>
+{% if use_ajax_navigation %}
+<script>
+const unansweredQuestionsUrl = "{{ questions_url }}";
+const answerSubmitUrl = "{{ submit_url }}";
+</script>
+<script src="{% static 'js/answer_survey_ajax.js' %}"></script>
+{% else %}
 <script src="{% static 'js/answer_form_ajax.js' %}"></script>
+{% endif %}
 {% endblock %}

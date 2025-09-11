@@ -6,6 +6,12 @@ app_name = "survey"
 urlpatterns = [
     path("", views.survey_detail, name="survey_detail"),
     path("questions.json", views.questions_json, name="questions_json"),
+    path(
+        "unanswered_questions.json",
+        views.unanswered_questions_json,
+        name="unanswered_questions_json",
+    ),
+    path("answer_ajax/", views.answer_ajax, name="answer_ajax"),
     path("survey/create/", views.survey_create, name="survey_create"),
     path("register/", views.register, name="register"),
     path("survey/edit/", views.survey_edit, name="survey_edit"),
