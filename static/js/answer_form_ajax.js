@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const msgBox = document.getElementById('ajax-message');
       if (msgBox) {
-        msgBox.className = 'alert alert-success mt-2';
+        const alertType = data.skipped ? 'alert-info' : 'alert-success';
+        msgBox.className = `alert ${alertType} mt-2`;
         msgBox.textContent = data.message || '';
       }
     }).catch(() => window.location.reload());
