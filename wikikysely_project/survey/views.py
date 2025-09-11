@@ -997,6 +997,7 @@ def answer_question(request, pk):
                             "question_id": question.pk,
                             "unanswered_count": unanswered_count,
                             "message": message,
+                            "skipped": not bool(answer_value),
                         }
                     )
 
