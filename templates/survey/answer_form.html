@@ -67,24 +67,21 @@
   </div>
 </div>
 {% endfor %}
-{% if show_skip_help %}
-  {% url 'survey:question_add' as question_add_url %}
-  {% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
-  If the question was poorly worded, you can <a href="{{ question_add_url }}">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
-  {% endblocktrans %}
-  <div class="card-footer skip-help-container">
-    <p class="fst-italic mb-0">
-      <span class="skip-help-label">{% translate 'Tip:' %}</span>
-      <span class="skip-help-text">{{ skip_help_message|safe }}</span>
-    </p>
-  </div>
-{% elif show_thanks_message %}
-  <div class="card-footer skip-help-container">
-    <p class="fst-italic mb-0">
-      <span class="skip-help-text">{% translate "Thank you in advance for each of your answers. You can stop whenever you like, as questions are shown in random order." %}</span>
-    </p>
-  </div>
-{% endif %}
+{% url 'survey:question_add' as question_add_url %}
+{% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
+If the question was poorly worded, you can <a href="{{ question_add_url }}">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
+{% endblocktrans %}
+<div id="skip-help-message" class="card-footer skip-help-container"{% if not show_skip_help %} style="display:none"{% endif %}>
+  <p class="fst-italic mb-0">
+    <span class="skip-help-label">{% translate 'Tip:' %}</span>
+    <span class="skip-help-text">{{ skip_help_message|safe }}</span>
+  </p>
+</div>
+<div id="thanks-message" class="card-footer skip-help-container"{% if not show_thanks_message %} style="display:none"{% endif %}>
+  <p class="fst-italic mb-0">
+    <span class="skip-help-text">{% translate "Thank you in advance for each of your answers. You can stop whenever you like, as questions are shown in random order." %}</span>
+  </p>
+</div>
 
 {% if question_stats %}
   <h2 class="mt-4">

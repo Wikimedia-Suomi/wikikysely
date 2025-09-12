@@ -245,6 +245,17 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.message) {
             showAlert(data.message, data.message_type || 'info');
           }
+          if (!isEdit) {
+            const skipHelp = document.getElementById('skip-help-message');
+            const thanksMsg = document.getElementById('thanks-message');
+            if (answerValue === '') {
+              if (skipHelp) skipHelp.style.display = '';
+              if (thanksMsg) thanksMsg.style.display = 'none';
+            } else if (answerValue === 'yes' || answerValue === 'no') {
+              if (skipHelp) skipHelp.style.display = 'none';
+              if (thanksMsg) thanksMsg.style.display = '';
+            }
+          }
           if (answerValue === 'yes' || answerValue === 'no') {
           const tbody = document.getElementById('my-answers-body');
         if (tbody) {
