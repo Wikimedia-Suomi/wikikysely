@@ -732,6 +732,30 @@ class SurveyFlowTests(TransactionTestCase):
         data = json.loads(response.content)
         self.assertEqual(data["unanswered_count"], 1)
 
+    def test_answer_ajax_includes_message(self):
+        survey = self._create_survey()
+        q1, q2 = self._create_questions(survey, count=2)
+
+        response = self.client.post(
+            reverse("survey:answer_ajax"),
+            {"question_id": q1.pk, "answer": "yes"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertIn("Answered question", data["message"])
+        self.assertFalse(data["skipped"])
+        self.assertEqual(data["unanswered_count"], 1)
+
+        response = self.client.post(
+            reverse("survey:answer_ajax"),
+            {"question_id": q2.pk},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        data = json.loads(response.content)
+        self.assertIn("Skipped question", data["message"])
+        self.assertTrue(data["skipped"])
+
     def test_delete_answer_without_next_redirects_to_detail(self):
         survey = self._create_survey()
         q = self._create_question(survey)
