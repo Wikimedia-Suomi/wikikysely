@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  document.querySelectorAll('form.ajax-answer-form').forEach(form => {
+  function attachAnswerForm(form) {
     form.addEventListener('change', event => {
       if (event.target.name !== 'answer') return;
       const formData = new FormData(form);
@@ -91,7 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }).catch(() => window.location.reload());
     });
-  });
+  }
+
+  document.querySelectorAll('form.ajax-answer-form').forEach(attachAnswerForm);
 
   function attachDeleteAnswer(link) {
     link.addEventListener('click', ev => {
@@ -207,8 +209,12 @@ document.addEventListener('DOMContentLoaded', () => {
       form.addEventListener('submit', ev => {
         ev.preventDefault();
         const formData = new FormData(form);
+        let answerValue = '';
         if (ev.submitter && ev.submitter.name) {
           formData.append(ev.submitter.name, ev.submitter.value);
+          if (ev.submitter.name === 'answer') {
+            answerValue = ev.submitter.value;
+          }
         }
         fetch(form.action, {
           method: 'POST',
@@ -221,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data || !data.success) { window.location.reload(); return; }
         const qid = data.question_id;
         document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
+        if (answerValue === 'yes' || answerValue === 'no') {
         const tbody = document.getElementById('my-answers-body');
         if (tbody) {
           const tr = document.createElement('tr');
@@ -256,6 +263,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const tdActions = document.createElement('td');
           tdActions.className = 'text-end';
+          if (data.edit_url && data.delete_url && data.answer_id) {
+            const editForm = document.createElement('form');
+            editForm.method = 'post';
+            editForm.action = data.edit_url;
+            editForm.className = 'd-inline ajax-answer-form';
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = getCookie('csrftoken') || '';
+            editForm.appendChild(csrfInput);
+            const qInput = document.createElement('input');
+            qInput.type = 'hidden';
+            qInput.name = 'question_id';
+            qInput.value = qid;
+            editForm.appendChild(qInput);
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'btn-group yes-no-group';
+            btnGroup.role = 'group';
+            btnGroup.setAttribute('aria-label', answerLabel);
+            const yesInput = document.createElement('input');
+            yesInput.type = 'radio';
+            yesInput.className = 'btn-check';
+            yesInput.name = 'answer';
+            yesInput.id = `answer-${data.answer_id}-yes`;
+            yesInput.value = 'yes';
+            if (answerValue === 'yes') yesInput.checked = true;
+            const yesLabelEl = document.createElement('label');
+            yesLabelEl.className = 'btn btn-sm btn-outline-success';
+            yesLabelEl.setAttribute('for', `answer-${data.answer_id}-yes`);
+            yesLabelEl.textContent = yesLabel;
+            const noInput = document.createElement('input');
+            noInput.type = 'radio';
+            noInput.className = 'btn-check';
+            noInput.name = 'answer';
+            noInput.id = `answer-${data.answer_id}-no`;
+            noInput.value = 'no';
+            if (answerValue === 'no') noInput.checked = true;
+            const noLabelEl = document.createElement('label');
+            noLabelEl.className = 'btn btn-sm btn-outline-danger';
+            noLabelEl.setAttribute('for', `answer-${data.answer_id}-no`);
+            noLabelEl.textContent = noLabel;
+            btnGroup.appendChild(yesInput);
+            btnGroup.appendChild(yesLabelEl);
+            btnGroup.appendChild(noInput);
+            btnGroup.appendChild(noLabelEl);
+            editForm.appendChild(btnGroup);
+            tdActions.appendChild(editForm);
+            attachAnswerForm(editForm);
+            const delLink = document.createElement('a');
+            delLink.href = data.delete_url;
+            delLink.className = 'btn btn-sm btn-danger ms-2 ajax-delete-answer';
+            delLink.dataset.questionId = qid;
+            delLink.dataset.noReload = 'true';
+            delLink.textContent = removeAnswerLabel;
+            tdActions.appendChild(delLink);
+            attachDeleteAnswer(delLink);
+          }
           tr.appendChild(tdActions);
 
           tbody.prepend(tr);
@@ -291,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const placeholder = tbody.querySelector('.no-answers-placeholder');
           if (placeholder) placeholder.remove();
+        }
         }
         const countEl = document.getElementById('unanswered-count');
         if (countEl) {

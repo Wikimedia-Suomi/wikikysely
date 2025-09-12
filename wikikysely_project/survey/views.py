@@ -902,7 +902,7 @@ def answer_question(request, pk):
                 skip_message = False
                 answered_question = question
                 if answer_value:
-                    Answer.objects.update_or_create(
+                    answer_obj, _ = Answer.objects.update_or_create(
                         user=request.user,
                         question=question,
                         defaults={"answer": answer_value},
@@ -912,6 +912,7 @@ def answer_question(request, pk):
                     ).delete()
                     show_thanks_message = True
                 else:
+                    answer_obj = None
                     SkippedQuestion.objects.get_or_create(
                         user=request.user, question=question
                     )
@@ -923,15 +924,26 @@ def answer_question(request, pk):
                     no_count = question.answers.filter(answer="no").count()
                     total = yes_count + no_count
                     ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
-                    return JsonResponse(
-                        {
-                            "success": True,
-                            "yes_count": yes_count,
-                            "total": total,
-                            "agree_ratio": ratio,
-                            "question_id": question.pk,
-                        }
-                    )
+                    data = {
+                        "success": True,
+                        "yes_count": yes_count,
+                        "total": total,
+                        "agree_ratio": ratio,
+                        "question_id": question.pk,
+                    }
+                    if answer_obj is not None:
+                        data.update(
+                            {
+                                "answer_id": answer_obj.pk,
+                                "edit_url": reverse(
+                                    "survey:answer_edit", args=[answer_obj.pk]
+                                ),
+                                "delete_url": reverse(
+                                    "survey:answer_delete", args=[answer_obj.pk]
+                                ),
+                            }
+                        )
+                    return JsonResponse(data)
 
                 answer_label = (
                     gettext("Yes") if answer_value == "yes" else gettext("No")
