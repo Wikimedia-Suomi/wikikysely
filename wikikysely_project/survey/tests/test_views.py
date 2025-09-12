@@ -207,6 +207,16 @@ class SurveyFlowTests(TransactionTestCase):
         )
         self.assertNotContains(response, "Return to skipped questions")
 
+    def test_completion_view_clears_skipped_questions(self):
+        survey = self._create_survey()
+        q1 = self._create_question(survey)
+        SkippedQuestion.objects.create(user=self.user, question=q1)
+        response = self.client.get(reverse("survey:completion"))
+        self.assertTemplateUsed(response, "survey/completion.html")
+        self.assertFalse(
+            SkippedQuestion.objects.filter(user=self.user, question=q1).exists()
+        )
+
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {

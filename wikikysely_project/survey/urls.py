@@ -10,6 +10,7 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("survey/edit/", views.survey_edit, name="survey_edit"),
     path("survey/answer/", views.answer_survey, name="answer_survey"),
+    path("survey/completion/", views.completion, name="completion"),
     path("survey/question/add/", views.question_add, name="question_add"),
     path("question/<int:pk>/edit/", views.question_edit, name="question_edit"),
     path("question/<int:pk>/hide/", views.question_hide, name="question_hide"),

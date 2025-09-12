@@ -362,6 +362,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const newCount = Math.max(0, (parseInt(countEl.textContent, 10) || 0) - 1);
           countEl.textContent = newCount;
           updateAnswerNavLink(newCount);
+          if (typeof completionUrl !== 'undefined' && newCount === 0) {
+            window.location.href = completionUrl;
+          }
         }
       }).catch(() => window.location.reload());
     });
