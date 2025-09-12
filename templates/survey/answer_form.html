@@ -45,8 +45,7 @@
 {% endif %}
   </div>
 </div>
-{% if unanswered_questions %}
-  {% for q in unanswered_questions %}
+{% for q in unanswered_questions %}
 <div class="card mx-auto mb-4 unanswered-card" style="max-width: 40rem;" data-question-id="{{ q.pk }}">
   <div class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ q.text }}</h2>
@@ -67,8 +66,7 @@
     {% endif %}
   </div>
 </div>
-  {% endfor %}
-{% endif %}
+{% endfor %}
 {% url 'survey:question_add' as question_add_url %}
 {% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
 If the question was poorly worded, you can <a href="{{ question_add_url }}">add</a> a new question on the same topic even if it differs only slightly. Different perspectives on the same topics help make more reasoned interpretations of the response data.
