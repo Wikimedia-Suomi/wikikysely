@@ -830,6 +830,15 @@ def answer_survey(request):
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
     timeline_data = json.dumps(question_stats["timeline"]) if question_stats else "[]"
+    unanswered_questions = survey.questions.filter(visible=True)
+    if request.user.is_authenticated:
+        answered_ids = Answer.objects.filter(
+            user=request.user, question__survey=survey
+        ).values_list("question_id", flat=True)
+        unanswered_questions = unanswered_questions.exclude(id__in=answered_ids)
+    if question:
+        unanswered_questions = unanswered_questions.exclude(id=question.pk)
+    unanswered_questions = unanswered_questions.order_by("pk")
     return render(
         request,
         "survey/answer_form.html",
@@ -844,6 +853,8 @@ def answer_survey(request):
             "yes_label": yes_label,
             "no_label": no_label,
             "no_answers_label": no_answers_label,
+            "unanswered_questions": unanswered_questions,
+            "next": request.path,
         },
     )
 
@@ -865,7 +876,7 @@ def answer_question(request, pk):
 
     answer = None
     can_delete_question = False
-    next_url = request.GET.get("next") or request.POST.get("next")
+    next_url = request.GET.get("next") or request.POST.get("next") or request.path
     show_skip_help = False
     show_thanks_message = False
 
@@ -1028,6 +1039,13 @@ def answer_question(request, pk):
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
     timeline_data = json.dumps(question_stats["timeline"])
+    unanswered_questions = survey.questions.filter(visible=True)
+    if request.user.is_authenticated:
+        answered_ids = Answer.objects.filter(
+            user=request.user, question__survey=survey
+        ).values_list("question_id", flat=True)
+        unanswered_questions = unanswered_questions.exclude(id__in=answered_ids)
+    unanswered_questions = unanswered_questions.order_by("pk")
     return render(
         request,
         "survey/answer_form.html",
@@ -1049,6 +1067,7 @@ def answer_question(request, pk):
             "next": next_url,
             "show_skip_help": show_skip_help,
             "show_thanks_message": show_thanks_message,
+            "unanswered_questions": unanswered_questions,
         },
     )
 
