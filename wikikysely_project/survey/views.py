@@ -1370,7 +1370,6 @@ def answer_edit(request, pk):
                         "yes_count": yes_count,
                         "total": total,
                         "agree_ratio": ratio,
-                        "message": gettext("Answer updated"),
                     }
                 )
             messages.success(request, _("Answer updated"))
@@ -1440,7 +1439,6 @@ def answer_delete(request, pk):
                 "title_label": gettext("Title"),
                 "answers_label": gettext("Answers"),
                 "agree_label": gettext("Agree"),
-                "message": gettext("Answer removed"),
             }
         )
     messages.success(request, _("Answer removed"))

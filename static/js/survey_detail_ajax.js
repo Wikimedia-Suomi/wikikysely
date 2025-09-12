@@ -11,23 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return num.toFixed(1).replace('.', ',');
   }
 
-  function showAjaxMessage(text, type = 'info') {
-    if (!text) return;
-    const container = document.getElementById('ajax-messages');
-    if (!container) return;
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alert.setAttribute('role', 'alert');
-    alert.textContent = text;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn-close';
-    btn.setAttribute('data-bs-dismiss', 'alert');
-    btn.setAttribute('aria-label', 'Close');
-    alert.appendChild(btn);
-    container.appendChild(alert);
-  }
-
   function updateAnswerNavLink(count) {
     const navCount = document.getElementById('unanswered-count');
     if (navCount) {
@@ -91,27 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
           'X-CSRFToken': getCookie('csrftoken') || ''
         },
         body: formData
-        }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
-          if (!data || !data.success) { window.location.reload(); return; }
-          let row = form.closest('tr');
-          if (!row) {
-            const qInput = form.querySelector('input[name="question_id"]');
-            if (qInput) {
-              row = document.querySelector(`tr[data-question-id="${qInput.value}"]`);
-            }
+      }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
+        if (!data || !data.success) { window.location.reload(); return; }
+        let row = form.closest('tr');
+        if (!row) {
+          const qInput = form.querySelector('input[name="question_id"]');
+          if (qInput) {
+            row = document.querySelector(`tr[data-question-id="${qInput.value}"]`);
           }
-          if (row) {
-            const totalCell = row.querySelector('.total-answers');
-            const ratioCell = row.querySelector('.agree-ratio');
-            if (totalCell) totalCell.textContent = data.total;
-            if (ratioCell) ratioCell.textContent = `${formatPercentage(data.agree_ratio)}%`;
-          }
-          if (data.message) {
-            showAjaxMessage(data.message, 'success');
-          }
-        }).catch(() => window.location.reload());
-      });
+        }
+        if (row) {
+          const totalCell = row.querySelector('.total-answers');
+          const ratioCell = row.querySelector('.agree-ratio');
+          if (totalCell) totalCell.textContent = data.total;
+          if (ratioCell) ratioCell.textContent = `${formatPercentage(data.agree_ratio)}%`;
+        }
+      }).catch(() => window.location.reload());
     });
+  });
 
   function attachDeleteAnswer(link) {
     link.addEventListener('click', ev => {
@@ -126,35 +106,35 @@ document.addEventListener('DOMContentLoaded', () => {
           'X-Requested-With': 'XMLHttpRequest',
           'X-CSRFToken': getCookie('csrftoken') || ''
         }
-        }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
-          if (!data || !data.deleted) { window.location.reload(); return; }
-          let row = link.closest('tr');
-          if (!row) {
-            const qid = link.dataset.questionId;
-            if (qid) {
-              row = document.querySelector(`tr[data-question-id="${qid}"]`);
-            }
+      }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
+        if (!data || !data.deleted) { window.location.reload(); return; }
+        let row = link.closest('tr');
+        if (!row) {
+          const qid = link.dataset.questionId;
+          if (qid) {
+            row = document.querySelector(`tr[data-question-id="${qid}"]`);
           }
-          if (row) row.remove();
-          if (typeof data.unanswered_count !== 'undefined') {
-            updateAnswerNavLink(data.unanswered_count);
+        }
+        if (row) row.remove();
+        if (typeof data.unanswered_count !== 'undefined') {
+          updateAnswerNavLink(data.unanswered_count);
+        }
+        const answerBtn = document.getElementById('answer-survey-btn');
+        const answersBtn = document.getElementById('answers-btn');
+        if (typeof data.unanswered_count !== 'undefined' && answerBtn && answersBtn) {
+          if (data.unanswered_count > 0) {
+            answerBtn.style.display = '';
+            answersBtn.style.display = 'none';
+          } else {
+            answersBtn.style.display = '';
+            answerBtn.style.display = 'none';
           }
-          const answerBtn = document.getElementById('answer-survey-btn');
-          const answersBtn = document.getElementById('answers-btn');
-          if (typeof data.unanswered_count !== 'undefined' && answerBtn && answersBtn) {
-            if (data.unanswered_count > 0) {
-              answerBtn.style.display = '';
-              answersBtn.style.display = 'none';
-            } else {
-              answersBtn.style.display = '';
-              answerBtn.style.display = 'none';
-            }
-          }
-          if (updateUnanswered) {
-            const tbody = unansweredTable.tBodies[0];
-            if (tbody) {
-              const tr = document.createElement('tr');
-              tr.dataset.questionId = data.question_id;
+        }
+        if (updateUnanswered) {
+          const tbody = unansweredTable.tBodies[0];
+          if (tbody) {
+            const tr = document.createElement('tr');
+            tr.dataset.questionId = data.question_id;
 
             const tdId = document.createElement('td');
             tdId.dataset.label = data.id_label;
@@ -205,23 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             tr.appendChild(tdActions);
 
-              tbody.appendChild(tr);
-              if (unansweredHeader.style.display === 'none') {
-                unansweredHeader.style.display = '';
-              }
-              if (unansweredTable.style.display === 'none') {
-                unansweredTable.style.display = '';
-              }
+            tbody.appendChild(tr);
+            if (unansweredHeader.style.display === 'none') {
+              unansweredHeader.style.display = '';
             }
-          } else if (!noReload) {
-            window.location.reload();
+            if (unansweredTable.style.display === 'none') {
+              unansweredTable.style.display = '';
+            }
           }
-          if (data.message) {
-            showAjaxMessage(data.message, 'success');
-          }
-        }).catch(() => window.location.reload());
-      });
-    }
+        } else if (!noReload) {
+          window.location.reload();
+        }
+      }).catch(() => window.location.reload());
+    });
+  }
 
   document.querySelectorAll('a.ajax-delete-answer').forEach(attachDeleteAnswer);
   document.querySelectorAll('a.ajax-delete-question').forEach(attachDeleteQuestion);
