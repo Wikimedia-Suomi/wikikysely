@@ -1092,13 +1092,10 @@ def answer_question(request, pk):
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
     timeline_data = json.dumps(question_stats["timeline"])
-    unanswered_questions = survey.questions.filter(visible=True)
-    if request.user.is_authenticated:
-        answered_ids = Answer.objects.filter(
-            user=request.user, question__survey=survey
-        ).values_list("question_id", flat=True)
-        unanswered_questions = unanswered_questions.exclude(id__in=answered_ids)
-    unanswered_questions = unanswered_questions.order_by("pk")
+    # When answering a question via a direct link, we don't show other
+    # unanswered questions on the page. Use an empty queryset so the
+    # template loop renders nothing.
+    unanswered_questions = Question.objects.none()
     return render(
         request,
         "survey/answer_form.html",
