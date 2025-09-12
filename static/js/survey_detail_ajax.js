@@ -240,6 +240,11 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
         }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
           if (!data || !data.success) { window.location.reload(); return; }
+          const nextField = form.querySelector('input[name="next"]');
+          if (isEdit && nextField && nextField.value) {
+            window.location.href = nextField.value;
+            return;
+          }
           const qid = data.question_id;
           document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
           if (data.message) {
