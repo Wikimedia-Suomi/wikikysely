@@ -355,11 +355,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const countEl = document.getElementById('unanswered-count');
         if (countEl && !isEdit) {
-          const newCount = Math.max(0, (parseInt(countEl.textContent, 10) || 0) - 1);
+          let newCount = typeof data.unanswered_count !== 'undefined'
+            ? data.unanswered_count
+            : Math.max(0, (parseInt(countEl.textContent, 10) || 0) - 1);
           countEl.textContent = newCount;
           updateAnswerNavLink(newCount);
-          if (typeof completionUrl !== 'undefined' && newCount === 0) {
-            window.location.href = completionUrl;
+          if (typeof completionUrl !== 'undefined') {
+            const remainingForms = document.querySelectorAll('form.ajax-answer-question').length;
+            if (remainingForms === 0) {
+              if (newCount === 0) {
+                window.location.href = completionUrl;
+              } else {
+                window.location.reload();
+              }
+            }
           }
         }
       }).catch(() => window.location.reload());
