@@ -991,31 +991,29 @@ def answer_question(request, pk):
                     if answer_value else ""
                 )
 
-                if answer is not None and next_url:
-                    from urllib.parse import urlparse
-                    if urlparse(next_url).path != request.path:
-                        if answer_value:
-                            messages.success(
-                                request,
-                                gettext(
-                                    'Answered question #{number}: "{question}" with "{answer}"'
-                                ).format(
-                                    number=answered_question.pk,
-                                    question=answered_question.text,
-                                    answer=answer_label,
-                                ),
-                            )
-                        elif skip_message:
-                            messages.info(
-                                request,
-                                gettext(
-                                    'Skipped question #{number}: "{question}"'
-                                ).format(
-                                    number=answered_question.pk,
-                                    question=answered_question.text,
-                                ),
-                            )
-                        return redirect(next_url)
+                from urllib.parse import urlparse
+                if next_url and urlparse(next_url).path != request.path:
+                    if answer_value:
+                        messages.success(
+                            request,
+                            gettext(
+                                'Answered question #{number}: "{question}" with "{answer}"'
+                            ).format(
+                                number=answered_question.pk,
+                                question=answered_question.text,
+                                answer=answer_label,
+                            ),
+                        )
+                    elif skip_message:
+                        messages.info(
+                            request,
+                            gettext('Skipped question #{number}: "{question}"').
+                            format(
+                                number=answered_question.pk,
+                                question=answered_question.text,
+                            ),
+                        )
+                    return redirect(next_url)
 
                 answered_questions = Answer.objects.filter(
                     user=request.user, question__survey=survey
