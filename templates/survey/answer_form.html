@@ -7,7 +7,7 @@
   <div id="answerbox" class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ question.text }}</h2>
 {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center ajax-answer-question" id="answer-form" data-is-edit="{{ is_edit|yesno:'true,false' }}">
+<form method="post" action="{% url 'survey:answer_question' question.pk %}" class="text-center{% if not next or next == request.path %} ajax-answer-question{% endif %}" id="answer-form" data-is-edit="{{ is_edit|yesno:'true,false' }}">
   {% csrf_token %}
   {% if next %}
   <input type="hidden" name="next" value="{{ next }}">
@@ -50,7 +50,7 @@
   <div class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ q.text }}</h2>
     {% if request.user.is_authenticated %}
-    <form method="post" action="{% url 'survey:answer_question' q.pk %}" class="text-center ajax-answer-question" data-is-edit="false">
+    <form method="post" action="{% url 'survey:answer_question' q.pk %}" class="text-center{% if not next or next == request.path %} ajax-answer-question{% endif %}" data-is-edit="false">
       {% csrf_token %}
       <input type="hidden" name="question_id" value="{{ q.pk }}">
       {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
