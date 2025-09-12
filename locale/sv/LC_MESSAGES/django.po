@@ -805,7 +805,3 @@ msgstr "Om frågan var dåligt formulerad kan du <a href=\"%(question_add_url)s\
 #: templates/survey/answer_form.html:55
 msgid "Tip:"
 msgstr "Tips:"
-
-#: templates/survey/answer_form.html:82
-msgid "Thank you for your responses! You can proceed at your own pace, take a break and continue later – each answer helps us better understand the results."
-msgstr "Tack för dina svar! Du kan fortsätta i din egen takt, ta en paus och fortsätta senare – varje svar hjälper oss att förstå resultaten bättre."
