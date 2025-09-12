@@ -1084,6 +1084,26 @@ def answer_question(request, pk):
     )
 
 
+def completion(request):
+    survey = Survey.get_main_survey()
+    if survey is None:
+        return redirect("survey:survey_create")
+    if not request.user.is_authenticated:
+        login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
+        return redirect(login_url)
+    has_skipped = SkippedQuestion.objects.filter(
+        user=request.user, question__survey=survey
+    ).exists()
+    SkippedQuestion.objects.filter(
+        user=request.user, question__survey=survey
+    ).delete()
+    return render(
+        request,
+        "survey/completion.html",
+        {"survey": survey, "has_skipped": has_skipped},
+    )
+
+
 @login_required
 def userinfo(request):
     answers_qs = (

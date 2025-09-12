@@ -199,6 +199,7 @@ const answersLabel = '{{ _("Answers")|escapejs }}';
 const agreeLabel = '{{ _("Agree")|escapejs }}';
 const answerLabel = '{{ _("Answer")|escapejs }}';
 const removeAnswerLabel = '{{ _("Remove answer")|escapejs }}';
+const completionUrl = "{% url 'survey:completion' %}";
 const successColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-success').trim() || 'green';
 const dangerColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-danger').trim() || 'red';
 const placeholderColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-secondary-bg').trim() ||
