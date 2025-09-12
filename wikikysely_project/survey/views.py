@@ -943,6 +943,19 @@ def answer_question(request, pk):
                                 ),
                             }
                         )
+                    answered_ids = Answer.objects.filter(
+                        user=request.user, question__survey=survey
+                    ).values_list("question_id", flat=True)
+                    skipped_ids = SkippedQuestion.objects.filter(
+                        user=request.user, question__survey=survey
+                    ).values_list("question_id", flat=True)
+                    remaining = (
+                        survey.questions.filter(visible=True)
+                        .exclude(id__in=answered_ids)
+                        .exclude(id__in=skipped_ids)
+                        .count()
+                    )
+                    data["unanswered_count"] = remaining
                     return JsonResponse(data)
 
                 answer_label = (
