@@ -363,10 +363,33 @@ def answer_ajax(request):
             defaults={"answer": answer_value},
         )
         SkippedQuestion.objects.filter(user=request.user, question=question).delete()
+        answer_label = gettext("Yes") if answer_value == "yes" else gettext("No")
+        message = gettext(
+            'Answered question #{number}: "{question}" with "{answer}"'
+        ).format(number=question.pk, question=question.text, answer=answer_label)
+        skipped = False
     else:
         SkippedQuestion.objects.get_or_create(user=request.user, question=question)
+        message = gettext('Skipped question #{number}: "{question}"').format(
+            number=question.pk, question=question.text
+        )
+        skipped = True
 
-    return JsonResponse({"success": True})
+    answered_ids = Answer.objects.filter(
+        user=request.user, question__survey=survey
+    ).values_list("question_id", flat=True)
+    unanswered_count = survey.questions.filter(visible=True).exclude(
+        id__in=answered_ids
+    ).count()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "message": message,
+            "skipped": skipped,
+            "unanswered_count": unanswered_count,
+        }
+    )
 
 
 @login_required

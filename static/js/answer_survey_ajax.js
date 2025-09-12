@@ -69,7 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'X-CSRFToken': getCookie('csrftoken') || ''
       },
       body: data
-    }).then(() => {
+    }).then(resp => resp.ok ? resp.json() : {}).then(data => {
+      const msgEl = document.getElementById('ajax-message');
+      if (msgEl && data.message) {
+        msgEl.textContent = data.message;
+        msgEl.className = `alert ${data.skipped ? 'alert-info' : 'alert-success'}`;
+      }
+      if (typeof data.unanswered_count === 'number') {
+        updateAnswerNavLink(data.unanswered_count);
+      }
       showNext();
     });
   }
