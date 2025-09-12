@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
           tdActions.className = 'text-end';
           tr.appendChild(tdActions);
 
-          tbody.appendChild(tr);
+          tbody.prepend(tr);
         }
         const countEl = document.getElementById('unanswered-count');
         if (countEl) {
