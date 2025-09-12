@@ -128,13 +128,12 @@
   </div>
 {% endif %}
 {% if request.user.is_authenticated %}
-{% if user_answers %}
-  <h2 class="mt-4">
+  <h2 id="my-answers-header" class="mt-4"{% if not user_answers %} style="display:none"{% endif %}>
     <a class="text-decoration-none collapse-toggle collapsed" data-bs-toggle="collapse" href="#myAnswers" role="button" aria-expanded="false" aria-controls="myAnswers">{% translate 'My answers' %}</a>
   </h2>
-  <div id="myAnswers" class="collapse">
+  <div id="myAnswers" class="collapse"{% if not user_answers %} style="display:none"{% endif %}>
   <div class="table-responsive">
-  <table class="table mb-3 survey-detail-table stacked-table">
+  <table id="my-answers-table" class="table mb-3 survey-detail-table stacked-table"{% if not user_answers %} style="display:none"{% endif %}>
     <thead>
       <tr>
         <th>{% translate 'Answer date' %}</th>
@@ -146,6 +145,7 @@
       </tr>
     </thead>
     <tbody id="my-answers-body">
+      {% if user_answers %}
       {% for a in user_answers %}
       <tr data-question-id="{{ a.question.pk }}">
         <td data-label="{% translate 'Answer date' %}">{{ a.created_at|date:"Y-m-d" }}</td>
@@ -170,11 +170,15 @@
         </td>
       </tr>
       {% endfor %}
+      {% else %}
+      <tr class="no-answers-placeholder">
+        <td colspan="5">{% translate 'No answers' %}</td>
+      </tr>
+      {% endif %}
     </tbody>
   </table>
   </div>
   </div>
-{% endif %}
 {% endif %}
 {% endblock %}
 
