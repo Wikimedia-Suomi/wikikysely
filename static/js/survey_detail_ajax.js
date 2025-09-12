@@ -143,11 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tdId.textContent = data.question_id;
             tr.appendChild(tdId);
 
-            const tdPublished = document.createElement('td');
-            tdPublished.dataset.label = data.published_label;
-            tdPublished.textContent = data.question_published;
-            tr.appendChild(tdPublished);
-
             const tdTitle = document.createElement('td');
             tdTitle.dataset.label = data.title_label;
             const titleLink = document.createElement('a');
