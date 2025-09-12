@@ -203,16 +203,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a.ajax-delete-answer').forEach(attachDeleteAnswer);
   document.querySelectorAll('a.ajax-delete-question').forEach(attachDeleteQuestion);
 
-  document.querySelectorAll('form.ajax-answer-question').forEach(form => {
-    form.addEventListener('submit', ev => {
-      ev.preventDefault();
-      const formData = new FormData(form);
-      fetch(form.action, {
-        method: 'POST',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRFToken': getCookie('csrftoken') || ''
-        },
+    document.querySelectorAll('form.ajax-answer-question').forEach(form => {
+      form.addEventListener('submit', ev => {
+        ev.preventDefault();
+        const formData = new FormData(form);
+        if (ev.submitter && ev.submitter.name) {
+          formData.append(ev.submitter.name, ev.submitter.value);
+        }
+        fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken') || ''
+          },
         body: formData
       }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
         if (!data || !data.success) { window.location.reload(); return; }
