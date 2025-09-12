@@ -259,6 +259,38 @@ document.addEventListener('DOMContentLoaded', () => {
           tr.appendChild(tdActions);
 
           tbody.prepend(tr);
+
+          const header = document.getElementById('my-answers-header');
+          if (header) {
+            header.hidden = false;
+            header.style.display = '';
+          }
+
+          const table = document.getElementById('my-answers-table');
+          if (table) {
+            table.hidden = false;
+            table.style.display = '';
+          }
+
+          const collapseDiv = document.getElementById('myAnswers');
+          if (collapseDiv) {
+            collapseDiv.hidden = false;
+            collapseDiv.style.display = '';
+            if (typeof bootstrap !== 'undefined') {
+              const coll = bootstrap.Collapse.getOrCreateInstance(collapseDiv, { toggle: false });
+              coll.show();
+            } else {
+              collapseDiv.classList.add('show');
+            }
+            const toggle = document.querySelector('a[href="#myAnswers"]');
+            if (toggle) {
+              toggle.classList.remove('collapsed');
+              toggle.setAttribute('aria-expanded', 'true');
+            }
+          }
+
+          const placeholder = tbody.querySelector('.no-answers-placeholder');
+          if (placeholder) placeholder.remove();
         }
         const countEl = document.getElementById('unanswered-count');
         if (countEl) {
