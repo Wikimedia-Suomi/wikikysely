@@ -247,6 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           const qid = data.question_id;
           document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
+          const nextCard = document.querySelector('.unanswered-card.d-none');
+          if (nextCard) {
+            nextCard.classList.remove('d-none');
+          }
           if (data.message) {
             showAlert(data.message, data.message_type || 'info');
           }

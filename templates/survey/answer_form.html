@@ -46,7 +46,7 @@
   </div>
 </div>
 {% for q in unanswered_questions %}
-<div class="card mx-auto mb-4 unanswered-card" style="max-width: 40rem;" data-question-id="{{ q.pk }}">
+<div class="card mx-auto mb-4 unanswered-card d-none" style="max-width: 40rem;" data-question-id="{{ q.pk }}">
   <div class="card-body text-center">
     <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ q.text }}</h2>
     {% if request.user.is_authenticated %}
