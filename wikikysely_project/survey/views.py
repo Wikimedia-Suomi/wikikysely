@@ -963,6 +963,27 @@ def answer_question(request, pk):
                         .count()
                     )
                     data["unanswered_count"] = remaining
+                    answer_label = (
+                        gettext("Yes") if answer_value == "yes" else gettext("No")
+                        if answer_value else ""
+                    )
+                    if answer_value:
+                        data["message"] = gettext(
+                            'Answered question #{number}: "{question}" with "{answer}"'
+                        ).format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                            answer=answer_label,
+                        )
+                        data["message_type"] = "success"
+                    elif skip_message:
+                        data["message"] = gettext(
+                            'Skipped question #{number}: "{question}"'
+                        ).format(
+                            number=answered_question.pk,
+                            question=answered_question.text,
+                        )
+                        data["message_type"] = "info"
                     return JsonResponse(data)
 
                 answer_label = (

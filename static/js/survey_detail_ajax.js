@@ -5,11 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
-  function formatPercentage(value) {
-    const num = typeof value === 'number' ? value : parseFloat(value);
-    if (Number.isNaN(num)) return value;
-    return num.toFixed(1).replace('.', ',');
-  }
+    function formatPercentage(value) {
+      const num = typeof value === 'number' ? value : parseFloat(value);
+      if (Number.isNaN(num)) return value;
+      return num.toFixed(1).replace('.', ',');
+    }
+
+    function showAlert(message, type = 'info') {
+      const container = document.querySelector('.container');
+      if (!container) return;
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type} alert-dismissible fade show`;
+      alert.setAttribute('role', 'alert');
+      const span = document.createElement('span');
+      span.textContent = message;
+      alert.appendChild(span);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-close';
+      btn.setAttribute('data-bs-dismiss', 'alert');
+      btn.setAttribute('aria-label', 'Close');
+      alert.appendChild(btn);
+      container.prepend(alert);
+    }
 
   function updateAnswerNavLink(count) {
     const navCount = document.getElementById('unanswered-count');
@@ -219,12 +237,15 @@ document.addEventListener('DOMContentLoaded', () => {
             'X-CSRFToken': getCookie('csrftoken') || ''
           },
         body: formData
-      }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
-        if (!data || !data.success) { window.location.reload(); return; }
-        const qid = data.question_id;
-        document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
-        if (answerValue === 'yes' || answerValue === 'no') {
-        const tbody = document.getElementById('my-answers-body');
+        }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
+          if (!data || !data.success) { window.location.reload(); return; }
+          const qid = data.question_id;
+          document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
+          if (data.message) {
+            showAlert(data.message, data.message_type || 'info');
+          }
+          if (answerValue === 'yes' || answerValue === 'no') {
+          const tbody = document.getElementById('my-answers-body');
         if (tbody) {
           const tr = document.createElement('tr');
           tr.dataset.questionId = qid;
