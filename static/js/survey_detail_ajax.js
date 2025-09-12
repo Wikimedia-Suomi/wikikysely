@@ -202,4 +202,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('a.ajax-delete-answer').forEach(attachDeleteAnswer);
   document.querySelectorAll('a.ajax-delete-question').forEach(attachDeleteQuestion);
+
+  document.querySelectorAll('form.ajax-answer-question').forEach(form => {
+    form.addEventListener('submit', ev => {
+      ev.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCookie('csrftoken') || ''
+        },
+        body: formData
+      }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
+        if (!data || !data.success) { window.location.reload(); return; }
+        const qid = data.question_id;
+        document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
+        const tbody = document.getElementById('my-answers-body');
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.dataset.questionId = qid;
+
+          const today = new Date().toISOString().slice(0, 10);
+          const tdDate = document.createElement('td');
+          tdDate.dataset.label = answerDateLabel;
+          tdDate.textContent = today;
+          tr.appendChild(tdDate);
+
+          const tdTitle = document.createElement('td');
+          tdTitle.dataset.label = titleLabel;
+          const link = document.createElement('a');
+          const nextParam = encodeURIComponent(window.location.pathname + window.location.search);
+          link.href = `${form.action}?next=${nextParam}`;
+          const title = form.closest('.card')?.querySelector('.card-title')?.textContent?.trim() || '';
+          link.textContent = title;
+          tdTitle.appendChild(link);
+          tr.appendChild(tdTitle);
+
+          const tdTotal = document.createElement('td');
+          tdTotal.className = 'total-answers';
+          tdTotal.dataset.label = answersLabel;
+          tdTotal.textContent = data.total;
+          tr.appendChild(tdTotal);
+
+          const tdAgree = document.createElement('td');
+          tdAgree.className = 'agree-ratio';
+          tdAgree.dataset.label = agreeLabel;
+          tdAgree.textContent = `${formatPercentage(data.agree_ratio)}%`;
+          tr.appendChild(tdAgree);
+
+          const tdActions = document.createElement('td');
+          tdActions.className = 'text-end';
+          tr.appendChild(tdActions);
+
+          tbody.appendChild(tr);
+        }
+        const countEl = document.getElementById('unanswered-count');
+        if (countEl) {
+          const newCount = Math.max(0, (parseInt(countEl.textContent, 10) || 0) - 1);
+          countEl.textContent = newCount;
+          updateAnswerNavLink(newCount);
+        }
+      }).catch(() => window.location.reload());
+    });
+  });
 });
