@@ -874,9 +874,17 @@ def answer_question(request, pk):
         messages.error(request, _("Survey not active"))
         return redirect("survey:survey_detail")
 
-    answer = None
+    answer = (
+        Answer.objects.filter(question=question, user=request.user).first()
+        if request.user.is_authenticated
+        else None
+    )
     can_delete_question = False
-    next_url = request.GET.get("next") or request.POST.get("next") or request.path
+    next_url = request.GET.get("next") or request.POST.get("next")
+    if not next_url and answer is not None:
+        next_url = reverse("survey:survey_detail")
+    if not next_url:
+        next_url = request.path
     show_skip_help = False
     show_thanks_message = False
 
@@ -894,7 +902,6 @@ def answer_question(request, pk):
         )
         form = None
     else:
-        answer = Answer.objects.filter(question=question, user=request.user).first()
         if request.method == "POST":
             form = AnswerForm(request.POST, instance=answer)
             if form.is_valid():

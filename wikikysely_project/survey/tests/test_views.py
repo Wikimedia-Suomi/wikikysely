@@ -433,9 +433,7 @@ class SurveyFlowTests(TransactionTestCase):
         )
         answer.refresh_from_db()
         self.assertEqual(answer.answer, "no")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("question", response.context)
-        self.assertNotEqual(response.context["question"].pk, questions[0].pk)
+        self.assertRedirects(response, reverse("survey:survey_detail"))
 
     def test_redirects_to_next_unanswered_when_next_same_page(self):
         survey = self._create_survey()
