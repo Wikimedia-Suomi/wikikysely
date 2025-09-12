@@ -210,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ev.preventDefault();
         const formData = new FormData(form);
         let answerValue = '';
+        const isEdit = form.dataset.isEdit === 'true';
         if (ev.submitter && ev.submitter.name) {
           formData.append(ev.submitter.name, ev.submitter.value);
           if (ev.submitter.name === 'answer') {
@@ -358,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         }
         const countEl = document.getElementById('unanswered-count');
-        if (countEl) {
+        if (countEl && !isEdit) {
           const newCount = Math.max(0, (parseInt(countEl.textContent, 10) || 0) - 1);
           countEl.textContent = newCount;
           updateAnswerNavLink(newCount);
