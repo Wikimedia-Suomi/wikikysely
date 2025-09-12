@@ -45,6 +45,28 @@
 {% endif %}
   </div>
 </div>
+{% for q in unanswered_questions %}
+<div class="card mx-auto mb-4" style="max-width: 40rem;">
+  <div class="card-body text-center">
+    <h2 class="card-title mb-0" style="padding-bottom:0.25em;">{{ q.text }}</h2>
+    {% if request.user.is_authenticated %}
+    <form method="post" action="{% url 'survey:answer_question' q.pk %}" class="text-center">
+      {% csrf_token %}
+      <input type="hidden" name="question_id" value="{{ q.pk }}">
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <div style='float:right;vertical-align:middle;line-height:2.5em'><a href="{% url 'survey:answer_question' q.pk %}">#{{ q.pk }}</a></div>
+      <div class="answer-buttons mb-2" role="group" aria-label="{% translate 'Answer' %}">
+        <div class="btn-group yes-no-group me-2" role="group">
+          <button type="submit" name="answer" value="yes" class="btn btn-success">{% translate 'Yes' %}</button>
+          <button type="submit" name="answer" value="no" class="btn btn-danger">{% translate 'No' %}</button>
+        </div>
+        <button type="submit" name="answer" value="" class="btn btn-secondary">{% translate 'Skip' %}</button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
 {% if show_skip_help %}
   {% url 'survey:question_add' as question_add_url %}
   {% blocktrans trimmed with question_add_url=question_add_url asvar skip_help_message %}
