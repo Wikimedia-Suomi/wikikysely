@@ -447,6 +447,32 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["question"].pk, questions[1].pk)
 
+    def test_redirects_to_next_after_answering(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        next_url = reverse("survey:survey_detail")
+        response = self.client.post(
+            f"{reverse('survey:answer_question', args=[q.pk])}?next={next_url}",
+            {"question_id": q.pk, "answer": "yes"},
+            follow=True,
+        )
+        self.assertRedirects(response, next_url)
+        messages = list(response.context["messages"])
+        self.assertTrue(any("Answered question" in m.message for m in messages))
+
+    def test_redirects_to_next_after_skip(self):
+        survey = self._create_survey()
+        q = self._create_question(survey)
+        next_url = reverse("survey:survey_detail")
+        response = self.client.post(
+            f"{reverse('survey:answer_question', args=[q.pk])}?next={next_url}",
+            {"question_id": q.pk, "answer": ""},
+            follow=True,
+        )
+        self.assertRedirects(response, next_url)
+        messages = list(response.context["messages"])
+        self.assertTrue(any("Skipped question" in m.message for m in messages))
+
     def test_results_view(self):
         survey = self._create_survey()
         question = self._create_question(survey)
