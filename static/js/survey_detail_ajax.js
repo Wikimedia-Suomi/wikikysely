@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showAlert(message, type = 'info') {
       const container = document.querySelector('.container');
       if (!container) return;
+      container.querySelectorAll('.alert').forEach(el => el.remove());
       const alert = document.createElement('div');
       alert.className = `alert alert-${type} alert-dismissible fade show`;
       alert.setAttribute('role', 'alert');
