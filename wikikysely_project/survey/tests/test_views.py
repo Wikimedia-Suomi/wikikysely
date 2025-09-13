@@ -518,6 +518,22 @@ class SurveyFlowTests(TransactionTestCase):
             html=True,
         )
 
+    def test_results_view_filters_experienced_users(self):
+        survey = self._create_survey()
+        question = self._create_question(survey)
+        User = get_user_model()
+        exp_user = User.objects.create_user(username="exp", password="pass")
+        Answer.objects.create(question=question, user=exp_user, answer="yes")
+        Answer.objects.create(question=question, user=self.user, answer="no")
+        profile = exp_user.profile
+        profile.is_experienced_user = True
+        profile.save()
+        response = self.client.get(reverse("survey:survey_answers") + "?experienced=1")
+        data = response.context["data"][0]
+        self.assertEqual(data["yes"], 1)
+        self.assertEqual(data["no"], 0)
+        self.assertEqual(response.context["total_users"], 1)
+
     def test_results_view_includes_survey_info(self):
         survey = self._create_survey()
         q1 = self._create_question(survey)

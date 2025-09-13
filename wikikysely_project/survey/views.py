@@ -1545,9 +1545,11 @@ def survey_answers(request):
         return redirect("survey:survey_create")
     questions = survey.questions.filter(visible=True)
     data = []
-    total_users = (
-        Answer.objects.filter(question__survey=survey).values("user").distinct().count()
-    )
+    experienced_only = request.GET.get("experienced") == "1"
+    answers_qs = Answer.objects.filter(question__survey=survey)
+    if experienced_only:
+        answers_qs = answers_qs.filter(user__profile__is_experienced_user=True)
+    total_users = answers_qs.values("user").distinct().count()
     question_count = questions.count()
     question_author_count = questions.values("creator").distinct().count()
     first_question_date = (
@@ -1561,12 +1563,13 @@ def survey_answers(request):
     if request.user.is_authenticated:
         user_answers = {
             a.question_id: a.get_answer_display()
-            for a in Answer.objects.filter(user=request.user, question__survey=survey)
+            for a in answers_qs.filter(user=request.user)
         }
 
     for q in questions:
-        yes_count = q.answers.filter(answer="yes").count()
-        no_count = q.answers.filter(answer="no").count()
+        q_answers = answers_qs.filter(question=q)
+        yes_count = q_answers.filter(answer="yes").count()
+        no_count = q_answers.filter(answer="no").count()
         total = yes_count + no_count
         agree_ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
         row = {
@@ -1596,7 +1599,8 @@ def survey_answers(request):
             "last_question_date": last_question_date,
             "yes_label": yes_label,
             "no_label": no_label,
-        "no_answers_label": no_answers_label,
+            "no_answers_label": no_answers_label,
+            "experienced_only": experienced_only,
         },
     )
 
@@ -1608,16 +1612,18 @@ def survey_answers_wikitext(request):
     include_personal = (
         request.GET.get("include_personal") == "1" and request.user.is_authenticated
     )
+    experienced_only = request.GET.get("experienced") == "1"
 
     questions = survey.questions.filter(visible=True)
     data = []
-    total_users = (
-        Answer.objects.filter(question__survey=survey).values("user").distinct().count()
-    )
+    answers_qs = Answer.objects.filter(question__survey=survey)
+    if experienced_only:
+        answers_qs = answers_qs.filter(user__profile__is_experienced_user=True)
+    total_users = answers_qs.values("user").distinct().count()
 
     question_count = questions.count()
     full_users = (
-        Answer.objects.filter(question__survey=survey)
+        answers_qs
         .values("user")
         .annotate(answered=Count("question", distinct=True))
         .filter(answered=question_count)
@@ -1628,12 +1634,13 @@ def survey_answers_wikitext(request):
     if include_personal:
         user_answers = {
             a.question_id: a.get_answer_display()
-            for a in Answer.objects.filter(user=request.user, question__survey=survey)
+            for a in answers_qs.filter(user=request.user)
         }
 
     for q in questions:
-        yes_count = q.answers.filter(answer="yes").count()
-        no_count = q.answers.filter(answer="no").count()
+        q_answers = answers_qs.filter(question=q)
+        yes_count = q_answers.filter(answer="yes").count()
+        no_count = q_answers.filter(answer="no").count()
         total = yes_count + no_count
         agree_ratio = round((max(yes_count, no_count) / total) * 100) if total else 0
         row = {
@@ -1663,6 +1670,7 @@ def survey_answers_wikitext(request):
             "yes_label": yes_label,
             "no_label": no_label,
             "include_personal": include_personal,
+            "experienced_only": experienced_only,
             "generated_at": generated_at,
         },
     )
@@ -1671,6 +1679,7 @@ def survey_answers_wikitext(request):
         "survey": {"title": survey.title, "description": survey.description},
         "generated_at": generated_at.isoformat(),
         "include_personal": include_personal,
+        "experienced_only": experienced_only,
         "total_users": total_users,
         "full_users": full_users,
         "data": [

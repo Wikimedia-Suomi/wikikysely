@@ -9,13 +9,13 @@
       <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
       {% endif %}
       <a href="{% url 'survey:question_add' %}" class="btn btn-secondary mb-3 me-2">{% translate 'Add question' %}</a>
-      <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
+      <a href="{% url 'survey:survey_answers_wikitext' %}{% if experienced_only %}?experienced=1{% endif %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
 {% else %}
     {% if data and survey.state == 'running' %}
       <a href="{% url 'survey:answer_survey' %}" class="btn btn-primary mb-3 me-2">{% translate 'Answer survey' %}</a>
       <a href="{% url 'survey:question_add' %}" class="btn btn-secondary mb-3 me-2">{% translate 'Add question' %}</a>
-      <a href="{% url 'survey:survey_answers_wikitext' %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
+      <a href="{% url 'survey:survey_answers_wikitext' %}{% if experienced_only %}?experienced=1{% endif %}" class="btn btn-secondary mb-3">{% translate 'Print wikitext' %}</a>
     {% endif %}
   {% endif %}
 <h1>{% translate 'Answers' %}</h1>
@@ -32,6 +32,10 @@
     <input class="form-check-input" type="radio" name="chartType" id="tableChartRadio" value="table">
     <label class="form-check-label" for="tableChartRadio">📋 {% translate 'Answer table' %}</label>
   </div>
+  <form method="get" class="form-check form-check-inline ms-3">
+    <input class="form-check-input" type="checkbox" name="experienced" id="experiencedOnly" value="1" {% if experienced_only %}checked{% endif %} onchange="this.form.submit()">
+    <label class="form-check-label" for="experiencedOnly">{% translate 'Only experienced editors' %}</label>
+  </form>
 </div>
 {% translate 'Red' as red_label %}
 {% translate 'Green' as green_label %}

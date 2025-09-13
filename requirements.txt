@@ -1,3 +1,4 @@
 django==4.2
 social-auth-app-django==5.4.0
 markdown==3.5.1
+requests>=2.31
