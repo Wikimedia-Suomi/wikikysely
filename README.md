@@ -74,6 +74,24 @@ DJANGO_DEV_SERVER=1 python manage.py test -v 2
 
 The command will create a temporary database and execute the test suite.
 
+## Embedding results
+
+The application provides a lightweight view for displaying survey results on
+external sites. The endpoint is available at `/<lang>/answers/embed/`, where
+`<lang>` is the language prefix (for example, `/fi/answers/embed/`). The
+rendered page can be included in another site using an `<iframe>`.
+
+Supported query parameters:
+
+* `questions` – comma-separated list of question IDs to display.
+* `lang` – language code for the interface and question texts.
+
+Example usage:
+
+```html
+<iframe src="https://wikikysely.toolforge.org/fi/answers/embed/?questions=1,3&lang=en" width="600" height="400"></iframe>
+```
+
 ## Resetting the local environment
 
 To return the repository to a clean state, remove the local SQLite database,
