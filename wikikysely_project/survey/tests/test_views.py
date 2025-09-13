@@ -1,6 +1,6 @@
 from django.test import TransactionTestCase
 from django.urls import reverse
-from django.utils.translation import activate
+from django.utils.translation import activate, override
 from django.contrib.auth import get_user_model
 from django.db.models import ProtectedError
 from django.contrib.messages import get_messages
@@ -496,7 +496,9 @@ class SurveyFlowTests(TransactionTestCase):
         url = reverse("survey:survey_answers_embed") + f"?questions={q1.pk}&lang=fi"
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, q1.text)
+        with override("fi"):
+            question_url = reverse("survey:answer_question", args=[q1.pk])
+        self.assertContains(response, f'<a href="{question_url}">{q1.text}</a>')
         self.assertNotContains(response, q2.text)
         self.assertEqual(response.context["LANGUAGE_CODE"], "fi")
 
