@@ -247,6 +247,10 @@ msgstr "Vastaajien määrä"
 msgid "Answer table"
 msgstr "Vastaustaulukko"
 
+#: templates/survey/answers.html:37
+msgid "Only experienced editors"
+msgstr "Vain kokeneet muokkaajat"
+
 #: templates/survey/answers.html:78 templates/survey/answers.html:93
 #: templates/survey/answers_wikitext.txt:19 templates/survey/userinfo.html:39
 #: templates/survey/userinfo.html:47 templates/survey/userinfo.html:76
