@@ -1093,7 +1093,7 @@ def answer_question(request, pk):
     no_label = gettext("No")
     no_answers_label = gettext("No answers")
     timeline_data = json.dumps(question_stats["timeline"])
-    unanswered_questions = survey.questions.filter(visible=True)
+    unanswered_questions = survey.questions.filter(visible=True).exclude(pk=question.pk)
     if request.user.is_authenticated:
         answered_ids = Answer.objects.filter(
             user=request.user, question__survey=survey
