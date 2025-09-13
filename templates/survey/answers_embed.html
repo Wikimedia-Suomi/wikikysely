@@ -1,0 +1,32 @@
+{% load i18n static %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <title>{% translate 'Answers' %}</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.5.3.2.flatly.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="container mt-4">
+  <h1>{% translate 'Answers' %}</h1>
+  <table class="table">
+    <tbody>
+    {% for row in data %}
+      <tr>
+        <td>{{ row.question.pk }}</td>
+        <td>{{ row.question.text }}</td>
+        <td class="w-100">
+          <div class="progress" style="height: 1.25rem;">
+            <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%" aria-valuenow="{{ row.yes }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.yes }}</div>
+            <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%" aria-valuenow="{{ row.no }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.no }}</div>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

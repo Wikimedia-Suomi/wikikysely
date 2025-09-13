@@ -10,6 +10,7 @@ from django.conf import settings
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, gettext, ngettext
+from django.utils import translation
 from django.utils.html import format_html, format_html_join
 from django.db.models import Count, Q, F, FloatField, ExpressionWrapper, Max, Subquery
 from django.db.models.functions import NullIf, TruncDate, Greatest, Round
@@ -1602,6 +1603,47 @@ def survey_answers(request):
             "no_answers_label": no_answers_label,
             "experienced_only": experienced_only,
         },
+    )
+
+
+def survey_answers_embed(request):
+    """Render bar chart answers for embedding."""
+    survey = Survey.get_main_survey()
+    if survey is None:
+        raise Http404()
+
+    lang = request.GET.get("lang")
+    if lang:
+        translation.activate(lang)
+        request.LANGUAGE_CODE = lang
+
+    questions = survey.questions.filter(visible=True)
+    question_param = request.GET.get("questions")
+    if question_param:
+        try:
+            ids = [int(q) for q in question_param.split(",") if q.strip().isdigit()]
+        except ValueError:
+            ids = []
+        if ids:
+            questions = questions.filter(pk__in=ids)
+
+    answers_qs = Answer.objects.filter(question__survey=survey)
+    total_users = answers_qs.values("user").distinct().count()
+
+    data = []
+    for q in questions:
+        q_answers = answers_qs.filter(question=q)
+        yes_count = q_answers.filter(answer="yes").count()
+        no_count = q_answers.filter(answer="no").count()
+        data.append({"question": q, "yes": yes_count, "no": no_count})
+
+    yes_label = gettext("Yes")
+    no_label = gettext("No")
+
+    return render(
+        request,
+        "survey/answers_embed.html",
+        {"data": data, "total_users": total_users, "yes_label": yes_label, "no_label": no_label},
     )
 
 
