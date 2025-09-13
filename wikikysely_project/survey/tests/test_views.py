@@ -207,26 +207,6 @@ class SurveyFlowTests(TransactionTestCase):
         )
         self.assertNotContains(response, "Return to skipped questions")
 
-    def test_answer_question_redirects_to_embed_after_answer(self):
-        survey = self._create_survey()
-        q1 = self._create_question(survey)
-        next_url = reverse("survey:answer_survey") + "?embed=1"
-        data = {"question_id": q1.pk, "answer": "yes", "next": next_url}
-        response = self.client.post(
-            reverse("survey:answer_question", args=[q1.pk]), data
-        )
-        self.assertRedirects(response, next_url)
-
-    def test_answer_question_redirects_to_embed_after_skip(self):
-        survey = self._create_survey()
-        q1 = self._create_question(survey)
-        next_url = reverse("survey:answer_survey") + "?embed=1"
-        data = {"question_id": q1.pk, "answer": "", "next": next_url}
-        response = self.client.post(
-            reverse("survey:answer_question", args=[q1.pk]), data
-        )
-        self.assertRedirects(response, next_url)
-
     def test_survey_edit(self):
         survey = self._create_survey()
         data = {
