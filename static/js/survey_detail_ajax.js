@@ -232,13 +232,45 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         const nextCard = document.querySelector('.unanswered-card.d-none');
+        const currentCard = form.closest('.card');
+
+        let qid = '';
+        let questionText = '';
+        if (currentCard) {
+          qid = currentCard.dataset.questionId || '';
+          const titleEl = currentCard.querySelector('.card-title');
+          if (titleEl) {
+            questionText = titleEl.textContent.trim();
+          }
+        }
+
+        if (typeof answeredMessageTemplate !== 'undefined' && typeof skippedMessageTemplate !== 'undefined') {
+          let alertMessage = '';
+          let alertType = 'info';
+          if (answerValue === 'yes' || answerValue === 'no') {
+            const label = answerValue === 'yes' ? yesLabel : noLabel;
+            alertMessage = answeredMessageTemplate
+              .replace('{number}', qid)
+              .replace('{question}', questionText)
+              .replace('{answer}', label);
+            alertType = 'success';
+          } else {
+            alertMessage = skippedMessageTemplate
+              .replace('{number}', qid)
+              .replace('{question}', questionText);
+          }
+          if (alertMessage) {
+            showAlert(alertMessage, alertType);
+          }
+        }
+
         if (nextCard) {
           nextCard.classList.remove('d-none');
         }
-        const currentCard = form.closest('.card');
         if (currentCard) {
           currentCard.remove();
         }
+
         fetch(form.action, {
           method: 'POST',
           headers: {
