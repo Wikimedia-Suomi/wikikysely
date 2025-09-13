@@ -231,13 +231,21 @@ document.addEventListener('DOMContentLoaded', () => {
             answerValue = ev.submitter.value;
           }
         }
+        const nextCard = document.querySelector('.unanswered-card.d-none');
+        if (nextCard) {
+          nextCard.classList.remove('d-none');
+        }
+        const currentCard = form.closest('.card');
+        if (currentCard) {
+          currentCard.remove();
+        }
         fetch(form.action, {
           method: 'POST',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRFToken': getCookie('csrftoken') || ''
           },
-        body: formData
+          body: formData
         }).then(resp => resp.ok ? resp.json() : Promise.reject()).then(data => {
           if (!data || !data.success) { window.location.reload(); return; }
           const nextField = form.querySelector('input[name="next"]');
@@ -247,10 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           const qid = data.question_id;
           document.querySelectorAll(`[data-question-id="${qid}"]`).forEach(el => el.remove());
-          const nextCard = document.querySelector('.unanswered-card.d-none');
-          if (nextCard) {
-            nextCard.classList.remove('d-none');
-          }
           if (data.message) {
             showAlert(data.message, data.message_type || 'info');
           }
