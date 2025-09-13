@@ -11,6 +11,13 @@
 <body>
 <div class="container mt-4">
   <h1>{% translate 'Answers' %}</h1>
+  {% translate 'Red' as red_label %}
+  {% translate 'Green' as green_label %}
+  <p>
+    {% blocktrans trimmed with red=red_label green=green_label yes=yes_label no=no_label %}
+    <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers.
+    {% endblocktrans %}
+  </p>
   <table class="table">
     <colgroup>
       <col style="width:5%">
