@@ -19,7 +19,6 @@ from datetime import timedelta
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
 
-@xframe_options_exempt
 import json
 from .models import (
     Survey,
