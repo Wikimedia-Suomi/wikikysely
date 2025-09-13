@@ -11,13 +11,14 @@
 <body>
 <div class="container mt-4">
   <h1>{% translate 'Answers' %}</h1>
-  {% translate 'Red' as red_label %}
-  {% translate 'Green' as green_label %}
-  <p>
-    {% blocktrans trimmed with red=red_label green=green_label yes=yes_label no=no_label %}
-    <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers.
-    {% endblocktrans %}
-  </p>
+{% translate 'Red' as red_label %}
+{% translate 'Green' as green_label %}
+{% translate 'Grey' as grey_label %}
+<p id="chartInfo">
+  {% blocktrans trimmed with red=red_label green=green_label grey=grey_label yes=yes_label no=no_label %}
+  <span class="bg-danger text-light px-1">{{ red }}</span> means {{ no }} answers and <span class="bg-success text-black px-1">{{ green }}</span> means {{ yes }} answers. <span id="unansweredInfo" style="display:none"><span class="bg-secondary px-1">{{ grey }}</span> shows the share of all respondents who have not yet answered the question.</span> <span id="pieSizeInfo" style="display:none">The size of the circle is proportional to the number of respondents.</span>
+  {% endblocktrans %}
+</p>
   <table class="table">
     <colgroup>
       <col style="width:5%">
