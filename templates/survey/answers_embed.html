@@ -12,12 +12,17 @@
 <div class="container mt-4">
   <h1>{% translate 'Answers' %}</h1>
   <table class="table">
+    <colgroup>
+      <col style="width:5%">
+      <col style="width:65%">
+      <col style="width:30%">
+    </colgroup>
     <tbody>
     {% for row in data %}
       <tr>
         <td>{{ row.question.pk }}</td>
         <td>{{ row.question.text }}</td>
-        <td class="w-100">
+        <td>
           <div class="progress" style="height: 1.25rem;">
             <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%" aria-valuenow="{{ row.yes }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.yes }}</div>
             <div class="progress-bar bg-danger text-light" role="progressbar" style="width: {% widthratio row.no total_users 100 %}%" aria-valuenow="{{ row.no }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.no }}</div>
