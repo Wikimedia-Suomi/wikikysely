@@ -17,6 +17,9 @@ from django.db.models.functions import NullIf, TruncDate, Greatest, Round
 from django.http import JsonResponse
 from datetime import timedelta
 from django.utils import timezone
+from django.views.decorators.clickjacking import xframe_options_exempt
+
+@xframe_options_exempt
 import json
 from .models import (
     Survey,
@@ -1605,7 +1608,7 @@ def survey_answers(request):
         },
     )
 
-
+@xframe_options_exempt
 def survey_answers_embed(request):
     """Render bar chart answers for embedding."""
     survey = Survey.get_main_survey()
