@@ -21,7 +21,7 @@
     {% for row in data %}
       <tr>
         <td>{{ row.question.pk }}</td>
-        <td>{{ row.question.text }}</td>
+        <td><a href="{% url 'survey:answer_question' row.question.pk %}">{{ row.question.text }}</a></td>
         <td>
           <div class="progress" style="height: 1.25rem;">
             <div class="progress-bar bg-success text-black" role="progressbar" style="width: {% widthratio row.yes total_users 100 %}%" aria-valuenow="{{ row.yes }}" aria-valuemin="0" aria-valuemax="{{ total_users }}">{{ row.yes }}</div>
