@@ -802,6 +802,6 @@ msgstr "Jos kysymys oli huonosti muotoiltu, niin voit <a href=\"%(question_add_u
 msgid "Tip:"
 msgstr "Vinkki:"
 
-#: templates/survey/answer_form.html:62
-msgid "Thank you in advance for each of your answers. You can stop whenever you like, as questions are shown in random order."
-msgstr "Kiitos jo etukäteen jokaisesta vastauksestasi. Voit lopettaa kun siltä tuntuu, sillä kysymyksiä näytetään satunnaisessa järjestyksessä."
+#: templates/survey/answer_form.html:82
+msgid "Thank you in advance for each of your answers. You can stop and continue when you feel like it, since the questions are shown in random order."
+msgstr "Kiitos jo etukäteen jokaisesta vastauksestasi. Voit lopettaa ja jatkaa kun siltä tuntuu, sillä kysymykset näytetään satunnaisessa järjestyksessä."
