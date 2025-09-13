@@ -488,6 +488,18 @@ class SurveyFlowTests(TransactionTestCase):
         self.assertEqual(response.context["total_users"], 1)
         self.assertContains(response, "Answer table")
 
+    def test_results_embed_view_filters_questions_and_language(self):
+        survey = self._create_survey()
+        q1, q2 = self._create_questions(survey, 2)
+        Answer.objects.create(question=q1, user=self.user, answer="yes")
+        Answer.objects.create(question=q2, user=self.user, answer="no")
+        url = reverse("survey:survey_answers_embed") + f"?questions={q1.pk}&lang=fi"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, q1.text)
+        self.assertNotContains(response, q2.text)
+        self.assertEqual(response.context["LANGUAGE_CODE"], "fi")
+
     def test_consensus_ratio_calculation(self):
         survey = self._create_survey()
         question = self._create_question(survey)

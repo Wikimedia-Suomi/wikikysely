@@ -29,6 +29,7 @@ urlpatterns = [
     path("my_answers/download/", views.userinfo_download, name="userinfo_download"),
     path("my_answers/delete_data/", views.user_data_delete, name="user_data_delete"),
     path("answers/", views.survey_answers, name="survey_answers"),
+    path("answers/embed/", views.survey_answers_embed, name="survey_answers_embed"),
     path(
         "answers/wikitext/",
         views.survey_answers_wikitext,
