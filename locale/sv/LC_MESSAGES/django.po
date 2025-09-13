@@ -805,3 +805,7 @@ msgstr "Om frågan var dåligt formulerad kan du <a href=\"%(question_add_url)s\
 #: templates/survey/answer_form.html:55
 msgid "Tip:"
 msgstr "Tips:"
+
+#: templates/survey/answer_form.html:62
+msgid "Thank you in advance for each of your answers. You can stop and continue when you feel like it, since the questions are shown in random order."
+msgstr "Tack på förhand för varje svar. Du kan avbryta och fortsätta när du känner för det, eftersom frågorna visas i slumpmässig ordning."
