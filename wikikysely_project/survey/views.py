@@ -995,7 +995,7 @@ def answer_question(request, pk):
                 )
 
                 from urllib.parse import urlparse
-                if next_url and urlparse(next_url).path != request.path:
+                if answer is not None and next_url and urlparse(next_url).path != request.path:
                     if answer_value:
                         messages.success(
                             request,
