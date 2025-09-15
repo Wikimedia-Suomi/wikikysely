@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAnswerNavLink(initialCount);
   }
 
+  const firstCard = document.querySelector('.card[data-question-id]:not(.unanswered-card)');
+  updateAnswerDetails(firstCard);
+
   function attachDeleteQuestion(link) {
     link.addEventListener('click', ev => {
       ev.preventDefault();
