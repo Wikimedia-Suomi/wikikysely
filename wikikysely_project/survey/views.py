@@ -397,7 +397,7 @@ def question_add(request):
     if not request.user.is_authenticated:
         login_url = f"{reverse('social:begin', args=['mediawiki'])}?next={request.path}"
         login_message = format_html(
-            _(
+            gettext(
                 'To add a question you must log in. '
                 '<a href="{0}">Log in with your Wikimedia account</a>.'
             ),
@@ -683,7 +683,7 @@ def answer_survey(request):
         messages.info(
             request,
             format_html(
-                _(
+                gettext(
                     'To answer the question you must log in. '
                     '<a href="{0}">Log in with your Wikimedia account</a>.'
                 ),
@@ -896,7 +896,7 @@ def answer_question(request, pk):
         messages.info(
             request,
             format_html(
-                _(
+                gettext(
                     'To answer the question you must log in. '
                     '<a href="{0}">Log in with your Wikimedia account</a>.'
                 ),
