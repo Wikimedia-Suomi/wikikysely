@@ -30,6 +30,25 @@ document.addEventListener('DOMContentLoaded', () => {
       container.prepend(alert);
     }
 
+  function updateAnswerDetails(card) {
+    if (!card) return;
+    const detailsDiv = document.getElementById('answerDetails');
+    if (!detailsDiv) return;
+    const row = detailsDiv.querySelector('tbody tr');
+    if (!row) return;
+    const yes = parseInt(card.dataset.yes, 10) || 0;
+    const no = parseInt(card.dataset.no, 10) || 0;
+    const total = yes + no;
+    const agree = total ? ((Math.max(yes, no) / total) * 100).toFixed(1) : '0.0';
+    const cells = row.children;
+    if (cells[0]) cells[0].textContent = card.dataset.questionId || '';
+    if (cells[1]) cells[1].textContent = card.dataset.published || '';
+    if (cells[2]) cells[2].textContent = yes;
+    if (cells[3]) cells[3].textContent = no;
+    if (cells[4]) cells[4].textContent = total;
+    if (cells[5]) cells[5].textContent = agree.replace('.', ',') + '%';
+  }
+
   function updateAnswerNavLink(count) {
     const navCount = document.getElementById('unanswered-count');
     if (navCount) {
@@ -266,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (nextCard) {
           nextCard.classList.remove('d-none');
+          updateAnswerDetails(nextCard);
         }
         if (currentCard) {
           currentCard.remove();
