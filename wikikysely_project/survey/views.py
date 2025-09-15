@@ -841,7 +841,10 @@ def answer_survey(request):
         unanswered_questions = unanswered_questions.exclude(id__in=answered_ids)
     if question:
         unanswered_questions = unanswered_questions.exclude(id=question.pk)
-    unanswered_questions = unanswered_questions.order_by("pk")
+    unanswered_questions = unanswered_questions.annotate(
+        yes_count=Count("answers", filter=Q(answers__answer="yes")),
+        no_count=Count("answers", filter=Q(answers__answer="no")),
+    ).order_by("pk")
     return render(
         request,
         "survey/answer_form.html",
