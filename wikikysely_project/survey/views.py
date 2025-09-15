@@ -995,7 +995,7 @@ def answer_question(request, pk):
                 )
 
                 from urllib.parse import urlparse
-                if answer is not None and next_url and urlparse(next_url).path != request.path:
+                if next_url and urlparse(next_url).path != request.path:
                     if answer_value:
                         messages.success(
                             request,
@@ -1099,7 +1099,18 @@ def answer_question(request, pk):
             user=request.user, question__survey=survey
         ).values_list("question_id", flat=True)
         unanswered_questions = unanswered_questions.exclude(id__in=answered_ids)
-    unanswered_questions = unanswered_questions.order_by("pk")
+    unanswered_questions = (
+        unanswered_questions
+        .annotate(
+            yes_count=Count(
+                "answers", filter=Q(answers__answer="yes"), distinct=True
+            ),
+            no_count=Count(
+                "answers", filter=Q(answers__answer="no"), distinct=True
+            ),
+        )
+        .order_by("pk")
+    )
     return render(
         request,
         "survey/answer_form.html",
