@@ -295,10 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
           updateAnswerDetails(nextCard);
         }
         if (currentCard) {
-          currentCard.classList.add('fade-out');
-          currentCard.addEventListener('animationend', () => {
             currentCard.remove();
-          }, { once: true });
         }
 
         fetch(form.action, {
