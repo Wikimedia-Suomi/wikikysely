@@ -285,10 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (nextCard) {
           nextCard.classList.remove('d-none');
+          nextCard.classList.add('fade-in');
+          nextCard.addEventListener('animationend', () => {
+            nextCard.classList.remove('fade-in');
+          }, { once: true });
           updateAnswerDetails(nextCard);
         }
         if (currentCard) {
-          currentCard.remove();
+          currentCard.classList.add('fade-out');
+          currentCard.addEventListener('animationend', () => {
+            currentCard.remove();
+          }, { once: true });
         }
 
         fetch(form.action, {
