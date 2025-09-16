@@ -844,7 +844,7 @@ def answer_survey(request):
     unanswered_questions = unanswered_questions.annotate(
         yes_count=Count("answers", filter=Q(answers__answer="yes")),
         no_count=Count("answers", filter=Q(answers__answer="no")),
-    ).order_by("pk")
+    ).order_by("?")
     return render(
         request,
         "survey/answer_form.html",
@@ -1112,7 +1112,7 @@ def answer_question(request, pk):
                 "answers", filter=Q(answers__answer="no"), distinct=True
             ),
         )
-        .order_by("pk")
+        .order_by("?")
     )
     return render(
         request,
